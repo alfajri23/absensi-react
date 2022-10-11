@@ -18,3 +18,4 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::view('/{path?}', 'index');
+Route::view('/{path?}/{paths?}', 'index');

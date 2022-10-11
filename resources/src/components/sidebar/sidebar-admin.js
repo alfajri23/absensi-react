@@ -28,7 +28,11 @@ const SidebarAdmin = () => {
                         className="fas fa-fire"></i>
                     <span>Dashboard</span></Link>
             </li>
-
+            <li className="">
+                <Link className="nav-link" to='/master/jurusan'><i
+                        className="fas fa-fire"></i>
+                    <span>Jurusan</span></Link>
+            </li>
 
            
         </ul>

@@ -1,5 +1,7 @@
 import React from 'react'
 import SidebarAdmin from '../components/sidebar/sidebar-admin'
+import 'jquery/dist/jquery.min.js';
+import $ from "jquery";
 
 const LayoutAdmin = ({children}) => {
   return (

@@ -59,57 +59,35 @@ const Home = () => {
     return(
         <LayoutAdmin>
         <div>
-            <div className="container-fluid">
-                <div>
-                    { slider.length == 0 ? 
-                        <div className="d-flex justify-content-center py-5 my-5">
-                            <div className="spinner-border" role="status">
-                                <span className="visually-hidden">Loading...</span>
-                            </div>
-                        </div> :
-                        <div id="carouselExampleControls" className="carousel slide" data-bs-ride="carousel">
-                            <div className="carousel-inner">
-                                { slider.map((e,key)=>{ 
-                                    return (
-                                            <div key={key} className={`carousel-item ${key == 0 ? 'active' : ''}`}>
-                                                <img src={e.file} className="d-block w-100" alt="..."/>
-                                            </div>
-                                        )
-                                    })
-                                }       
-                            </div>
-                            <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-                                <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span className="visually-hidden">Previous</span>
-                            </button>
-                            <button className="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
-                                <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span className="visually-hidden">Next</span>
-                            </button>
-                        </div>
-                    }
-                    
+            <div className="section-header">
+                <h1>Dashboard</h1>
+                <div className="section-header-breadcrumb">
+                    <div className="breadcrumb-item active">
+                        <Link to="/">Dashboard</Link>
+                    </div>
+                    <div className="breadcrumb-item">Transaksi</div>
                 </div>
+            </div>
 
-                <div className="container">
-                    <div className="row">
-                    { program.map((e,key)=>{ 
-                        return (
-                            <div key={key} className="col-3 p-4">
-                                <div className="card px-5">
-                                    <img src={e.file} className="card-img-top" alt="..."/>
-                                    <div className="card-body">
-                                        <h5 className="card-title">{e.nama}</h5>
-                                        <p>{key}</p>
-                                    </div>
-                                </div>
+            <div className="row">
+                <div className="col-lg-3 col-md-6 col-sm-6 col-12">
+                    <div className="card card-statistic-1">
+                        <div className="card-icon bg-primary">
+                            <i className="fas fa-user-shield"></i>
+                        </div>
+                        <div className="card-wrap">
+                            <div className="card-header">
+                                <h4>Total Admin</h4>
                             </div>
-                        )
-                        })
-                    }   
+                            <div className="card-body">
+                            
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+
+
         </div>
         </LayoutAdmin>
     )
