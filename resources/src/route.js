@@ -11,6 +11,7 @@ import KelasIndex from './pages/master/kelas/kelas';
 import RombelIndex from './pages/master/rombel/rombel';
 import TahunAjarIndex from './pages/master/tahun_ajar/tahun_ajar';
 import SiswaIndex from './pages/master/siswa/siswa';
+import LiburIndex from './pages/libur/libur';
 
 const ProtectedRoute = () => {
     const roles = localStorage.getItem('access_token');
@@ -41,6 +42,9 @@ const RoutePage = () => {
                 <Route element={<ProtectedRoute/>}>
                     <Route path="/" element={<Home />} />
                     <Route path="/about" element={<About />} />
+
+                    <Route path="/setting/libur" element={<LiburIndex />} />
+
                     <Route path="/master/siswa" element={<SiswaIndex />} />
                     <Route path="/master/jurusan" element={<JurusanIndex />} />
                     <Route path="/master/kelas" element={<KelasIndex />} />

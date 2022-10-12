@@ -27,6 +27,15 @@ const SidebarAdmin = () => {
             <li className="nav-item dropdown">
                 <a href="#" className="nav-link has-dropdown" data-toggle="dropdown">
                     <HiViewGridAdd className="mx-2 fs-6"/>
+                    <span>Setting</span></a>
+                <ul className="dropdown-menu">
+                    <li><Link className="nav-link" to='/setting/libur'>Libur</Link></li>
+                </ul>
+            </li>
+
+            <li className="nav-item dropdown">
+                <a href="#" className="nav-link has-dropdown" data-toggle="dropdown">
+                    <HiViewGridAdd className="mx-2 fs-6"/>
                     <span>Master</span></a>
                 <ul className="dropdown-menu">
                     <li><Link className="nav-link" to='/master/siswa'>Siswa</Link></li>
@@ -36,6 +45,8 @@ const SidebarAdmin = () => {
                     <li><Link className="nav-link" to='/master/tahun-ajar'>Tahun Ajar</Link></li>
                 </ul>
             </li>
+
+
            
         </ul>
 

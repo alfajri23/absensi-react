@@ -76,6 +76,7 @@ const Login = () => {
                                         <div className="form-group">
                                             <label htmlFor="role">Role</label>
                                             <Field name="role" as="select" id="role" className="form-select">
+                                                <option value="">-- Pilih --</option>
                                                 <option value="admin-absensi">Admin</option>
                                                 <option value="guru">guru</option>
                                                 <option value="siswa">siswa</option>

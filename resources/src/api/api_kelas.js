@@ -33,7 +33,7 @@ const create = (data) => {
 
 const updates = (data) => {
     let urls = `${url}/info`;
-    return axios.put(url,data,{ headers: headers_auth})
+    return axios.put(urls,data,{ headers: headers_auth})
     .then(res => {
         return res;
     })
