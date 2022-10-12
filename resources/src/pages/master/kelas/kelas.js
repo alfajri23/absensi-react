@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react'
-import { getAll } from '../../../api/api_jurusan';
 import { Link } from 'react-router-dom'
 import {HiOutlinePencilAlt , HiOutlineTrash, HiOutlinePlusCircle} from 'react-icons/hi';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { Formik } from 'formik';
-import { create, destroy, detail, updates } from '../../../api/api_jurusan'
+import { getAll, create, destroy, detail, updates } from '../../../api/api_kelas'
+import { getAll as getAllJurusan } from '../../../api/api_jurusan'
 import swal from 'sweetalert';
 
 
@@ -33,22 +33,23 @@ require("datatables.net-buttons/js/buttons.colVis");
 
 
 
-const JurusanIndex = () => {
+const KelasIndex = () => {
 
     let [data, setData] = useState([]);
     let [form, setForm] = useState(
         {
             id: '',
             nama: '',
-            kode: '',
+            id_jurusan: '',
         }
     );
+    let [jurusan, setJurusan] = useState([]);
     let [edit, setEdit] = useState(false);
     
     let formValue = {
         id: '',
         nama: '',
-        kode: '',
+        id_jurusan: '',
     }
 
     const [show, setShow] = useState(false);
@@ -57,9 +58,10 @@ const JurusanIndex = () => {
         formValue = {
             id: '',
             nama: '',
-            kode: '',
+            id_jurusan: '',
         }
 
+        getDataJurusan();
         setEdit(false);
         setForm(formValue);
         setShow(true);
@@ -91,7 +93,6 @@ const JurusanIndex = () => {
     const getData = async () => {
         let data = await getAll();
         setData(data.data);
-        console.log(data.data);
     }
 
     const deleteData = async (id) => {
@@ -109,18 +110,17 @@ const JurusanIndex = () => {
         let res = await detail(id);
 
         if(res.status == 200){
-            console.log(res.data.data);
-
             formValue ={
                 ...formValue,
                 id : res.data.data.id,
                 nama: res.data.data.nama,
-                kode: res.data.data.kode,
+                id_jurusan: res.data.data.id_jurusan,
             }
 
             setEdit(true);
-            setForm(formValue);
             setShow(true);
+            getDataJurusan();
+            setForm(formValue);
         }else{
             swal("Error", res.message, "warning");
         }
@@ -139,17 +139,17 @@ const JurusanIndex = () => {
           }
     }
 
-    
-
-    
-
+    const getDataJurusan = async () => {
+        let data = await getAllJurusan();
+        setJurusan(data.data);
+    }
 
 
     return (
         <LayoutAdmin>
         <div>
             <div className="section-header">
-                <h1>Dashboard</h1>
+                <h1>Kelas</h1>
                 <div className="section-header-breadcrumb">
                     <div className="breadcrumb-item active">
                         <Link to="/">Dashboard</Link>
@@ -167,11 +167,12 @@ const JurusanIndex = () => {
                             </button>
 
                            
-                            <table id="example" className="table table-hover table-striped table-bordered">
+                            <table id="example" className="table table-hover table-bordered">
                                 <thead>
                                     <tr>
                                     <th>ID</th>
-                                    <th>Nama</th>
+                                    <th>Kelas</th>
+                                    <th>Jurusan</th>
                                     <th>Status</th>
                                     <th>Action</th>
                                     </tr>
@@ -181,7 +182,8 @@ const JurusanIndex = () => {
                                     return (
                                         <tr key={key}>
                                         <td width={`5%`}>{result.id}</td>
-                                        <td width={`50%`}>{result.nama}</td>
+                                        <td width={`5%`}>{result.nama}</td>
+                                        <td width={`40%`}>{result.jurusan}</td>
                                         <td  width={`10%`}>
                                             {
                                                 setStatus(result.status)
@@ -212,15 +214,15 @@ const JurusanIndex = () => {
 
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
-                <Modal.Title>Tambah Jurusan</Modal.Title>
+                <Modal.Title>Tambah Kelas</Modal.Title>
             </Modal.Header>
             <Modal.Body>
 
                 <Formik
                 initialValues={form}
                 onSubmit={ async (values, { setSubmitting }) => {
-
-                    let res = edit ? await create(values) : await updates(values);
+                    
+                    let res = edit ? await create(values) : await create(values);
                     
                     
                     if(res.status == 200){
@@ -259,16 +261,26 @@ const JurusanIndex = () => {
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="role">Kode</label>
-                        <input
-                            type="kode"
-                            name="kode"
+                        <label htmlFor="role">Jurusan</label>
+                        <select className="form-control" onChange={handleChange}
+                            onBlur={handleBlur} name="id_jurusan" value={values.id_jurusan}>
+                            <option value=''>Pilih</option>
+                            { jurusan.map((result,key) => {
+                                return (  
+                                    <option key={key} value={result.id}>{result.nama}</option>
+                                    )
+                            })}   
+                        </select>
+                        
+                        {/* <input
+                            type="id_jurusan"
+                            name="id_jurusan"
                             className="form-control" 
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            value={values.kode}
-                        />
-                        {errors.kode && touched.kode && errors.kode}
+                            value={values.id_jurusan}
+                        /> */}
+                        {errors.id_jurusan && touched.id_jurusan && errors.id_jurusan}
                     </div>
 
                     <button type="submit" className="btn btn-nu btn-lg btn-block" disabled={isSubmitting}>
@@ -285,4 +297,4 @@ const JurusanIndex = () => {
     )
 }
 
-export default JurusanIndex
+export default KelasIndex

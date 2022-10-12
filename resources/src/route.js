@@ -7,6 +7,10 @@ import LayoutAdmin from './layouts/admin';
 import Login from './pages/auth/login';
 import JurusanIndex from './pages/master/jurusan/jurusan';
 import { useNavigate } from 'react-router-dom';
+import KelasIndex from './pages/master/kelas/kelas';
+import RombelIndex from './pages/master/rombel/rombel';
+import TahunAjarIndex from './pages/master/tahun_ajar/tahun_ajar';
+import SiswaIndex from './pages/master/siswa/siswa';
 
 const ProtectedRoute = () => {
     const roles = localStorage.getItem('access_token');
@@ -37,7 +41,11 @@ const RoutePage = () => {
                 <Route element={<ProtectedRoute/>}>
                     <Route path="/" element={<Home />} />
                     <Route path="/about" element={<About />} />
+                    <Route path="/master/siswa" element={<SiswaIndex />} />
                     <Route path="/master/jurusan" element={<JurusanIndex />} />
+                    <Route path="/master/kelas" element={<KelasIndex />} />
+                    <Route path="/master/rombel" element={<RombelIndex />} />
+                    <Route path="/master/tahun-ajar" element={<TahunAjarIndex />} />
                 </Route>
             </Routes>
         </Router>

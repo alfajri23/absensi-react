@@ -1,11 +1,10 @@
 import React, {useEffect, useState} from 'react'
-import { getAll } from '../../../api/api_jurusan';
 import { Link } from 'react-router-dom'
 import {HiOutlinePencilAlt , HiOutlineTrash, HiOutlinePlusCircle} from 'react-icons/hi';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { Formik } from 'formik';
-import { create, destroy, detail, updates } from '../../../api/api_jurusan'
+import { getAll,create, destroy, detail, updates } from '../../../api/api_tahunajar'
 import swal from 'sweetalert';
 
 
@@ -33,7 +32,7 @@ require("datatables.net-buttons/js/buttons.colVis");
 
 
 
-const JurusanIndex = () => {
+const TahunAjarIndex = () => {
 
     let [data, setData] = useState([]);
     let [form, setForm] = useState(
@@ -149,12 +148,12 @@ const JurusanIndex = () => {
         <LayoutAdmin>
         <div>
             <div className="section-header">
-                <h1>Dashboard</h1>
+                <h1>Tahun Ajar</h1>
                 <div className="section-header-breadcrumb">
                     <div className="breadcrumb-item active">
                         <Link to="/">Dashboard</Link>
                     </div>
-                    <div className="breadcrumb-item">Transaksi</div>
+                    <div className="breadcrumb-item">Tahun Ajar</div>
                 </div>
             </div>
 
@@ -181,7 +180,7 @@ const JurusanIndex = () => {
                                     return (
                                         <tr key={key}>
                                         <td width={`5%`}>{result.id}</td>
-                                        <td width={`50%`}>{result.nama}</td>
+                                        <td width={`50%`}>{result.tahun_ajaran}</td>
                                         <td  width={`10%`}>
                                             {
                                                 setStatus(result.status)
@@ -212,7 +211,7 @@ const JurusanIndex = () => {
 
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
-                <Modal.Title>Tambah Jurusan</Modal.Title>
+                <Modal.Title>Tambah Tahun Ajar</Modal.Title>
             </Modal.Header>
             <Modal.Body>
 
@@ -285,4 +284,4 @@ const JurusanIndex = () => {
     )
 }
 
-export default JurusanIndex
+export default TahunAjarIndex

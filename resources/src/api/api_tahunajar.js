@@ -2,7 +2,7 @@ import api_url from './url'
 import axios from 'axios';
 import {headers_auth} from './header';
 
-const url = `${api_url}/api/data/master/jurusan`;
+const url = `${api_url}/api/data/master/tahun_ajaran/sekolah/tahun_ajaran`;
 
 const headers = {
     'Accept': 'application/json',
@@ -11,7 +11,7 @@ const headers = {
 }
 
 const getAll = () => {
-    return axios.get(url,{ headers: headers })
+    return axios.get(url,{ headers: headers_auth })
     .then(res => {
         return res.data;
     })

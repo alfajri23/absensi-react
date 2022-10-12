@@ -1,8 +1,8 @@
-import api_url from './url'
+import api_url from '../url'
 import axios from 'axios';
-import {headers_auth} from './header';
+import {headers_auth} from '../header';
 
-const url = `${api_url}/api/data/master/jurusan`;
+const url = `${api_url}/api/data/user/siswa`;
 
 const headers = {
     'Accept': 'application/json',
