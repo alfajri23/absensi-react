@@ -1,6 +1,13 @@
 import React, {useEffect, useState} from 'react'
 import { getAll } from '../../../api/api_jurusan';
 import { Link } from 'react-router-dom'
+import {HiOutlinePencilAlt , HiOutlineTrash, HiOutlinePlusCircle} from 'react-icons/hi';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
+import { Formik } from 'formik';
+import { create, destroy } from '../../../api/api_jurusan'
+import swal from 'sweetalert';
+
 
 import 'jquery/dist/jquery.min.js';
 import $ from 'jquery';
@@ -29,17 +36,23 @@ require("datatables.net-buttons/js/buttons.colVis");
 const JurusanIndex = () => {
 
     let [data, setData] = useState([]);
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
     useEffect(() => {
         getData();
 
         $(document).ready(function () {
             setTimeout(function(){
-                $('#example').DataTable({
+                let table = $('#example').DataTable({
                     pagingType: "full_numbers",
                     pageLength: 20,
                     processing: true,
-                    dom: "Bfrtip",
+                    dom: "<'row'<'col-sm-8'><'col-sm-3'f>>" + 
+                    "<'row'<'col-sm-12'tr>>" +
+                    "<'row'<'col-sm-4'l><'col-sm-4'i><'col-sm-4'p>>",
                     select: {
                         style: "single",
                     },
@@ -53,6 +66,17 @@ const JurusanIndex = () => {
         let data = await getAll();
         setData(data.data);
         console.log(data.data);
+    }
+
+    const deleteData = async (id) => {
+        let res = await destroy(id);
+
+        if(res.status == 200){
+            getData();
+            swal("Good job!", "Sukses", "success");
+        }else{
+            swal("Error", res.message, "warning");
+        }
     }
 
     const setStatus = (data) => {
@@ -86,6 +110,11 @@ const JurusanIndex = () => {
                 <div className="card">
                     <div className="card-body">
                         <div className="container-fluid">
+                            <button onClick={handleShow} className="btn btn-success">
+                                <HiOutlinePlusCircle className="fs-6 mr-1" /> Tambah
+                            </button>
+
+                           
                             <table id="example" className="table table-hover table-bordered">
                                 <thead>
                                     <tr>
@@ -108,10 +137,14 @@ const JurusanIndex = () => {
                                             
                                         </td>
                                         <td width={`10%`}>
-                                            <div class="btn-group" role="group" aria-label="Basic outlined example">
-                                                <button type="button" class="btn btn-outline-primary">Left</button>
-                                                <button type="button" class="btn btn-outline-primary">Middle</button>
-                                                <button type="button" class="btn btn-outline-primary">Right</button>
+                                            <div className="btn-group" role="group" aria-label="Basic outlined example">
+                                                <button type="button" className="btn btn-outline-primary">
+                                                    <HiOutlinePencilAlt className="fs-6" />
+                                                </button>
+                                                <button onClick={()=> deleteData(result.id)} type="button" className="btn btn-outline-danger">
+                                                    <HiOutlineTrash className="fs-6" />
+                                                </button>
+                                                
                                             </div>
                                         </td>
                                         </tr>
@@ -124,6 +157,76 @@ const JurusanIndex = () => {
                 </div>
             </div>
         </div>
+
+        <Modal show={show} onHide={handleClose}>
+            <Modal.Header closeButton>
+                <Modal.Title>Tambah Jurusan</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+
+                <Formik
+                initialValues={{ nama: '', kode: '' }}
+                onSubmit={ async (values, { setSubmitting }) => {
+                    let res = await create(values)
+                    
+                    if(res.status == 200){
+                        getData();
+                        swal("Good job!", "Sukses", "success");
+                    }else{
+                        swal("Error", res.message, "warning");
+                    }
+
+                    setShow(false)
+
+                }}
+                >
+                {({
+                    values,
+                    errors,
+                    touched,
+                    handleChange,
+                    handleBlur,
+                    handleSubmit,
+                    isSubmitting,
+                    /* and other goodies */
+                }) => (
+                <form onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label htmlFor="role">Nama</label>
+                        <input
+                            type="nama"
+                            name="nama"
+                            className="form-control" 
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            value={values.nama}
+                        />
+                        {errors.nama && touched.nama && errors.nama}
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="role">Kode</label>
+                        <input
+                            type="kode"
+                            name="kode"
+                            className="form-control" 
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            value={values.kode}
+                        />
+                        {errors.kode && touched.kode && errors.kode}
+                    </div>
+
+                    <button type="submit" className="btn btn-nu btn-lg btn-block" disabled={isSubmitting}>
+                        Submit
+                    </button>
+                </form>
+                )}
+                </Formik>
+
+            </Modal.Body>
+
+        </Modal>
         </LayoutAdmin>
     )
 }

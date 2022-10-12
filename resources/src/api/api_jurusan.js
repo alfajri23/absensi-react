@@ -1,5 +1,6 @@
 import api_url from './url'
 import axios from 'axios';
+import {headers_auth} from './header';
 
 const url = `${api_url}/api/data/master/jurusan`;
 
@@ -19,6 +20,29 @@ const getAll = () => {
     });
 }
 
+const create = (data) => {
+    return axios.post(url,data,{ headers: headers_auth})
+    .then(res => {
+        return res;
+    })
+    .catch(function (error) {
+        return error.response.data
+    });
+}
+
+const destroy = (id) => {
+    let urls = `${url}/delete/${id}`;
+    return axios.delete(urls,{ headers: headers_auth})
+    .then(res => {
+        return res;
+    })
+    .catch(function (error) {
+        return error.response.data
+    });
+}
+
 export{
-    getAll
+    getAll,
+    create,
+    destroy
 }
