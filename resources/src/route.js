@@ -12,9 +12,12 @@ import RombelIndex from './pages/master/rombel/rombel';
 import TahunAjarIndex from './pages/master/tahun_ajar/tahun_ajar';
 import SiswaIndex from './pages/master/siswa/siswa';
 import LiburIndex from './pages/libur/libur';
+import JadwalSiswa from './pages/setting/jadwal/jadwal_siswa';
+import { getToken } from './auth/auth';
 
 const ProtectedRoute = () => {
-    const roles = localStorage.getItem('access_token');
+    //const roles = localStorage.getItem('access_token');
+    const roles = getToken();
     
     if (roles == null) {
         return <Navigate to="/login" replace />;
@@ -44,6 +47,8 @@ const RoutePage = () => {
                     <Route path="/about" element={<About />} />
 
                     <Route path="/setting/libur" element={<LiburIndex />} />
+
+                    <Route path="/setting/jadwal" element={<JadwalSiswa />} />
 
                     <Route path="/master/siswa" element={<SiswaIndex />} />
                     <Route path="/master/jurusan" element={<JurusanIndex />} />

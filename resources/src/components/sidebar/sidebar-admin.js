@@ -30,6 +30,7 @@ const SidebarAdmin = () => {
                     <span>Setting</span></a>
                 <ul className="dropdown-menu">
                     <li><Link className="nav-link" to='/setting/libur'>Libur</Link></li>
+                    <li><Link className="nav-link" to='/setting/jadwal'>Jadwal Siswa</Link></li>
                 </ul>
             </li>
 

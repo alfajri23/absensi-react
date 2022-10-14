@@ -3,6 +3,7 @@ import { Formik, Field, Form } from "formik";
 import {login} from "../../api/auth";
 import { useNavigate } from 'react-router-dom';
 import swal from 'sweetalert';
+import { setId, setIdSekolah, setToken } from '../../auth/auth';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -34,10 +35,14 @@ const Login = () => {
                                         console.log(res)
 
                                         if(res.status){
-                                            localStorage.setItem('id',res.data.id);
-                                            localStorage.setItem('id_sekolah',res.data.id_sekolah);
-                                            localStorage.setItem('access_token',res.data.access_token);
+                                            // localStorage.setItem('id',res.data.id);
+                                            // localStorage.setItem('id_sekolah',res.data.id_sekolah);
+                                            // localStorage.setItem('access_token',res.data.access_token);
                                             
+                                            setId(res.data.id);
+                                            setIdSekolah(res.data.id_sekolah);
+                                            setToken(res.data.access_token);
+
                                             const parseJwt = (token) => {
                                                 var base64Url = token.split('.')[1];
                                                 var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');

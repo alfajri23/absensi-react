@@ -12,6 +12,7 @@ import swal from 'sweetalert';
 import 'jquery/dist/jquery.min.js';
 import $ from 'jquery';
 import LayoutAdmin from '../../../layouts/admin';
+import Tables from '../../../components/table/table';
 
 require("datatables.net-bs4/css/dataTables.bootstrap4.min.css");
 require("datatables.net-buttons-bs4");
@@ -72,21 +73,21 @@ const KelasIndex = () => {
     useEffect(() => {
         getData();
 
-        $(document).ready(function () {
-            setTimeout(function(){
-                let table = $('#example').DataTable({
-                    pagingType: "full_numbers",
-                    pageLength: 20,
-                    processing: true,
-                    dom: "<'row'<'col-sm-8'><'col-sm-3'f>>" + 
-                    "<'row'<'col-sm-12'tr>>" +
-                    "<'row'<'col-sm-4'l><'col-sm-4'i><'col-sm-4'p>>",
-                    select: {
-                        style: "single",
-                    },
-                });
-            },1500);
-        });
+        // $(document).ready(function () {
+        //     setTimeout(function(){
+        //         let table = $('#example').DataTable({
+        //             pagingType: "full_numbers",
+        //             pageLength: 20,
+        //             processing: true,
+        //             dom: "<'row'<'col-sm-8'><'col-sm-3'f>>" + 
+        //             "<'row'<'col-sm-12'tr>>" +
+        //             "<'row'<'col-sm-4'l><'col-sm-4'i><'col-sm-4'p>>",
+        //             select: {
+        //                 style: "single",
+        //             },
+        //         });
+        //     },1500);
+        // });
 
     },[]);
 
@@ -144,6 +145,64 @@ const KelasIndex = () => {
         setJurusan(data.data);
     }
 
+    const columnFormat = {
+        action: (cell, row) => {
+            return(
+                <div key={cell} className="btn-group" role="group" aria-label="Basic outlined example">
+                    <button onClick={()=> detailData(cell)} type="button" className="btn btn-sm btn-outline-primary">
+                        <HiOutlinePencilAlt className="fs-6" />
+                    </button>
+                    <button onClick={()=> deleteData(cell)} type="button" className="btn btn-sm btn-outline-danger">
+                        <HiOutlineTrash className="fs-6" />
+                    </button>
+                </div>
+            )
+        },
+        status: (cell, row) => {
+            switch(cell) {
+                case 'Aktif':
+                  return(
+                    <span key={row.id} className="badge text-bg-success">Aktif</span>
+                  )
+                  break;
+                default:
+                    return (
+                    <span key={row.id} className="badge text-bg-danger">Tidak aktif</span>
+                )
+            }
+        }
+    }
+
+    const column = [
+        {
+            dataField: 'id',
+            text: 'Id',
+            sort: true
+        },
+        {
+            dataField: 'nama',
+            text: 'Nama',
+            sort: true
+        },
+        {
+            dataField: 'jurusan',
+            text: 'Jurusan',
+            sort: true
+        },
+        {
+            dataField: 'status',
+            text: 'Status',
+            sort: true,
+            formatter: columnFormat.status
+        },
+        {
+            dataField: 'id',
+            text: 'Action',
+            sort: true,
+            formatter: columnFormat.action
+        },
+    ]
+
 
     return (
         <LayoutAdmin>
@@ -166,8 +225,10 @@ const KelasIndex = () => {
                                 <HiOutlinePlusCircle className="fs-6 mr-1" /> Tambah
                             </button>
 
+                            <Tables data={data} column={column} columnFormats={columnFormat}/>
+
                            
-                            <table id="example" className="table table-hover table-bordered">
+                            {/* <table id="example" className="table table-hover table-bordered">
                                 <thead>
                                     <tr>
                                     <th>ID</th>
@@ -198,14 +259,14 @@ const KelasIndex = () => {
                                                 <button onClick={()=> deleteData(result.id)} type="button" className="btn btn-sm btn-outline-danger">
                                                     <HiOutlineTrash className="fs-6" />
                                                 </button>
-                                                
                                             </div>
                                         </td>
                                         </tr>
                                     )
                                 })}  
                                 </tbody>
-                            </table>
+                            </table> */}
+
                         </div>
                     </div>
                 </div>

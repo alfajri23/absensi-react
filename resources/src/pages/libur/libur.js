@@ -12,6 +12,9 @@ import swal from 'sweetalert';
 import 'jquery/dist/jquery.min.js';
 import $ from 'jquery';
 import LayoutAdmin from '../../layouts/admin';
+import Table from '../../components/table/table';
+import Tables from '../../components/table/table';
+import Component from '../../components/table/table-2';
 
 require("datatables.net-bs4/css/dataTables.bootstrap4.min.css");
 require("datatables.net-buttons-bs4");
@@ -74,33 +77,42 @@ const LiburIndex = () => {
         setShow(true);
     }
 
-    
-
+   
     useEffect(() => {
         getData();
-
-        $(document).ready(function () {
-            setTimeout(function(){
-                let table = $('#example').DataTable({
-                    pagingType: "full_numbers",
-                    pageLength: 20,
-                    processing: true,
-                    dom: "<'row'<'col-sm-8'><'col-sm-3'f>>" + 
-                    "<'row'<'col-sm-12'tr>>" +
-                    "<'row'<'col-sm-4'l><'col-sm-4'i><'col-sm-4'p>>",
-                    select: {
-                        style: "single",
-                    },
-                });
-            },1500);
-        });
-
     },[]);
 
     const getData = async () => {
         let data = await getAll();
         setData(data.data);
-        console.log(data.data);
+
+        // $(document).ready(function () {
+        //     setTimeout(function(){
+        //         let table = $('#example').DataTable({
+        //             pagingType: "full_numbers",
+        //             pageLength: 20,
+        //             processing: true,
+        //             dom: "<'row'<'col-sm-8'><'col-sm-3'f>>" + 
+        //             "<'row'<'col-sm-12'tr>>" +
+        //             "<'row'<'col-sm-4'l><'col-sm-4'i><'col-sm-4'p>>",
+        //             select: {
+        //                 style: "single",
+        //             },
+        //         });
+
+        //         console.log('init table');
+        //     },1000);
+        // });
+
+        // const table = await $('#example').DataTable({
+        //     pagingType: "full_numbers",
+        //     pageLength: 20,
+        //     processing: true,
+        //     dom: "<'row'<'col-sm-8'><'col-sm-3'f>>" + 
+        //     "<'row'<'col-sm-12'tr>>" +
+        //     "<'row'<'col-sm-4'l><'col-sm-4'i><'col-sm-4'p>>",
+        // });
+        
     }
 
     const deleteData = async (id) => {
@@ -137,18 +149,6 @@ const LiburIndex = () => {
         }
     }
 
-    const setStatus = (data) => {
-        switch(data) {
-            case 'Aktif':
-              return(
-                <span className="badge text-bg-success">Aktif</span>
-              )
-              break;
-            default:
-                return (<span className="badge text-bg-danger">Tidak aktif</span>)
-          }
-    }
-
     const syncLibur = () => {
 
         swal({
@@ -181,10 +181,69 @@ const LiburIndex = () => {
 
     }
 
-    
+    const columnFormat = {
+        action: (cell, row) => {
+            return(
+                <div key={cell} className="btn-group" role="group" aria-label="Basic outlined example">
+                    <button onClick={()=> detailData(cell)} type="button" className="btn btn-sm btn-outline-primary">
+                        <HiOutlinePencilAlt className="fs-6" />
+                    </button>
+                    <button onClick={()=> deleteData(cell)} type="button" className="btn btn-sm btn-outline-danger">
+                        <HiOutlineTrash className="fs-6" />
+                    </button>
+                    
+                </div>
+            )
+        },
+        status: (cell, row) => {
+            switch(cell) {
+                case 'Aktif':
+                  return(
+                    <span key={row.id} className="badge text-bg-success">Aktif</span>
+                  )
+                  break;
+                default:
+                    return (
+                    <span key={row.id} className="badge text-bg-danger">Tidak aktif</span>
+                    )
+            }
+        }
+    }
 
-    
-
+    const column = [
+        {
+            dataField: 'id',
+            text: 'Id',
+            sort: true
+        },
+        {
+            dataField: 'nama',
+            text: 'nama',
+            sort: true
+        },
+        {
+            dataField: 'tgl_libur',
+            text: 'libur',
+            sort: true
+        },
+        {
+            dataField: 'keterangan',
+            text: 'keterangan',
+            sort: true
+        },
+        {
+            dataField: 'status',
+            text: 'status',
+            sort: true,
+            formatter: columnFormat.status
+        },
+        {
+            dataField: 'id',
+            text: 'Action',
+            sort: true,
+            formatter: columnFormat.action
+        },
+    ]
 
 
     return (
@@ -212,48 +271,60 @@ const LiburIndex = () => {
                                 <AiOutlineCloudSync className="fs-6 mr-1" /> Sinkron Libur Nasional
                             </button>
 
-                           
-                            <table id="example" className="table table-hover table-striped table-bordered">
-                                <thead>
-                                    <tr>
-                                    <th>ID</th>
-                                    <th>Nama</th>
-                                    <th>Tanggal</th>
-                                    <th>Keterangan</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                {data.map((result,key) => {
-                                    return (
-                                        <tr key={key}>
-                                        <td width={`5%`}>{result.id}</td>
-                                        <td width={`10%`}>{result.nama}</td>
-                                        <td width={`10%`}>{result.tgl_libur}</td>
-                                        <td width={`30%`}>{result.keterangan}</td>
-                                        <td  width={`10%`}>
-                                            {
-                                                setStatus(result.status)
-                                            }
-                                            
-                                        </td>
-                                        <td width={`10%`}>
-                                            <div className="btn-group" role="group" aria-label="Basic outlined example">
-                                                <button onClick={()=> detailData(result.id)} type="button" className="btn btn-sm btn-outline-primary">
-                                                    <HiOutlinePencilAlt className="fs-6" />
-                                                </button>
-                                                <button onClick={()=> deleteData(result.id)} type="button" className="btn btn-sm btn-outline-danger">
-                                                    <HiOutlineTrash className="fs-6" />
-                                                </button>
-                                                
-                                            </div>
-                                        </td>
+                            <div>
+                                {/* <table id="example" className="table table-hover table-striped table-bordered"> 
+                                    <thead>
+                                        <tr>
+                                        <th>ID</th>
+                                        <th>Nama</th>
+                                        <th>Tanggal</th>
+                                        <th>Keterangan</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
                                         </tr>
-                                    )
-                                })}  
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                    {data.map((result,key) => {
+                                        return (
+                                            
+                                            <tr key={key}>
+                                                <td width={`5%`}>{result.id}</td>
+                                                <td width={`30%`}>{result.nama}</td>
+                                                <td width={`10%`}>{result.tgl_libur}</td>
+                                                <td width={`30%`}>{result.keterangan}</td>
+                                                <td  width={`10%`}>
+                                                    {
+                                                        setStatus(result.status)
+                                                    }
+                                                    
+                                                </td>
+                                                <td width={`10%`}>
+                                                    <div className="btn-group" role="group" aria-label="Basic outlined example">
+                                                        <button onClick={()=> detailData(result.id)} type="button" className="btn btn-sm btn-outline-primary">
+                                                            <HiOutlinePencilAlt className="fs-6" />
+                                                        </button>
+                                                        <button onClick={()=> deleteData(result.id)} type="button" className="btn btn-sm btn-outline-danger">
+                                                            <HiOutlineTrash className="fs-6" />
+                                                        </button>
+                                                        
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            
+                                        )
+                                    })}  
+                                    </tbody>
+                                </table> */}
+                            </div>
+
+                            <div className="mt-4">
+                                <Tables data={data} column={column} columnFormats={columnFormat}/>
+                            </div>
+
+                            <div className="mt-4">
+                                {/* <Component nodes={data} COLUMN={column} width={width} searching={searchTable}/> */}
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -269,10 +340,8 @@ const LiburIndex = () => {
                 <Formik
                 initialValues={form}
                 onSubmit={ async (values, { setSubmitting }) => {
-                    console.log(edit)
                     let res = edit ? await updates(values) : await create(values);
-                    
-                    
+
                     if(res.status == 200){
                         getData();
                         swal("Good job!", "Sukses", "success");
