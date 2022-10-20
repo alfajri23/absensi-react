@@ -2694,6 +2694,8 @@ h6 .badge {
 
 .dropdown-menu.show {
     display: block !important;
+    position: static !important;
+    transform: none !important;
 }
 
 .dropdown-menu a {
@@ -4184,6 +4186,12 @@ body.layout-3 .main-footer {
     width: 100%;
     box-shadow: none;
     background-color: transparent;
+}
+
+.main-sidebar .sidebar-menu li ul.dropdown-menu.show {
+    display: block !important;
+    position: static !important;
+    transform: none !important;
 }
 
 .main-sidebar .sidebar-menu li ul.dropdown-menu li a {

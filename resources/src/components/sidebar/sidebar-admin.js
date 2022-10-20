@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import {HiViewGridAdd} from 'react-icons/hi';
 
 const SidebarAdmin = () => {
@@ -19,31 +19,39 @@ const SidebarAdmin = () => {
             <li className="menu-header">Dashboard</li>
 
             <li className="">
-                <Link className="nav-link" to='/'>
+                <NavLink className="nav-link" to='/'>
                     <HiViewGridAdd className="mx-2 fs-6"/>
-                <span>Dashboard</span></Link>
-            </li>
+                <span>Dashboard</span></NavLink>{" "}
+            </li>{" "}
 
             <li className="nav-item dropdown">
-                <a href="#" className="nav-link has-dropdown" data-toggle="dropdown">
+                <a className="nav-link has-dropdown" data-toggle="dropdown">{" "}
                     <HiViewGridAdd className="mx-2 fs-6"/>
-                    <span>Setting</span></a>
-                <ul className="dropdown-menu">
-                    <li><Link className="nav-link" to='/setting/libur'>Libur</Link></li>
-                    <li><Link className="nav-link" to='/setting/jadwal'>Jadwal Siswa</Link></li>
+                    <span>Jadwal</span></a>{" "}
+                <ul className="dropdown-menu">{" "}
+                    <li><NavLink className="nav-link" to='/setting/libur'>Setting Libur</NavLink></li>{" "}
+                    <li><NavLink className="nav-link" to='/setting/jadwal-siswa'>Setting Jadwal</NavLink></li>{" "}
                 </ul>
             </li>
 
+            <li className="">
+                <NavLink className="nav-link" to='/izin/siswa'>
+                    <HiViewGridAdd className="mx-2 fs-6"/>
+                <span>Izin</span></NavLink>
+            </li>
+
+
             <li className="nav-item dropdown">
-                <a href="#" className="nav-link has-dropdown" data-toggle="dropdown">
+                <a className="nav-link has-dropdown" data-toggle="dropdown">
                     <HiViewGridAdd className="mx-2 fs-6"/>
                     <span>Master</span></a>
                 <ul className="dropdown-menu">
-                    <li><Link className="nav-link" to='/master/siswa'>Siswa</Link></li>
-                    <li><Link className="nav-link" to='/master/jurusan'>Jurusan</Link></li>
-                    <li><Link className="nav-link" to='/master/kelas'>Kelas</Link></li>
-                    <li><Link className="nav-link" to='/master/rombel'>Rombel</Link></li>
-                    <li><Link className="nav-link" to='/master/tahun-ajar'>Tahun Ajar</Link></li>
+                    <li><NavLink className="nav-link" to='/master/admin'>Admin</NavLink></li>
+                    <li><NavLink className="nav-link" to='/master/siswa'>Siswa</NavLink></li>
+                    <li><NavLink className="nav-link" to='/master/jurusan'>Jurusan</NavLink></li>
+                    <li><NavLink className="nav-link" to='/master/kelas'>Kelas</NavLink></li>
+                    <li><NavLink className="nav-link" to='/master/rombel'>Rombel</NavLink></li>
+                    <li><NavLink className="nav-link" to='/master/tahun-ajar'>Tahun Ajar</NavLink></li>
                 </ul>
             </li>
 

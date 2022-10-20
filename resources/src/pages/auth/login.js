@@ -3,7 +3,7 @@ import { Formik, Field, Form } from "formik";
 import {login} from "../../api/auth";
 import { useNavigate } from 'react-router-dom';
 import swal from 'sweetalert';
-import { setId, setIdSekolah, setToken } from '../../auth/auth';
+import { setId, setIdSekolah, setTahun, setTahunAjar, setToken } from '../../auth/auth';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -42,6 +42,8 @@ const Login = () => {
                                             setId(res.data.id);
                                             setIdSekolah(res.data.id_sekolah);
                                             setToken(res.data.access_token);
+                                            setTahunAjar(res.data.id_ta_aktif);
+                                            setTahun(res.data.tahun);
 
                                             const parseJwt = (token) => {
                                                 var base64Url = token.split('.')[1];

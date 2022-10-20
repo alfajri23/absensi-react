@@ -17,7 +17,6 @@
                 font-family: 'Nunito', sans-serif;
             }
         </style>
-        {{-- <script src="{{ asset('js/app.js') }}" defer></script> --}}
     </head>
     <body class="antialiased">
 
@@ -33,7 +32,7 @@
             integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
         </script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+        {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script> --}}
     
 
     <script> 
@@ -42,9 +41,9 @@
     <script src="{{ asset('js/manifest.js') }}"></script>
     <script src="{{ asset('js/vendor.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>
-    <script src="{{ asset('js/stisla.js') }}"></script>
-    <script src="{{ asset('js/scripts.js') }}"></script>
-    <script src="{{ asset('js/custom.js') }}"></script>
+    {{-- <script src="{{ asset('js/stisla.js') }}"></script>
+    <script src="{{ asset('js/scripts.js') }}"></script> --}}
+    {{-- <script src="{{ asset('js/custom.js') }}"></script> --}}
     {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" defer></script> --}}
     </body>
 </html>

@@ -1,16 +1,17 @@
-import api_url from './url'
+import api_url from '../url'
 import axios from 'axios';
-import {headers_auth} from './header';
+import {headers_auth} from '../header';
 
-const url = `${api_url}/api/data/master/jurusan`;
+const url = `${api_url}/api/data/absensi/admin`;
 
 const headers = {
+    'content-type': 'multipart/form-data',
     'Accept': 'application/json',
-    'Content-Type': 'application/json',
     'X-CSRF-TOKEN': csrf_token
 }
 
 const getAll = () => {
+    let urls = `${url}/profile`;
     return axios.get(url,{ headers: headers })
     .then(res => {
         return res.data;
@@ -21,19 +22,7 @@ const getAll = () => {
 }
 
 const create = (data) => {
-    console.log(headers_auth)
     return axios.post(url,data,{ headers: headers_auth})
-    .then(res => {
-        return res;
-    })
-    .catch(function (error) {
-        return error.response.data
-    });
-}
-
-const updates = (data) => {
-    let urls = `${url}/info`;
-    return axios.put(urls,data,{ headers: headers_auth})
     .then(res => {
         return res;
     })
@@ -64,6 +53,30 @@ const destroy = (id) => {
     });
 }
 
+const setActive = (data) => {
+    let urls = `${url}/update/status/aktif`;
+    return axios.post(urls,data,{ headers: headers_auth})
+    .then(res => {
+        return res;
+    })
+    .catch(function (error) {
+        return error.response.data
+    });
+}
+
+const resetPassword = (data) => {
+    let urls = `${url}/update/profile/password`;
+    return axios.post(urls,data,{ headers: headers_auth})
+    .then(res => {
+        return res;
+    })
+    .catch(function (error) {
+        return error.response.data
+    });
+}
+
+
+
 
 
 export{
@@ -71,5 +84,6 @@ export{
     create,
     destroy,
     detail,
-    updates
+    setActive,
+    resetPassword
 }

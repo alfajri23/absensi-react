@@ -14,19 +14,17 @@ import Tables from '../../../components/table/table';
 import { getIdSekolah } from '../../../auth/auth';
 
 
-const JadwalSiswa = () => {
+const JadwalGuru = () => {
 
     let [data, setData] = useState([]);
-    let [rombel, setRombel] = useState([]);
     let [form, setForm] = useState(
         {
             id: '',
             hari: '',
-            role: 'siswa',
+            role: 'guru',
             toleransi: '',
             jam_masuk: '',
             jam_pulang: '',
-            rombel: [],
             keterangan: '',
             id_sekolah: getIdSekolah()
         }
@@ -36,11 +34,10 @@ const JadwalSiswa = () => {
     let formValue = {
         id: '',
         hari: '',
-        role: 'siswa',
+        role: 'guru',
         toleransi: '',
         jam_masuk: '',
         jam_pulang: '',
-        rombel: [],
         keterangan: '',
         id_sekolah: getIdSekolah()
     }
@@ -48,15 +45,13 @@ const JadwalSiswa = () => {
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => {
-        getRombels();
         formValue = {
             id: '',
             hari: '',
-            role: 'siswa',
+            role: 'guru',
             toleransi: '',
             jam_masuk: '',
             jam_pulang: '',
-            rombel: [],
             keterangan: '',
             id_sekolah: getIdSekolah()
         }
@@ -70,21 +65,10 @@ const JadwalSiswa = () => {
         getData();
     },[]);
 
-    const getRombels = async () => {
-        let data = await getRombel();
-
-        let rombel = data.data.map(item => {
-            return {
-              value: item.id,
-              label: item.nama
-            };
-        });
-
-        setRombel(rombel)
-    }
 
     const getData = async () => {
-        let data = await groupByHari('siswa');
+        let data = await groupByHari('guru');
+        //console.log(data.data);
         setData(data.data);
     }
 
@@ -100,7 +84,6 @@ const JadwalSiswa = () => {
     }
 
     const detailData = async (id) => {
-        getRombels();
         let res = await detail(id);
 
         if(res.status == 200){
@@ -114,12 +97,6 @@ const JadwalSiswa = () => {
                 jam_pulang: res.data.data.jam_pulang,
                 toleransi: res.data.data.toleransi,
                 keterangan: res.data.data.keterangan,
-                rombel: [
-                    {
-                        value: res.data.data.rombels[0].id,
-                        label: res.data.data.rombels[0].nama
-                    }  
-                ],
             }
 
             
@@ -134,26 +111,22 @@ const JadwalSiswa = () => {
 
     }
 
-    const handleChangeSelection = () => {
-
-    }
-
     return (
         <LayoutAdmin>
         <div>
             <div className="section-header">
-                <h1>Jadwal Siswa</h1>
+                <h1>Jadwal Guru</h1>
                 <div className="section-header-breadcrumb">
                     <div className="breadcrumb-item active">
                         <Link to="/">Dashboard</Link>
                     </div>
-                    <div className="breadcrumb-item">Jadwal Siswa</div>
+                    <div className="breadcrumb-item">Jadwal Guru</div>
                 </div>
             </div>
 
             <div className="section-header">
-                <Link to="/setting/jadwal-siswa" className="btn btn-primary mx-1">Siswa</Link>
-                <Link to="/setting/jadwal-guru" className="btn btn-light mx-1">Guru</Link>
+                <Link to="/setting/jadwal-siswa" className="btn btn-lighr mx-1">Siswa</Link>
+                <Link to="/setting/jadwal-guru" className="btn btn-primary mx-1">Guru</Link>
             </div>
 
             <div className="">
@@ -171,7 +144,6 @@ const JadwalSiswa = () => {
                                     <th scope="col">Hari</th>
                                     <th scope="col">Jam masuk</th>
                                     <th scope="col">Toleransi</th>
-                                    <th scope="col">Kelas</th>
                                     <th scope="col">Aksi</th>
                                     </tr>
                                 </thead>
@@ -193,20 +165,14 @@ const JadwalSiswa = () => {
                                                 <td> 
                                                 {result.jadwal.map((result,key) => {
                                                     return(
-                                                        <p className="mt-1">{result.toleransi}</p>
+                                                        <p key={key} className="mt-1">{result.toleransi}</p>
                                                     )
                                                 })}
                                                 </td>
 
                                                 <td>{result.jadwal.map((result,key) => {
                                                     return(
-                                                        <p className="mt-1">{result.rombels[0].nama}</p>
-                                                    )
-                                                })}</td>
-
-                                                <td>{result.jadwal.map((result,key) => {
-                                                    return(
-                                                        <p className="mt-1">
+                                                        
                                                         <div key={key} className="btn-group" role="group" aria-label="Basic outlined example">
                                                             <button onClick={()=> detailData(result.id)} type="button" className="btn btn-sm btn-outline-primary">
                                                                 <HiOutlinePencilAlt className="fs-6" />
@@ -215,8 +181,8 @@ const JadwalSiswa = () => {
                                                                 <HiOutlineTrash className="fs-6" />
                                                             </button>
                                                         </div>
-                                                        <br></br>
-                                                        </p>
+                                                        
+                                                        
                                                     )
                                                 })}</td>
 
@@ -241,38 +207,41 @@ const JadwalSiswa = () => {
 
                 <Formik
                 initialValues={form}
-                onSubmit={ (values, { setSubmitting }) => {
+                onSubmit={ async (values, { setSubmitting }) => {
 
                     console.log('data form',values);
 
+                    
+                    let res = await edit ? updates(values.id, values) : create(values);
+                    res = await res;
+
                     //let res = values.rombel.forEach(myFunction);
-                    values.rombel.forEach(myFunction);
+                    // values.rombel.forEach(myFunction);
 
-                    async function myFunction(value, index, array) {
-                        let values_new = {
-                            ...values,
-                            rombel: value.value
-                        }
+                    // async function myFunction(value, index, array) {
+                    //     let values_new = {
+                    //         ...values,
 
-                        console.log('data kirim',values_new);
+                    //     }
+
+                    //     console.log('data kirim',values_new);
                         
-                        let res = await edit ? updates(values_new.id,values_new) : create(values_new);
-                        let done = await res;
-                        console.log(done);
-                    }
-
-
-                    
-                    
-                    
-                    // if(res.status == 200){
-                    //     
-                    //    
-                    // }else{
-                    //     swal("Error", res.message, "warning");
+                    //     let res = await edit ? updates(values_new.id,values_new) : create(values_new);
+                    //     let done = await res;
+                    //     console.log(done);
                     // }
-                    getData();
-                    swal("Good job!", "Sukses", "success");
+
+
+                    
+                    console.log(res);
+                    
+                    if(res.status == 200){
+                        getData();
+                        swal("Good job!", "sukses", "success");  
+                    }else{
+                        swal("Error", res.message, "warning");
+                    }
+                    
                     setShow(false)
 
                 }}
@@ -338,28 +307,6 @@ const JadwalSiswa = () => {
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="rombel">Rombel</label>
-
-                        <Select
-                        placeholder="rombel"
-                        value={values.rombel}
-                        onChange={(option, action) => {
-                            setFieldValue('rombel', option);
-                        }}
-                        isSearchable={true}
-                        options={rombel}
-                        name="rombel"
-                        isMulti
-                        isLoading={false}
-                        loadingMessage={() => "Fetching rombel"}
-                        noOptionsMessage={() => "rombel appears here"}
-                        />
-
-                        {errors.rombel && touched.rombel && errors.rombel}
-
-                    </div>
-
-                    <div className="form-group">
                         <label htmlFor="role">Toleransi</label>
                         <input
                             type="number"
@@ -400,4 +347,4 @@ const JadwalSiswa = () => {
     )
 }
 
-export default JadwalSiswa
+export default JadwalGuru

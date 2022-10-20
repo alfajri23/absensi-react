@@ -14,6 +14,11 @@ import SiswaIndex from './pages/master/siswa/siswa';
 import LiburIndex from './pages/libur/libur';
 import JadwalSiswa from './pages/setting/jadwal/jadwal_siswa';
 import { getToken } from './auth/auth';
+import JadwalGuru from './pages/setting/jadwal/jadwal_guru';
+import IzinSiswa from './pages/izin/izin_siswa';
+import IzinGuru from './pages/izin/izin_guru';
+import ProfilePage from './pages/profile/profile';
+import AdminIndex from './pages/master/admin/admin';
 
 const ProtectedRoute = () => {
     //const roles = localStorage.getItem('access_token');
@@ -46,10 +51,16 @@ const RoutePage = () => {
                     <Route path="/" element={<Home />} />
                     <Route path="/about" element={<About />} />
 
+                    <Route path="/profile" element={<ProfilePage />} />
+
                     <Route path="/setting/libur" element={<LiburIndex />} />
+                    <Route path="/setting/jadwal-siswa" element={<JadwalSiswa />} />
+                    <Route path="/setting/jadwal-guru" element={<JadwalGuru />} />
 
-                    <Route path="/setting/jadwal" element={<JadwalSiswa />} />
+                    <Route path="/izin/siswa" element={<IzinSiswa />} />
+                    <Route path="/izin/guru" element={<IzinGuru />} />
 
+                    <Route path="/master/admin" element={<AdminIndex />} />
                     <Route path="/master/siswa" element={<SiswaIndex />} />
                     <Route path="/master/jurusan" element={<JurusanIndex />} />
                     <Route path="/master/kelas" element={<KelasIndex />} />

@@ -217,7 +217,7 @@ const JurusanIndex = () => {
                 initialValues={form}
                 onSubmit={ async (values, { setSubmitting }) => {
 
-                    let res = edit ? await create(values) : await updates(values);
+                    let res = edit ? await updates(values) : await create(values);
                     
                     
                     if(res.status == 200){

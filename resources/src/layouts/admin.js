@@ -1,7 +1,8 @@
 import React from 'react'
 import SidebarAdmin from '../components/sidebar/sidebar-admin'
-import 'jquery/dist/jquery.min.js';
-import $ from "jquery";
+import { Link } from 'react-router-dom';
+import "../../js/scripts";
+import "../../js/stisla";
 
 const LayoutAdmin = ({children}) => {
   return (
@@ -22,9 +23,9 @@ const LayoutAdmin = ({children}) => {
                             </a>
                             <div className="dropdown-menu dropdown-menu-right">
                                 <div className="dropdown-title">Logged in 5 min ago</div>
-                                <a href="{{route('my.profile')}}" className="dropdown-item has-icon">
+                                <Link to="/profile" className="dropdown-item has-icon">
                                     <i className="far fa-user"></i> Profile
-                                </a>
+                                </Link>
                                 <a href="" className="dropdown-item has-icon">
                                     <i className="fas fa-cog"></i> Settings
                                 </a>

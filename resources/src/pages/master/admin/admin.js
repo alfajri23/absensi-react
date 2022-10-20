@@ -1,10 +1,9 @@
 import React, {useEffect, useState} from 'react'
 import { Link } from 'react-router-dom'
-import {HiOutlinePencilAlt , HiOutlineTrash, HiOutlinePlusCircle} from 'react-icons/hi';
+import {HiOutlinePencilAlt , HiOutlineTrash, HiOutlinePlusCircle, HiOutlineKey} from 'react-icons/hi';
 import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
-import { Formik, Field } from 'formik';
-import { getAll, setActive, create, destroy, detail, updates } from '../../../api/api_tahunajar'
+import { Formik } from 'formik';
+import { getAll, create, destroy, detail, setActive, resetPassword } from '../../../api/master/api_admin'
 import swal from 'sweetalert';
 
 import LayoutAdmin from '../../../layouts/admin';
@@ -12,23 +11,27 @@ import Tables from '../../../components/table/table';
 import { getIdSekolah } from '../../../auth/auth';
 
 
-
-const TahunAjarIndex = () => {
+const AdminIndex = () => {
 
     let [data, setData] = useState([]);
     let [form, setForm] = useState(
         {
             id: '',
             nama: '',
-            semester: '',
-            id_sekolah: getIdSekolah() 
+            email: '',
+            file:'',
+            id_sekolah: getIdSekolah()
         }
     );
+
     let [edit, setEdit] = useState(false);
     
     let formValue = {
         id: '',
-        nama: ''
+        nama: '',
+        email: '',
+        file:'',
+        id_sekolah: getIdSekolah()
     }
 
     const [show, setShow] = useState(false);
@@ -37,8 +40,9 @@ const TahunAjarIndex = () => {
         formValue = {
             id: '',
             nama: '',
-            semester: '',
-            id_sekolah: getIdSekolah() 
+            email: '',
+            file:'',
+            id_sekolah: getIdSekolah()
         }
 
         setEdit(false);
@@ -55,54 +59,109 @@ const TahunAjarIndex = () => {
     const getData = async () => {
         let data = await getAll();
         setData(data.data);
-        console.log(data.data);
     }
 
     const deleteData = async (id) => {
-        let res = await destroy(id);
 
-        if(res.status == 200){
-            getData();
-            swal("Good job!", "Sukses", "success");
-        }else{
-            swal("Error", res.message, "warning");
-        }
+        swal({
+            title: "Hapus ?",
+            text: "Yakin unutk menghapus ini ?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then(async (willDelete) => {
+            if (willDelete) {
+                let res = await destroy(id);
+
+                if(res.status == 200){
+                    getData();
+                    swal("Good job!", "Sukses", "success");
+                }else{
+                    swal("Error", res.message, "warning");
+                }
+            } else {
+              swal("Data aman");
+            }
+        });
+
+        
     }
 
     const detailData = async (id) => {
         let res = await detail(id);
 
         if(res.status == 200){
-            console.log(res.data.data);
-
             formValue ={
                 ...formValue,
                 id : res.data.data.id,
-                nama: res.data.data.tahun_ajaran,
-                id_sekolah: getIdSekolah() 
+                nama: res.data.data.nama,
+                email: res.data.data.email,
+                password: ''
             }
 
             setEdit(true);
-            setForm(formValue);
             setShow(true);
+            setForm(formValue);
         }else{
             swal("Error", res.message, "warning");
         }
 
     }
 
-    const setAktif = async (id) => {
-        console.log(id)
-        let res = await setActive(id);
+    const setAktif = async (id,value) => {
+        
+        let res = await setActive({
+            id: id,
+            status: value
+        });
 
         if(res.status == 200){
             getData();
-            swal("Good job!", "Sukses", "success");
+            swal("Good job!", res.data.message, "success");
         }else{
             swal("Error", res.message, "warning");
         }
 
     }
+
+    const resetPass = async (id) => {
+
+        swal("Apakah anda yakin untuk mereset password ?", {
+            buttons: {
+              cancel: "Batal",
+              catch: {
+                text: "Reset",
+                value: "catch",
+              },
+            },
+          })
+          .then( async(value) => {
+            switch (value) {          
+              case "catch":
+                let res = await resetPassword({
+                    id: id,
+                    password: 12345
+                });
+        
+                if(res.status == 200){
+                    getData();
+                    swal("Good job!", "Password baru admin : 12345", "success");
+                }else{
+                    swal("Error", res.message, "warning");
+                }
+
+                
+                break;
+           
+              default:
+                swal("Tidak ada perubahan");
+            }
+        });
+
+        
+    }
+
 
     const columnFormat = {
         action: (cell, row) => {
@@ -114,16 +173,19 @@ const TahunAjarIndex = () => {
                     <button onClick={()=> deleteData(cell)} type="button" className="btn btn-sm btn-outline-danger">
                         <HiOutlineTrash className="fs-6" />
                     </button>
+                    <button onClick={()=> resetPass(cell)} type="button" className="btn btn-sm btn-outline-warning">
+                        <HiOutlineKey className="fs-6" />
+                    </button>
                 </div>
             )
         },
         status: (cell, row) => {
             switch(cell) {
-                case 'Aktif':
+                case 1:
                   return(
                     //<span key={row.id} className="badge text-bg-success">Aktif</span>
-                    <div key={cell} class="form-check form-switch" onChange={()=>setAktif(row.id)}>
-                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked/>
+                    <div key={cell} class="form-check form-switch" onChange={()=>setAktif(row.id, 0)}>
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" defaultChecked={true}/>
                         <label class="form-check-label" for="flexSwitchCheckChecked">Aktif</label>
                     </div>
                   )
@@ -131,13 +193,14 @@ const TahunAjarIndex = () => {
                 default:
                     return (
                     //<span key={cell} className="badge text-bg-danger">Tidak aktif</span>
-                    <div key={cell} class="form-check form-switch" onChange={()=>setAktif(row.id)}>
-                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked"/>
+                    <div key={cell} class="form-check form-switch" onChange={()=>setAktif(row.id, 1)}>
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" defaultChecked={false}/>
                         <label class="form-check-label" for="flexSwitchCheckChecked">Tidak Aktif</label>
                     </div>
                 )
             }
-        }
+        },
+
     }
 
     const column = [
@@ -147,13 +210,13 @@ const TahunAjarIndex = () => {
             sort: true
         },
         {
-            dataField: 'tahun_ajaran',
+            dataField: 'nama',
             text: 'Nama',
             sort: true
         },
         {
-            dataField: 'semester',
-            text: 'Nama',
+            dataField: 'email',
+            text: 'Email',
             sort: true
         },
         {
@@ -171,17 +234,16 @@ const TahunAjarIndex = () => {
     ]
 
 
-
     return (
         <LayoutAdmin>
         <div>
             <div className="section-header">
-                <h1>Tahun Ajar</h1>
+                <h1>Admin</h1>
                 <div className="section-header-breadcrumb">
                     <div className="breadcrumb-item active">
                         <Link to="/">Dashboard</Link>
                     </div>
-                    <div className="breadcrumb-item">Tahun Ajar</div>
+                    <div className="breadcrumb-item">Transaksi</div>
                 </div>
             </div>
 
@@ -192,48 +254,7 @@ const TahunAjarIndex = () => {
                             <button onClick={handleShow} className="btn btn-success">
                                 <HiOutlinePlusCircle className="fs-6 mr-1" /> Tambah
                             </button>
-
                             <Tables data={data} column={column} columnFormats={columnFormat}/>
-
-                            {/* <table id="example" className="table table-hover table-striped table-bordered">
-                                <thead>
-                                    <tr>
-                                    <th>ID</th>
-                                    <th>Nama</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-
-                                {data.map((result,key) => {
-                                    return (
-                                        <tr key={key}>
-                                        <td width={`5%`}>{result.id}</td>
-                                        <td width={`50%`}>{result.tahun_ajaran}</td>
-                                        <td  width={`10%`}>
-                                            {
-                                                setStatus(result.status)
-                                            }
-                                            
-                                        </td>
-                                        <td width={`10%`}>
-                                            <div className="btn-group" role="group" aria-label="Basic outlined example">
-                                                <button onClick={()=> detailData(result.id)} type="button" className="btn btn-sm btn-outline-primary">
-                                                    <HiOutlinePencilAlt className="fs-6" />
-                                                </button>
-                                                <button onClick={()=> deleteData(result.id)} type="button" className="btn btn-sm btn-outline-danger">
-                                                    <HiOutlineTrash className="fs-6" />
-                                                </button>
-                                                
-                                            </div>
-                                        </td>
-                                        </tr>
-                                    )
-                                })}  
-                                </tbody>
-                            </table> */}
-
                         </div>
                     </div>
                 </div>
@@ -242,7 +263,7 @@ const TahunAjarIndex = () => {
 
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
-                <Modal.Title>Tambah Tahun Ajar</Modal.Title>
+                <Modal.Title>Tambah Admin</Modal.Title>
             </Modal.Header>
             <Modal.Body>
 
@@ -250,16 +271,15 @@ const TahunAjarIndex = () => {
                 initialValues={form}
                 onSubmit={ async (values, { setSubmitting }) => {
 
-                    console.log(values);
-
-                    let new_values = {
-                        ...values,
-                        id_sekolah: getIdSekolah(),
-                        nama: `${values.nama}${values.semester}`
-                    }
-
-
-                    let res = edit ? await updates(new_values) : await create(new_values);
+                    const formData = new FormData();
+                    formData.append('id', values.id);
+                    formData.append('nama', values.nama);
+                    formData.append('email', values.email);
+                    formData.append('password', values.password);
+                    formData.append('file', values.file);
+                    formData.append('id_sekolah', values.id_sekolah);
+                    
+                    let res = await create(formData);
                     
                     
                     if(res.status == 200){
@@ -281,11 +301,30 @@ const TahunAjarIndex = () => {
                     handleBlur,
                     handleSubmit,
                     isSubmitting,
+                    setFieldValue
                     /* and other goodies */
                 }) => (
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <label htmlFor="role">Tahun Ajaran</label>
+                        <label htmlFor="role">File</label>
+                        <input
+                            type="file"
+                            name="file"
+                            className="form-control" 
+                            //onChange={handleChange}
+                            onBlur={handleBlur}
+                            // value={file}
+                            onChange={(event) => {
+                                console.log(event.currentTarget.files)
+                                setFieldValue("file", event.currentTarget.files[0]);
+                                setFile(event.currentTarget.files[0]);
+                            }}
+                        />
+                        {errors.file && touched.file && errors.file}
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="role">Nama</label>
                         <input
                             type="nama"
                             name="nama"
@@ -298,14 +337,33 @@ const TahunAjarIndex = () => {
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="role">Semester</label>
-                        <Field name="semester" as="select" id="semester" className="form-select">
-                            <option value="">-- Pilih --</option>
-                            <option value="1">Ganjil</option>
-                            <option value="2">Genap</option>
-                        </Field>
-                        {errors.semester && touched.semester && errors.semester}
+                        <label htmlFor="role">Email</label>
+                        <input
+                            type="email"
+                            name="email"
+                            className="form-control" 
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            value={values.email}
+                        />
+                        {errors.email && touched.email && errors.email}
                     </div>
+
+                    { !edit ? 
+                        <div className="form-group">
+                        <label htmlFor="role">Password</label>
+                        <input
+                            type="password"
+                            name="password"
+                            className="form-control" 
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            value={values.password}
+                        />
+                        {errors.password && touched.password && errors.password}
+                    </div>
+                    : ''}
+                    
 
                     <button type="submit" className="btn btn-nu btn-lg btn-block" disabled={isSubmitting}>
                         Submit
@@ -321,4 +379,4 @@ const TahunAjarIndex = () => {
     )
 }
 
-export default TahunAjarIndex
+export default AdminIndex

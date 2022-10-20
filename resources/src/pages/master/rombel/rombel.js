@@ -5,34 +5,11 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { Formik } from 'formik';
 import { getAll, create, destroy, detail, updates } from '../../../api/api_rombel'
-import { getAll as getAllJurusan } from '../../../api/api_jurusan'
+import { getAll as getAllKelas } from '../../../api/api_kelas'
 import swal from 'sweetalert';
 
-
-import 'jquery/dist/jquery.min.js';
-import $ from 'jquery';
 import LayoutAdmin from '../../../layouts/admin';
 import Tables from '../../../components/table/table';
-
-require("datatables.net-bs4/css/dataTables.bootstrap4.min.css");
-require("datatables.net-buttons-bs4");
-require("datatables.net-buttons/js/buttons.html5");
-require("datatables.net-buttons/js/buttons.print");
-require("datatables.net-buttons/js/buttons.colVis");
-
-// require("datatables.net-responsive");
-// require("datatables.net-responsive-bs4");
-// require("datatables.net-select");
-// require("datatables.net-select-bs4");
-
-// //jQuery libraries
-
- 
-// //Datatable Modules
-//import "datatables.net/js/dataTables.dataTables"
-// import "datatables.net-dt/css/jquery.dataTables.min.css"
-
-
 
 const RombelIndex = () => {
 
@@ -41,16 +18,16 @@ const RombelIndex = () => {
         {
             id: '',
             nama: '',
-            id_jurusan: '',
+            id_kelas: '',
         }
     );
-    let [jurusan, setJurusan] = useState([]);
+    let [kelas, setKelas] = useState([]);
     let [edit, setEdit] = useState(false);
     
     let formValue = {
         id: '',
         nama: '',
-        id_jurusan: '',
+        id_kelas: '',
     }
 
     const [show, setShow] = useState(false);
@@ -59,10 +36,10 @@ const RombelIndex = () => {
         formValue = {
             id: '',
             nama: '',
-            id_jurusan: '',
+            id_kelas: '',
         }
 
-        getDataJurusan();
+        getDataKelas();
         setEdit(false);
         setForm(formValue);
         setShow(true);
@@ -98,12 +75,12 @@ const RombelIndex = () => {
                 ...formValue,
                 id : res.data.data.id,
                 nama: res.data.data.nama,
-                id_jurusan: res.data.data.id_jurusan,
+                id_kelas: res.data.data.id_kelas,
             }
 
             setEdit(true);
             setShow(true);
-            getDataJurusan();
+            getDataKelas();
             setForm(formValue);
         }else{
             swal("Error", res.message, "warning");
@@ -111,9 +88,9 @@ const RombelIndex = () => {
 
     }
 
-    const getDataJurusan = async () => {
-        let data = await getAllJurusan();
-        setJurusan(data.data);
+    const getDataKelas = async () => {
+        let data = await getAllKelas();
+        setKelas(data.data);
     }
 
     const columnFormat = {
@@ -253,6 +230,7 @@ const RombelIndex = () => {
                 <Formik
                 initialValues={form}
                 onSubmit={ async (values, { setSubmitting }) => {
+                    console.log(values);
                     
                     let res = edit ? await create(values) : await create(values);
                     
@@ -293,26 +271,17 @@ const RombelIndex = () => {
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="role">Jurusan</label>
+                        <label htmlFor="role">Kelas</label>
                         <select className="form-control" onChange={handleChange}
-                            onBlur={handleBlur} name="id_jurusan" value={values.id_jurusan}>
+                            onBlur={handleBlur} name="id_kelas" value={values.id_kelas}>
                             <option value=''>Pilih</option>
-                            { jurusan.map((result,key) => {
+                            { kelas.map((result,key) => {
                                 return (  
-                                    <option key={key} value={result.id}>{result.nama}</option>
+                                    <option key={key} value={result.id}>{result.nama} {result.jurusan}</option>
                                     )
                             })}   
                         </select>
-                        
-                        {/* <input
-                            type="id_jurusan"
-                            name="id_jurusan"
-                            className="form-control" 
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            value={values.id_jurusan}
-                        /> */}
-                        {errors.id_jurusan && touched.id_jurusan && errors.id_jurusan}
+                        {errors.id_kelas && touched.id_kelas && errors.id_kelas}
                     </div>
 
                     <button type="submit" className="btn btn-nu btn-lg btn-block" disabled={isSubmitting}>

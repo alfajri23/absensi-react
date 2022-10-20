@@ -2,7 +2,7 @@ import api_url from './url'
 import axios from 'axios';
 import {headers_auth} from './header';
 
-const url = `${api_url}/api/data/master/tahun_ajaran/sekolah/tahun_ajaran`;
+const url = `${api_url}/api/data/master/tahun_ajaran`;
 
 const headers = {
     'Accept': 'application/json',
@@ -63,6 +63,18 @@ const destroy = (id) => {
     });
 }
 
+const setActive = (id) => {
+    let urls = `${url}/set-aktif/${id}`;
+    console.log(headers_auth)
+    return axios.put(urls,{ headers: headers_auth})
+    .then(res => {
+        return res;
+    })
+    .catch(function (error) {
+        return error.response.data
+    });
+}
+
 
 
 export{
@@ -70,5 +82,6 @@ export{
     create,
     destroy,
     detail,
-    updates
+    updates,
+    setActive
 }

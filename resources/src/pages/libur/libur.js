@@ -3,37 +3,12 @@ import { Link } from 'react-router-dom'
 import {HiOutlinePencilAlt , HiOutlineTrash, HiOutlinePlusCircle} from 'react-icons/hi';
 import { AiOutlineCloudSync } from 'react-icons/ai';
 import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
 import { Formik } from 'formik';
 import { getAll, create, destroy, detail, updates, sync } from '../../api/api_libur'
 import swal from 'sweetalert';
 
-
-import 'jquery/dist/jquery.min.js';
-import $ from 'jquery';
 import LayoutAdmin from '../../layouts/admin';
-import Table from '../../components/table/table';
 import Tables from '../../components/table/table';
-import Component from '../../components/table/table-2';
-
-require("datatables.net-bs4/css/dataTables.bootstrap4.min.css");
-require("datatables.net-buttons-bs4");
-require("datatables.net-buttons/js/buttons.html5");
-require("datatables.net-buttons/js/buttons.print");
-require("datatables.net-buttons/js/buttons.colVis");
-
-// require("datatables.net-responsive");
-// require("datatables.net-responsive-bs4");
-// require("datatables.net-select");
-// require("datatables.net-select-bs4");
-
-// //jQuery libraries
-
- 
-// //Datatable Modules
-//import "datatables.net/js/dataTables.dataTables"
-// import "datatables.net-dt/css/jquery.dataTables.min.css"
-
 
 
 const LiburIndex = () => {

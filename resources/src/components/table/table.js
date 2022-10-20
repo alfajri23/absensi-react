@@ -31,7 +31,7 @@ const Tables = ({data ,column, columnFormats}) => {
               
 
               <hr />
-              <BootstrapTable pagination={ paginationFactory() }
+              <BootstrapTable  pagination={ paginationFactory() }
                 { ...props.baseProps }
               />
             </div>

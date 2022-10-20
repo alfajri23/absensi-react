@@ -43,8 +43,8 @@ const create = (data) => {
     });
 }
 
-const updates = (data) => {
-    let urls = `${url}/info`;
+const updates = (id,data) => {
+    let urls = `${url}/${id}`;
     return axios.put(urls,data,{ headers: headers_auth})
     .then(res => {
         return res;

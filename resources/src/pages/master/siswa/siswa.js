@@ -8,30 +8,8 @@ import { getAll, create, destroy, detail, updates } from '../../../api/master/ap
 import { getAll as getAllJurusan } from '../../../api/api_jurusan'
 import swal from 'sweetalert';
 
-
-import 'jquery/dist/jquery.min.js';
-import $ from 'jquery';
 import LayoutAdmin from '../../../layouts/admin';
 import Tables from '../../../components/table/table';
-
-require("datatables.net-bs4/css/dataTables.bootstrap4.min.css");
-require("datatables.net-buttons-bs4");
-require("datatables.net-buttons/js/buttons.html5");
-require("datatables.net-buttons/js/buttons.print");
-require("datatables.net-buttons/js/buttons.colVis");
-
-// require("datatables.net-responsive");
-// require("datatables.net-responsive-bs4");
-// require("datatables.net-select");
-// require("datatables.net-select-bs4");
-
-// //jQuery libraries
-
- 
-// //Datatable Modules
-//import "datatables.net/js/dataTables.dataTables"
-// import "datatables.net-dt/css/jquery.dataTables.min.css"
-
 
 
 const SiswaIndex = () => {
