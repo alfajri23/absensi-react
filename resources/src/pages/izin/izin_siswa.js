@@ -61,8 +61,11 @@ const IzinSiswa = () => {
 
     const getData = async (mount,year) => {
         let data = await getIzinSiswa(mount,year);
-        console.log(data.data);
-        setData(data.data);
+        if(data.data != null){
+            setData(data.data);
+        }else{
+            swal("Error", data.message, "warning");
+        }
     }
 
     const deleteData = async (id) => {

@@ -68,8 +68,13 @@ const JadwalGuru = () => {
 
     const getData = async () => {
         let data = await groupByHari('guru');
-        //console.log(data.data);
-        setData(data.data);
+        
+        if(data.data != null){
+            setData(data.data);
+            console.log(data.data);
+        }else{
+            swal("Error", data.message, "warning");
+        }
     }
 
     const deleteData = async (id) => {

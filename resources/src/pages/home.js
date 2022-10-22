@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom'
 import LayoutAdmin from "../layouts/admin";
+import { HiUsers, HiUserGroup, HiClipboardCopy } from 'react-icons/hi';
 
 const Home = () => {
 
@@ -65,26 +66,75 @@ const Home = () => {
                     <div className="breadcrumb-item active">
                         <Link to="/">Dashboard</Link>
                     </div>
-                    <div className="breadcrumb-item">Transaksi</div>
                 </div>
             </div>
 
             <div className="row">
+
                 <div className="col-lg-3 col-md-6 col-sm-6 col-12">
                     <div className="card card-statistic-1">
-                        <div className="card-icon bg-primary">
-                            <i className="fas fa-user-shield"></i>
+                        <div className="card-icon bg-light">
+                            <HiUsers className="fs-1"/>
                         </div>
                         <div className="card-wrap">
                             <div className="card-header">
-                                <h4>Total Admin</h4>
+                                <h4>Total Guru</h4>
                             </div>
                             <div className="card-body">
-                            
+                                12
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <div className="col-lg-3 col-md-6 col-sm-6 col-12">
+                    <div className="card card-statistic-1">
+                        <div className="card-icon bg-warning">
+                            <HiUserGroup className="fs-1 text-white"/>
+                        </div>
+                        <div className="card-wrap">
+                            <div className="card-header">
+                                <h4>Total Siswa</h4>
+                            </div>
+                            <div className="card-body">
+                                12
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="col-lg-3 col-md-6 col-sm-6 col-12">
+                    <div className="card card-statistic-1">
+                        <div className="card-icon bg-info">
+                            <HiClipboardCopy className="fs-1 text-white"/>
+                        </div>
+                        <div className="card-wrap">
+                            <div className="card-header pt-3 px-0">
+                                <h4>Pengajuan ijin Guru Hari ini</h4>
+                            </div>
+                            <div className="card-body">
+                                12
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="col-lg-3 col-md-6 col-sm-6 col-12">
+                    <div className="card card-statistic-1">
+                        <div className="card-icon bg-light">
+                            <HiUsers className="fs-1"/>
+                        </div>
+                        <div className="card-wrap">
+                            <div className="card-header pt-3 px-0">
+                                <h4>Pengajuan ijin Siswa Hari ini</h4>
+                            </div>
+                            <div className="card-body">
+                                12
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
 

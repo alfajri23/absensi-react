@@ -1,7 +1,7 @@
 import $ from "jquery"
 import * as jQuery from "jquery"
 //import Chart from "chart.js"
-import Dropzone from "dropzone"
+//import Dropzone from "dropzone"
 import CodeMirror from "codemirror"
 
 // ChartJS
@@ -24,9 +24,9 @@ import CodeMirror from "codemirror"
 // }
 
 // DropzoneJS
-if(window.Dropzone) {
-  Dropzone.autoDiscover = false;
-}
+// if(window.Dropzone) {
+//   Dropzone.autoDiscover = false;
+// }
 
 // Basic confirm box
 $('[data-confirm]').each(function() {
@@ -344,23 +344,23 @@ $(function() {
   //   });
   // }
 
-  $(".notification-toggle").dropdown();
-  $(".notification-toggle").parent().on('shown.bs.dropdown', function() {
-    $(".dropdown-list-icons").niceScroll({
-      cursoropacitymin: .3,
-      cursoropacitymax: .8,
-      cursorwidth: 7
-    });
-  });
+  // $(".notification-toggle").dropdown();
+  // $(".notification-toggle").parent().on('shown.bs.dropdown', function() {
+  //   $(".dropdown-list-icons").niceScroll({
+  //     cursoropacitymin: .3,
+  //     cursoropacitymax: .8,
+  //     cursorwidth: 7
+  //   });
+  // });
 
-  $(".message-toggle").dropdown();
-  $(".message-toggle").parent().on('shown.bs.dropdown', function() {
-    $(".dropdown-list-message").niceScroll({
-      cursoropacitymin: .3,
-      cursoropacitymax: .8,
-      cursorwidth: 7
-    });
-  });
+  // $(".message-toggle").dropdown();
+  // $(".message-toggle").parent().on('shown.bs.dropdown', function() {
+  //   $(".dropdown-list-message").niceScroll({
+  //     cursoropacitymin: .3,
+  //     cursoropacitymax: .8,
+  //     cursorwidth: 7
+  //   });
+  // });
 
   if($(".chat-content").length) {
     $(".chat-content").niceScroll({

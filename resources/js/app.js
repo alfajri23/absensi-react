@@ -1,3 +1,3 @@
-require('./bootstrap');
+//require('./bootstrap');
 
 require('../src/index.js');

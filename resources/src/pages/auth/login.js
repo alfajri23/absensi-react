@@ -14,16 +14,13 @@ const Login = () => {
             <div className="section">
                 <div className="container mt-5">
                     <div className="row">
-                        <div className="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4">
-                            
-                            <div className="login-brand mt-0">
-                                <img src="" alt="logo" width="250"
-                                    className="rounded-circle"/>
-                            </div>
+                        <div className="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4">      
+
+                            <h3 className="text-center mb-4">Absensi</h3>
 
                             <div className="card card-success">
                                 <div className="card-header">
-                                    <h4 className="text-nu">Login</h4>
+                                    <h4 className="text-nu">Login </h4>
                                 </div>
 
                                 <div className="card-body">
@@ -32,7 +29,7 @@ const Login = () => {
                                     initialValues={{ password: "", username: "", role: "", id_sekolah: 1 }}
                                     onSubmit={ async (values) => {
                                         let res = await login(values);   
-                                        console.log(res)
+                                        
 
                                         if(res.status){
                                             // localStorage.setItem('id',res.data.id);
@@ -66,6 +63,7 @@ const Login = () => {
 
                                     }}
                                 >
+                                    {({ isSubmitting }) => (
                                     <Form>
 
                                         <div className="form-group">
@@ -91,13 +89,18 @@ const Login = () => {
                                         </div>
 
                                         <div className="form-group">
-                                            <button type="submit" className="btn btn-nu btn-lg btn-block" id="btnLogin"
-                                            >
-                                                Login
+                                            <button type="submit" className="btn btn-nu btn-lg btn-block" disabled={isSubmitting}>
+                                                { isSubmitting ? 
+                                                <>
+                                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                                <span class="sr-only">Loading...</span>
+                                                </>
+                                                 : 'Login'}
                                             </button>
                                         </div>
 
                                     </Form>
+                                    )}
                                 </Formik>
 
                                 </div>

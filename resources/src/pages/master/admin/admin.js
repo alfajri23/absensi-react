@@ -9,6 +9,7 @@ import swal from 'sweetalert';
 import LayoutAdmin from '../../../layouts/admin';
 import Tables from '../../../components/table/table';
 import { getIdSekolah } from '../../../auth/auth';
+import Table from '../../../components/table/react-table';
 
 
 const AdminIndex = () => {
@@ -50,15 +51,20 @@ const AdminIndex = () => {
         setShow(true);
     }
 
-    
-
     useEffect(() => {
         getData();
     },[]);
 
     const getData = async () => {
         let data = await getAll();
-        setData(data.data);
+
+        if(data.data != null){
+            setData(data.data);
+            console.log(data.data);
+        }else{
+            swal("Error", data.message, "warning");
+        }
+ 
     }
 
     const deleteData = async (id) => {
@@ -163,39 +169,107 @@ const AdminIndex = () => {
     }
 
 
+    // const columnFormat = {
+    //     action: (cell, row) => {
+    //         return(
+    //             <div key={cell} className="btn-group" role="group" aria-label="Basic outlined example">
+    //                 <button onClick={()=> detailData(cell)} type="button" className="btn btn-sm btn-outline-primary">
+    //                     <HiOutlinePencilAlt className="fs-6" />
+    //                 </button>
+    //                 <button onClick={()=> deleteData(cell)} type="button" className="btn btn-sm btn-outline-danger">
+    //                     <HiOutlineTrash className="fs-6" />
+    //                 </button>
+    //                 <button onClick={()=> resetPass(cell)} type="button" className="btn btn-sm btn-outline-warning">
+    //                     <HiOutlineKey className="fs-6" />
+    //                 </button>
+    //             </div>
+    //         )
+    //     },
+    //     status: (cell, row) => {
+    //         switch(cell) {
+    //             case 1:
+    //               return(
+    //                 <div key={row.id} className="form-check form-switch" onChange={()=>setAktif(row.id, 0)}>
+    //                     <input className="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" defaultChecked={true}/>
+    //                     <label className="form-check-label" htmlFor="flexSwitchCheckChecked">Aktif</label>
+    //                 </div>
+    //               )
+    //               break;
+    //             default:
+    //                 return (
+    //                 <div key={row.id} className="form-check form-switch" onChange={()=>setAktif(row.id, 1)}>
+    //                     <input className="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" defaultChecked={false}/>
+    //                     <label className="form-check-label" htmlFor="flexSwitchCheckChecked">Tidak Aktif</label>
+    //                 </div>
+    //             )
+    //         }
+    //     },
+
+    // }
+
+    // const column = [
+    //     {
+    //         isKeyField: true,
+    //         dataField: 'id',
+    //         text: 'Id',
+    //         sort: true
+    //     },
+    //     {
+    //         dataField: 'nama',
+    //         text: 'Nama',
+    //         sort: true
+    //     },
+    //     {
+    //         dataField: 'email',
+    //         text: 'Email',
+    //         sort: true
+    //     },
+    //     {
+    //         dataField: 'status',
+    //         text: 'Status',
+    //         sort: true,
+    //         formatter: columnFormat.status
+    //     },
+    //     {
+    //         dataField: 'id',
+    //         text: 'Action',
+    //         sort: true,
+    //         formatter: columnFormat.action
+    //     },
+    // ]
+
     const columnFormat = {
-        action: (cell, row) => {
+        action: ({value, row}) => {
             return(
-                <div key={cell} className="btn-group" role="group" aria-label="Basic outlined example">
-                    <button onClick={()=> detailData(cell)} type="button" className="btn btn-sm btn-outline-primary">
-                        <HiOutlinePencilAlt className="fs-6" />
+                <div key={value} className="btn-group" role="group" aria-label="Basic outlined example">
+                    <button onClick={()=> detailData(row.original.id)
+                    } type="button" className="btn btn-sm btn-outline-primary">
+                        <HiOutlinePencilAlt className="fs-6" />{value}
                     </button>
-                    <button onClick={()=> deleteData(cell)} type="button" className="btn btn-sm btn-outline-danger">
+                    <button onClick={()=> deleteData(row.original.id)} type="button" className="btn btn-sm btn-outline-danger">
                         <HiOutlineTrash className="fs-6" />
                     </button>
-                    <button onClick={()=> resetPass(cell)} type="button" className="btn btn-sm btn-outline-warning">
+                    <button onClick={()=> resetPass(row.original.id)} type="button" className="btn btn-sm btn-outline-warning">
                         <HiOutlineKey className="fs-6" />
                     </button>
                 </div>
             )
         },
-        status: (cell, row) => {
-            switch(cell) {
+        status: ({value, row}) => {
+            switch(value) {
                 case 1:
                   return(
-                    //<span key={row.id} className="badge text-bg-success">Aktif</span>
-                    <div key={cell} class="form-check form-switch" onChange={()=>setAktif(row.id, 0)}>
-                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" defaultChecked={true}/>
-                        <label class="form-check-label" for="flexSwitchCheckChecked">Aktif</label>
+                    <div key={row.original.id} className="form-check form-switch" onChange={()=>setAktif(row.original.id, 0)}>
+                        <input className="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" defaultChecked={true}/>
+                        <label className="form-check-label" htmlFor="flexSwitchCheckChecked">Aktif {value}</label>
                     </div>
                   )
                   break;
                 default:
                     return (
-                    //<span key={cell} className="badge text-bg-danger">Tidak aktif</span>
-                    <div key={cell} class="form-check form-switch" onChange={()=>setAktif(row.id, 1)}>
-                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" defaultChecked={false}/>
-                        <label class="form-check-label" for="flexSwitchCheckChecked">Tidak Aktif</label>
+                    <div key={row.original.id} className="form-check form-switch" onChange={()=>setAktif(row.original.id, 1)}>
+                        <input className="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" defaultChecked={false}/>
+                        <label className="form-check-label" htmlFor="flexSwitchCheckChecked">Tidak Aktif</label>
                     </div>
                 )
             }
@@ -203,35 +277,62 @@ const AdminIndex = () => {
 
     }
 
+    // const columns = useMemo(
+    //     () => [
+    //         {
+    //             accessor: 'id',
+    //             Header: 'Id',
+    //         },
+    //         {
+    //             accessor: 'nama',
+    //             Header: 'Nama',
+                
+    //         },
+    //         {
+    //             accessor: 'email',
+    //             Header: 'Email',
+                
+    //         },
+    //         {
+    //             accessor: 'status',
+    //             Header: 'Status',
+    //             Cell: columnFormat.status
+    //         },
+    //         {
+    //             accessor: 'id',
+    //             Header: 'Action',
+    //             Cell: columnFormat.action
+    //         },
+    //     ],[]
+    // );
+
     const column = [
         {
-            dataField: 'id',
-            text: 'Id',
-            sort: true
+            accessor: '',
+            Header: 'Id',
         },
         {
-            dataField: 'nama',
-            text: 'Nama',
-            sort: true
+            accessor: 'nama',
+            Header: 'Nama',
+            
         },
         {
-            dataField: 'email',
-            text: 'Email',
-            sort: true
+            accessor: 'email',
+            Header: 'Email',
+            
         },
         {
-            dataField: 'status',
-            text: 'Status',
-            sort: true,
-            formatter: columnFormat.status
+            accessor: 'status',
+            Header: 'Status',
+            Cell: columnFormat.status
         },
         {
-            dataField: 'id',
-            text: 'Action',
-            sort: true,
-            formatter: columnFormat.action
+            accessor: 'id',
+            Header: 'Action',
+            Cell: columnFormat.action
         },
-    ]
+    ];
+
 
 
     return (
@@ -254,7 +355,12 @@ const AdminIndex = () => {
                             <button onClick={handleShow} className="btn btn-success">
                                 <HiOutlinePlusCircle className="fs-6 mr-1" /> Tambah
                             </button>
-                            <Tables data={data} column={column} columnFormats={columnFormat}/>
+                            {/* <Tables data={data} column={column} columnFormats={columnFormat}/> */}
+
+                            <div>
+                                <Table datas={data} column={column} columnFormats={columnFormat}/>
+                            </div>
+                        
                         </div>
                     </div>
                 </div>
@@ -306,7 +412,7 @@ const AdminIndex = () => {
                 }) => (
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <label htmlFor="role">File</label>
+                        <label >File</label>
                         <input
                             type="file"
                             name="file"
@@ -324,7 +430,7 @@ const AdminIndex = () => {
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="role">Nama</label>
+                        <label >Nama</label>
                         <input
                             type="nama"
                             name="nama"
@@ -337,7 +443,7 @@ const AdminIndex = () => {
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="role">Email</label>
+                        <label >Email</label>
                         <input
                             type="email"
                             name="email"
@@ -351,7 +457,7 @@ const AdminIndex = () => {
 
                     { !edit ? 
                         <div className="form-group">
-                        <label htmlFor="role">Password</label>
+                        <label>Password</label>
                         <input
                             type="password"
                             name="password"

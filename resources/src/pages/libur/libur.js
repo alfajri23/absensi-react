@@ -4,11 +4,12 @@ import {HiOutlinePencilAlt , HiOutlineTrash, HiOutlinePlusCircle} from 'react-ic
 import { AiOutlineCloudSync } from 'react-icons/ai';
 import Modal from 'react-bootstrap/Modal';
 import { Formik } from 'formik';
-import { getAll, create, destroy, detail, updates, sync } from '../../api/api_libur'
+import { getAll, create, destroy, detail, updates, sync, statusActive } from '../../api/api_libur'
 import swal from 'sweetalert';
 
 import LayoutAdmin from '../../layouts/admin';
 import Tables from '../../components/table/table';
+import { getIdSekolah } from '../../auth/auth';
 
 
 const LiburIndex = () => {
@@ -59,35 +60,13 @@ const LiburIndex = () => {
 
     const getData = async () => {
         let data = await getAll();
-        setData(data.data);
 
-        // $(document).ready(function () {
-        //     setTimeout(function(){
-        //         let table = $('#example').DataTable({
-        //             pagingType: "full_numbers",
-        //             pageLength: 20,
-        //             processing: true,
-        //             dom: "<'row'<'col-sm-8'><'col-sm-3'f>>" + 
-        //             "<'row'<'col-sm-12'tr>>" +
-        //             "<'row'<'col-sm-4'l><'col-sm-4'i><'col-sm-4'p>>",
-        //             select: {
-        //                 style: "single",
-        //             },
-        //         });
-
-        //         console.log('init table');
-        //     },1000);
-        // });
-
-        // const table = await $('#example').DataTable({
-        //     pagingType: "full_numbers",
-        //     pageLength: 20,
-        //     processing: true,
-        //     dom: "<'row'<'col-sm-8'><'col-sm-3'f>>" + 
-        //     "<'row'<'col-sm-12'tr>>" +
-        //     "<'row'<'col-sm-4'l><'col-sm-4'i><'col-sm-4'p>>",
-        // });
-        
+        if(data.data != null){
+            setData(data.data);
+            console.log(data.data);
+        }else{
+            swal("Error", data.message, "warning");
+        }
     }
 
     const deleteData = async (id) => {
@@ -137,7 +116,7 @@ const LiburIndex = () => {
             if (willDelete) {
                 console.log("dapat")
                 
-                let res = await sync ({id_sekolah: localStorage.getItem('id_sekolah')})
+                let res = await sync ({id_sekolah: getIdSekolah()})
                 console.log(res)
                 if(res.status == 200){
                     getData();
@@ -153,6 +132,24 @@ const LiburIndex = () => {
         });
 
         
+
+    }
+
+    const setAktif = async (id,action) => {
+        let konfirm = {
+            id: id,
+            value : action
+        };
+
+        console.log(konfirm);
+
+        let res = await statusActive(konfirm);
+        if(res.status == 200){
+            getData();
+            swal("Good job!", "Sukses", "success");
+        }else{
+            swal("Error", res.message, "warning");
+        }
 
     }
 
@@ -172,15 +169,23 @@ const LiburIndex = () => {
         },
         status: (cell, row) => {
             switch(cell) {
-                case 'Aktif':
+                case 1:
                   return(
-                    <span key={row.id} className="badge text-bg-success">Aktif</span>
+                    //<span key={row.id} className="badge text-bg-success">Aktif</span>
+                    <div key={cell} class="form-check form-switch" onChange={()=>setAktif(row.id, 0)}>
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked/>
+                        <label class="form-check-label" for="flexSwitchCheckChecked">Aktif</label>
+                    </div>
                   )
                   break;
                 default:
                     return (
-                    <span key={row.id} className="badge text-bg-danger">Tidak aktif</span>
-                    )
+                    //<span key={cell} className="badge text-bg-danger">Tidak aktif</span>
+                    <div key={cell} class="form-check form-switch" onChange={()=>setAktif(row.id, 1)}>
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked"/>
+                        <label class="form-check-label" for="flexSwitchCheckChecked">Tidak Aktif</label>
+                    </div>
+                )
             }
         }
     }
@@ -246,58 +251,8 @@ const LiburIndex = () => {
                                 <AiOutlineCloudSync className="fs-6 mr-1" /> Sinkron Libur Nasional
                             </button>
 
-                            <div>
-                                {/* <table id="example" className="table table-hover table-striped table-bordered"> 
-                                    <thead>
-                                        <tr>
-                                        <th>ID</th>
-                                        <th>Nama</th>
-                                        <th>Tanggal</th>
-                                        <th>Keterangan</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    {data.map((result,key) => {
-                                        return (
-                                            
-                                            <tr key={key}>
-                                                <td width={`5%`}>{result.id}</td>
-                                                <td width={`30%`}>{result.nama}</td>
-                                                <td width={`10%`}>{result.tgl_libur}</td>
-                                                <td width={`30%`}>{result.keterangan}</td>
-                                                <td  width={`10%`}>
-                                                    {
-                                                        setStatus(result.status)
-                                                    }
-                                                    
-                                                </td>
-                                                <td width={`10%`}>
-                                                    <div className="btn-group" role="group" aria-label="Basic outlined example">
-                                                        <button onClick={()=> detailData(result.id)} type="button" className="btn btn-sm btn-outline-primary">
-                                                            <HiOutlinePencilAlt className="fs-6" />
-                                                        </button>
-                                                        <button onClick={()=> deleteData(result.id)} type="button" className="btn btn-sm btn-outline-danger">
-                                                            <HiOutlineTrash className="fs-6" />
-                                                        </button>
-                                                        
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            
-                                        )
-                                    })}  
-                                    </tbody>
-                                </table> */}
-                            </div>
-
                             <div className="mt-4">
                                 <Tables data={data} column={column} columnFormats={columnFormat}/>
-                            </div>
-
-                            <div className="mt-4">
-                                {/* <Component nodes={data} COLUMN={column} width={width} searching={searchTable}/> */}
                             </div>
 
                         </div>

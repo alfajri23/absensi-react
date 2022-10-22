@@ -85,7 +85,11 @@ const JadwalSiswa = () => {
 
     const getData = async () => {
         let data = await groupByHari('siswa');
-        setData(data.data);
+        if(data.data != null){
+            setData(data.data);
+        }else{
+            swal("Error", data.message, "warning");
+        }
     }
 
     const deleteData = async (id) => {
@@ -185,7 +189,7 @@ const JadwalSiswa = () => {
                                                 <td> 
                                                 {result.jadwal.map((result,key) => {
                                                     return(
-                                                        <p className="mt-1">{result.jam_masuk}</p>
+                                                        <div key={key} className="mt-1">{result.jam_masuk}</div>
                                                     )
                                                 })}
                                                 </td>
@@ -193,21 +197,21 @@ const JadwalSiswa = () => {
                                                 <td> 
                                                 {result.jadwal.map((result,key) => {
                                                     return(
-                                                        <p className="mt-1">{result.toleransi}</p>
+                                                        <div key={key} className="mt-1">{result.toleransi}</div>
                                                     )
                                                 })}
                                                 </td>
 
                                                 <td>{result.jadwal.map((result,key) => {
                                                     return(
-                                                        <p className="mt-1">{result.rombels[0].nama}</p>
+                                                        <div key={key} className="mt-1">{result.rombels[0].nama}</div>
                                                     )
                                                 })}</td>
 
                                                 <td>{result.jadwal.map((result,key) => {
                                                     return(
-                                                        <p className="mt-1">
-                                                        <div key={key} className="btn-group" role="group" aria-label="Basic outlined example">
+                                                        <div key={key} className="mt-1">
+                                                        <div className="btn-group" role="group" aria-label="Basic outlined example">
                                                             <button onClick={()=> detailData(result.id)} type="button" className="btn btn-sm btn-outline-primary">
                                                                 <HiOutlinePencilAlt className="fs-6" />
                                                             </button>
@@ -215,8 +219,8 @@ const JadwalSiswa = () => {
                                                                 <HiOutlineTrash className="fs-6" />
                                                             </button>
                                                         </div>
-                                                        <br></br>
-                                                        </p>
+                                                        
+                                                        </div>
                                                     )
                                                 })}</td>
 
@@ -243,9 +247,6 @@ const JadwalSiswa = () => {
                 initialValues={form}
                 onSubmit={ (values, { setSubmitting }) => {
 
-                    console.log('data form',values);
-
-                    //let res = values.rombel.forEach(myFunction);
                     values.rombel.forEach(myFunction);
 
                     async function myFunction(value, index, array) {
@@ -254,25 +255,17 @@ const JadwalSiswa = () => {
                             rombel: value.value
                         }
 
-                        console.log('data kirim',values_new);
                         
                         let res = await edit ? updates(values_new.id,values_new) : create(values_new);
                         let done = await res;
                         console.log(done);
                     }
 
-
+                    setTimeout(function(){ 
+                        getData();
+                        swal("Good job!", "Sukses", "success");
+                    }, 1500);
                     
-                    
-                    
-                    // if(res.status == 200){
-                    //     
-                    //    
-                    // }else{
-                    //     swal("Error", res.message, "warning");
-                    // }
-                    getData();
-                    swal("Good job!", "Sukses", "success");
                     setShow(false)
 
                 }}

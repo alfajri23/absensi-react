@@ -64,9 +64,20 @@ const destroy = (id) => {
     });
 }
 
-const sync = (id) => {
+const sync = (data) => {
     let urls = `${url}/sinkronisasi`;
-    return axios.post(urls,{ headers: headers_auth})
+    return axios.post(urls,data,{ headers: headers_auth})
+    .then(res => {
+        return res;
+    })
+    .catch(function (error) {
+        return error.response.data
+    });
+}
+
+const statusActive = (data) => {
+    let urls = `${url}/update/status`;
+    return axios.post(urls,data,{ headers: headers_auth})
     .then(res => {
         return res;
     })
@@ -83,5 +94,6 @@ export{
     destroy,
     detail,
     updates,
-    sync
+    sync,
+    statusActive
 }

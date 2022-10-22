@@ -14,12 +14,19 @@ const ProfilePage = () => {
 
     const getData = async () => {
         let data = await getProfile();
-        let datas = {
-            nama: data.data.nama,
-            email: data.data.email,
+
+        if(data.data != null){
+            let datas = {
+                nama: data.data.nama,
+                email: data.data.email,
+            }
+            
+            setData(data.data);
+            
+        }else{
+            swal("Error", data.message, "warning");
         }
-        console.log(datas);
-        setData(data.data);
+        
     }
 
     function validateEmail(value) {

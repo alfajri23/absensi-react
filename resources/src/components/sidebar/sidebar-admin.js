@@ -1,14 +1,23 @@
 import React from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import {HiViewGridAdd} from 'react-icons/hi';
+import { useNavigate, Navigate } from 'react-router-dom';
 
 const SidebarAdmin = () => {
+
+    const navigate = useNavigate();
+
+    const logout = () => {
+        console.log('logout')
+        sessionStorage.clear();
+        window.location.reload(false);
+    }
+
   return (
     <div>
 
         <div className="sidebar-brand my-3">
-            <h4 className="text-nu mb-0">NU</h4>
-            <img src="" alt="logo" width="150" className="rounded-circle"/>
+            <h4 className="text-nu mb-0">Absensi</h4>
         </div>
 
         <div className="sidebar-brand sidebar-brand-sm">
@@ -40,7 +49,6 @@ const SidebarAdmin = () => {
                 <span>Izin</span></NavLink>
             </li>
 
-
             <li className="nav-item dropdown">
                 <a className="nav-link has-dropdown" data-toggle="dropdown">
                     <HiViewGridAdd className="mx-2 fs-6"/>
@@ -55,6 +63,11 @@ const SidebarAdmin = () => {
                 </ul>
             </li>
 
+            <li className="">
+                <NavLink className="nav-link" onClick={logout}>
+                    <HiViewGridAdd className="mx-2 fs-6"/>
+                <span>Logout</span></NavLink>{" "}
+            </li>{" "}
 
            
         </ul>

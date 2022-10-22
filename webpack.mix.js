@@ -15,12 +15,12 @@ const mix = require('laravel-mix');
     .react()
     .extract(['react'])
     .js('resources/js/scripts.js', 'public/js')
-    .js('resources/js/stisla.js', 'public/js')
-    .version()
+    .js('resources/js/stisla.js', 'public/js') 
     .postCss('resources/css/app.css', 'public/css', [])
     .postCss('resources/css/components.css', 'public/css', [])
     .postCss('resources/css/custom.css', 'public/css', [])
     .postCss('resources/css/style.css', 'public/css', [])
+    .version()
     ;
 
 // mix.js('resources/js/app.js', 'public/js')

@@ -49,8 +49,13 @@ const JurusanIndex = () => {
 
     const getData = async () => {
         let data = await getAll();
-        setData(data.data);
-        console.log(data.data);
+        
+        if(data.data != null){
+            setData(data.data);
+            console.log(data.data);
+        }else{
+            swal("Error", data.message, "warning");
+        }
     }
 
     const deleteData = async (id) => {

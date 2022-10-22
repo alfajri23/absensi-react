@@ -1,8 +1,8 @@
 import BootstrapTable from 'react-bootstrap-table-next';
-import React, {useEffect, useState} from 'react'
+import React from 'react'
 import paginationFactory from 'react-bootstrap-table2-paginator';
-//import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 import ToolkitProvider, {Search} from 'react-bootstrap-table2-toolkit/dist/react-bootstrap-table2-toolkit';
+
 
 const { SearchBar, ClearSearchButton } = Search;
 
@@ -10,11 +10,11 @@ const Tables = ({data ,column, columnFormats}) => {
 
   let columnFormat = columnFormats;
 
+  
   return(
     <div style={{ marginTop: `-40px`}}>
       <ToolkitProvider
-
-        keyField="id"
+        keyField="email"
         data={ data }
         columns={ column }
         search
@@ -31,7 +31,7 @@ const Tables = ({data ,column, columnFormats}) => {
               
 
               <hr />
-              <BootstrapTable  pagination={ paginationFactory() }
+              <BootstrapTable pagination={ paginationFactory() }
                 { ...props.baseProps }
               />
             </div>
