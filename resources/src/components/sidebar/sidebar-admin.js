@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import {HiViewGridAdd} from 'react-icons/hi';
+import {HiViewGridAdd, HiCalendar, HiOutlineLogout, HiFolder, HiSwitchVertical, HiOutlineClipboardList} from 'react-icons/hi';
 import { useNavigate, Navigate } from 'react-router-dom';
 
 const SidebarAdmin = () => {
@@ -8,7 +8,6 @@ const SidebarAdmin = () => {
     const navigate = useNavigate();
 
     const logout = () => {
-        console.log('logout')
         sessionStorage.clear();
         window.location.reload(false);
     }
@@ -28,14 +27,23 @@ const SidebarAdmin = () => {
             <li className="menu-header">Dashboard</li>
 
             <li className="">
-                <NavLink className="nav-link" to='/'>
+                <NavLink className="nav-link" to='/admin'>
                     <HiViewGridAdd className="mx-2 fs-6"/>
                 <span>Dashboard</span></NavLink>{" "}
             </li>{" "}
 
             <li className="nav-item dropdown">
                 <a className="nav-link has-dropdown" data-toggle="dropdown">{" "}
-                    <HiViewGridAdd className="mx-2 fs-6"/>
+                    <HiOutlineClipboardList className="mx-2 fs-6"/>
+                    <span>Rekap</span></a>
+                <ul className="dropdown-menu">
+                    <li><NavLink className="nav-link" to='/kehadiran/siswa'>Kehadiran</NavLink></li>
+                </ul>
+            </li>
+
+            <li className="nav-item dropdown">
+                <a className="nav-link has-dropdown" data-toggle="dropdown">{" "}
+                    <HiCalendar className="mx-2 fs-6"/>
                     <span>Jadwal</span></a>{" "}
                 <ul className="dropdown-menu">{" "}
                     <li><NavLink className="nav-link" to='/setting/libur'>Setting Libur</NavLink></li>{" "}
@@ -45,17 +53,18 @@ const SidebarAdmin = () => {
 
             <li className="">
                 <NavLink className="nav-link" to='/izin/siswa'>
-                    <HiViewGridAdd className="mx-2 fs-6"/>
+                    <HiSwitchVertical className="mx-2 fs-6"/>
                 <span>Izin</span></NavLink>
             </li>
 
             <li className="nav-item dropdown">
                 <a className="nav-link has-dropdown" data-toggle="dropdown">
-                    <HiViewGridAdd className="mx-2 fs-6"/>
+                    <HiFolder className="mx-2 fs-6"/>
                     <span>Master</span></a>
                 <ul className="dropdown-menu">
                     <li><NavLink className="nav-link" to='/master/admin'>Admin</NavLink></li>
                     <li><NavLink className="nav-link" to='/master/siswa'>Siswa</NavLink></li>
+                    <li><NavLink className="nav-link" to='/master/guru'>Guru</NavLink></li>
                     <li><NavLink className="nav-link" to='/master/jurusan'>Jurusan</NavLink></li>
                     <li><NavLink className="nav-link" to='/master/kelas'>Kelas</NavLink></li>
                     <li><NavLink className="nav-link" to='/master/rombel'>Rombel</NavLink></li>
@@ -65,7 +74,7 @@ const SidebarAdmin = () => {
 
             <li className="">
                 <NavLink className="nav-link" onClick={logout}>
-                    <HiViewGridAdd className="mx-2 fs-6"/>
+                    <HiOutlineLogout className="mx-2 fs-6"/>
                 <span>Logout</span></NavLink>{" "}
             </li>{" "}
 

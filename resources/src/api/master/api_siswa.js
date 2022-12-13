@@ -31,8 +31,8 @@ const create = (data) => {
 }
 
 const updates = (data) => {
-    let urls = `${url}/info`;
-    return axios.put(url,data,{ headers: headers_auth})
+    let urls = `${url}/update_siswa`;
+    return axios.post(urls,data,{ headers: headers_auth})
     .then(res => {
         return res;
     })
@@ -63,6 +63,55 @@ const destroy = (id) => {
     });
 }
 
+const filterTahun = (tahun) => {
+    let urls = `${api_url}/api/data/master/kelas_siswa/profile/tahun/${tahun}`;
+    return axios.get(urls,{ headers: headers_auth})
+    .then(res => {
+        return res;
+    })
+    .catch(function (error) {
+        return error.response.data
+    });
+}
+
+const filterRombelTahun = (id_rombel,tahun) => {
+    let urls = `${api_url}/api/data/master/kelas_siswa/siswa/rombel/${id_rombel}/tahun/${tahun}`;
+    return axios.get(urls,{ headers: headers_auth})
+    .then(res => {
+        return res;
+    })
+    .catch(function (error) {
+        return error.response.data
+    });
+}
+
+const getImportFile = (id_sekolah) => {
+    let urls = `${api_url}/api/data/master/kelas_siswa/file/excel-example/siswa/kelas/${id_sekolah}`;
+    return urls;
+}
+
+const importFile = (data,tahun) => {
+    let urls = `${api_url}/api/data/master/kelas_siswa/file/excel-import/siswa/kelas/tahun/${tahun}`
+    return axios.post(urls,data,{ headers: headers_auth})
+    .then(res => {
+        return res;
+    })
+    .catch(function (error) {
+        return error.response.data
+    });
+}
+
+const resetPass = (id) => {
+    let urls = `${api_url}/api/password/reset-password/siswa/${id}`;
+    return axios.put(urls,{ headers: headers_auth})
+    .then(res => {
+        return res;
+    })
+    .catch(function (error) {
+        return error.response.data
+    });
+}
+
 
 
 export{
@@ -70,5 +119,10 @@ export{
     create,
     destroy,
     detail,
-    updates
+    updates,
+    getImportFile,
+    importFile,
+    resetPass,
+    filterTahun,
+    filterRombelTahun
 }

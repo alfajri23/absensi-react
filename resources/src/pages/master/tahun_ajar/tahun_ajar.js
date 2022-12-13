@@ -2,14 +2,14 @@ import React, {useEffect, useState} from 'react'
 import { Link } from 'react-router-dom'
 import {HiOutlinePencilAlt , HiOutlineTrash, HiOutlinePlusCircle} from 'react-icons/hi';
 import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
 import { Formik, Field } from 'formik';
 import { getAll, setActive, create, destroy, detail, updates } from '../../../api/api_tahunajar'
 import swal from 'sweetalert';
+import * as Yup from 'yup';
 
 import LayoutAdmin from '../../../layouts/admin';
-import Tables from '../../../components/table/table';
 import { getIdSekolah } from '../../../auth/auth';
+import Table from '../../../components/table/react-table';
 
 
 
@@ -55,18 +55,30 @@ const TahunAjarIndex = () => {
     const getData = async () => {
         let data = await getAll();
         setData(data.data);
-        console.log(data.data);
     }
 
     const deleteData = async (id) => {
-        let res = await destroy(id);
+        swal({
+            title: "Hapus ?",
+            text: "Yakin unutk menghapus ini ?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then(async (willDelete) => {
+            if (willDelete) {
+                let res = await destroy(id);
 
-        if(res.status == 200){
-            getData();
-            swal("Good job!", "Sukses", "success");
-        }else{
-            swal("Error", res.message, "warning");
-        }
+                if(res.status == 200){
+                    getData();
+                    swal("Good job!", "Sukses", "success");
+                }else{
+                    swal("Error", res.message, "warning");
+                }
+            } else {
+              swal("Data aman");
+            }
+        });    
     }
 
     const detailData = async (id) => {
@@ -92,7 +104,6 @@ const TahunAjarIndex = () => {
     }
 
     const setAktif = async (id) => {
-        console.log(id)
         let res = await setActive(id);
 
         if(res.status == 200){
@@ -105,35 +116,33 @@ const TahunAjarIndex = () => {
     }
 
     const columnFormat = {
-        action: (cell, row) => {
+        action: ({value, row}) => {
             return(
-                <div key={cell} className="btn-group" role="group" aria-label="Basic outlined example">
-                    <button onClick={()=> detailData(cell)} type="button" className="btn btn-sm btn-outline-primary">
+                <div key={value} className="btn-group" role="group" aria-label="Basic outlined example">
+                    <button onClick={()=> detailData(value)} type="button" className="btn btn-sm btn-outline-primary">
                         <HiOutlinePencilAlt className="fs-6" />
                     </button>
-                    <button onClick={()=> deleteData(cell)} type="button" className="btn btn-sm btn-outline-danger">
+                    <button onClick={()=> deleteData(value)} type="button" className="btn btn-sm btn-outline-danger">
                         <HiOutlineTrash className="fs-6" />
                     </button>
                 </div>
             )
         },
-        status: (cell, row) => {
-            switch(cell) {
+        status: ({value, row}) => {
+            switch(value) {
                 case 'Aktif':
                   return(
-                    //<span key={row.id} className="badge text-bg-success">Aktif</span>
-                    <div key={cell} class="form-check form-switch" onChange={()=>setAktif(row.id)}>
-                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked/>
-                        <label class="form-check-label" for="flexSwitchCheckChecked">Aktif</label>
+                    <div key={row.original.id} className="form-check form-switch" onChange={()=>setAktif(row.original.id)}>
+                        <input className="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked/>
+                        <label className="form-check-label" for="flexSwitchCheckChecked">Aktif</label>
                     </div>
                   )
                   break;
                 default:
                     return (
-                    //<span key={cell} className="badge text-bg-danger">Tidak aktif</span>
-                    <div key={cell} class="form-check form-switch" onChange={()=>setAktif(row.id)}>
-                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked"/>
-                        <label class="form-check-label" for="flexSwitchCheckChecked">Tidak Aktif</label>
+                    <div key={row.original.id} className="form-check form-switch" onChange={()=>setAktif(row.original.id)}>
+                        <input className="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked"/>
+                        <label className="form-check-label" for="flexSwitchCheckChecked">Tidak Aktif</label>
                     </div>
                 )
             }
@@ -142,35 +151,35 @@ const TahunAjarIndex = () => {
 
     const column = [
         {
-            dataField: 'id',
-            text: 'Id',
-            sort: true
+            accessor: '',
+            Header: 'Id',
         },
         {
-            dataField: 'tahun_ajaran',
-            text: 'Nama',
-            sort: true
+            accessor: 'tahun_ajaran',
+            Header: 'Nama',
         },
         {
-            dataField: 'semester',
-            text: 'Nama',
-            sort: true
+            accessor: 'semester',
+            Header: 'Nama',
         },
         {
-            dataField: 'status',
-            text: 'Status',
-            sort: true,
-            formatter: columnFormat.status
+            accessor: 'status',
+            Header: 'Status',
+            Cell: columnFormat.status
         },
         {
-            dataField: 'id',
-            text: 'Action',
-            sort: true,
-            formatter: columnFormat.action
+            accessor: 'id',
+            Header: 'Action',
+            Cell: columnFormat.action
         },
     ]
 
-
+    const validateForm  = Yup.object().shape({
+        nama: Yup.string()
+          .required('Harus diisi'),
+        semester: Yup.string()
+          .required('Harus diisi'),
+    });
 
     return (
         <LayoutAdmin>
@@ -193,46 +202,7 @@ const TahunAjarIndex = () => {
                                 <HiOutlinePlusCircle className="fs-6 mr-1" /> Tambah
                             </button>
 
-                            <Tables data={data} column={column} columnFormats={columnFormat}/>
-
-                            {/* <table id="example" className="table table-hover table-striped table-bordered">
-                                <thead>
-                                    <tr>
-                                    <th>ID</th>
-                                    <th>Nama</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-
-                                {data.map((result,key) => {
-                                    return (
-                                        <tr key={key}>
-                                        <td width={`5%`}>{result.id}</td>
-                                        <td width={`50%`}>{result.tahun_ajaran}</td>
-                                        <td  width={`10%`}>
-                                            {
-                                                setStatus(result.status)
-                                            }
-                                            
-                                        </td>
-                                        <td width={`10%`}>
-                                            <div className="btn-group" role="group" aria-label="Basic outlined example">
-                                                <button onClick={()=> detailData(result.id)} type="button" className="btn btn-sm btn-outline-primary">
-                                                    <HiOutlinePencilAlt className="fs-6" />
-                                                </button>
-                                                <button onClick={()=> deleteData(result.id)} type="button" className="btn btn-sm btn-outline-danger">
-                                                    <HiOutlineTrash className="fs-6" />
-                                                </button>
-                                                
-                                            </div>
-                                        </td>
-                                        </tr>
-                                    )
-                                })}  
-                                </tbody>
-                            </table> */}
+                            <Table datas={data} column={column} columnFormats={columnFormat}/>
 
                         </div>
                     </div>
@@ -272,6 +242,7 @@ const TahunAjarIndex = () => {
                     setShow(false)
 
                 }}
+                validationSchema={validateForm}
                 >
                 {({
                     values,
@@ -287,7 +258,7 @@ const TahunAjarIndex = () => {
                     <div className="form-group">
                         <label htmlFor="role">Tahun Ajaran</label>
                         <input
-                            type="nama"
+                            type="text"
                             name="nama"
                             className="form-control" 
                             onChange={handleChange}
@@ -307,8 +278,13 @@ const TahunAjarIndex = () => {
                         {errors.semester && touched.semester && errors.semester}
                     </div>
 
-                    <button type="submit" className="btn btn-nu btn-lg btn-block" disabled={isSubmitting}>
-                        Submit
+                    <button type="submit" className="btn btn-nu btn-block" disabled={isSubmitting}>
+                        { isSubmitting ? 
+                            <>
+                            <span className="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true"></span>
+                            <span className="sr-only">Loading...</span>
+                            </>
+                        : 'Kirim'}
                     </button>
                 </form>
                 )}

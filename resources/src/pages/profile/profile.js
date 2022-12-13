@@ -1,7 +1,11 @@
 import { Field, Form, Formik } from 'formik';
 import React, { useEffect, useState } from 'react'
 import { getProfile, updateProfile, changePassword  } from '../../api/profile/api_profile';
-import LayoutAdmin from '../../layouts/admin'
+import LayoutAdmin from '../../layouts/admin';
+import swal from 'sweetalert'; 
+import * as Yup from 'yup';
+import { getIdSekolah } from '../../auth/auth';
+import { Button } from 'react-bootstrap';
 
 const ProfilePage = () => {
 
@@ -20,32 +24,27 @@ const ProfilePage = () => {
                 nama: data.data.nama,
                 email: data.data.email,
             }
-            
             setData(data.data);
-            
         }else{
             swal("Error", data.message, "warning");
         }
-        
     }
 
-    function validateEmail(value) {
-        let error;
-        if (!value) {
-          error = 'Required';
-        } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
-          error = 'Invalid email address';
-        }
-        return error;
-      }
+    const validateForm  = Yup.object().shape({
+        nama: Yup.string()
+          .required('Harus diisi'),
+        email: Yup.string().email('Invalid email')
+          .required('Harus diisi'),
+    });
 
-    function validateUser(value) {
-        let error;
-        if (value === 'admin') {
-          error = 'Nice try!';
-        }
-        return error;
-    }
+    const validateFormPassword  = Yup.object().shape({
+        current_password: Yup.string()
+          .required('Harus diisi'),
+        new_password: Yup.string()
+          .required('Harus diisi'),
+        confirm_password: Yup.string()
+          .required('Harus diisi'),
+    });
 
 
   return (
@@ -107,10 +106,13 @@ const ProfilePage = () => {
                                         <Formik
                                             initialValues={data}
                                             enableReinitialize={true}
-                                            onSubmit={ async (values, { setSubmitting }) => {
-                                                console.log(values);
-                                                
-                                                let res = await updateProfile(values);
+                                            onSubmit={ async (values, { setSubmitting }) => { 
+                                                let req = {
+                                                    nama: values.nama,
+                                                    email: values.email,
+                                                    id_sekolah: getIdSekolah()
+                                                }
+                                                let res = await updateProfile(req);
                                                 
                                                 if(res.status == 200){
                                                     getData();
@@ -120,6 +122,7 @@ const ProfilePage = () => {
                                                 }
                             
                                             }}
+                                            validationSchema={validateForm}
                                         >
                                         {({
                                             values,
@@ -142,7 +145,6 @@ const ProfilePage = () => {
                                                     onChange={handleChange}
                                                     onBlur={handleBlur}
                                                     value={values.nama}
-                                                    validate={validateUser}
                                                     required
                                                 />
                                                 {errors.nama && touched.nama && errors.nama}
@@ -157,15 +159,18 @@ const ProfilePage = () => {
                                                     onChange={handleChange}
                                                     onBlur={handleBlur}
                                                     value={values.email}
-                                                    validate={validateEmail}
                                                     required
                                                 />
                                                 {errors.email && touched.email && errors.email}
                                             </div>
 
-                                            <button type="submit" className="btn btn-nu btn-lg btn-block" disabled={isSubmitting}>
-                                                Submit
-                                            </button>
+                                            <Button type="submit" className="btn btn-nu btn-lg btn-block" disabled={isSubmitting}>
+                                              { isSubmitting ? 
+                                              <>
+                                              <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                              </>
+                                                : 'Update'}
+                                            </Button>
                                         </Form>
                                         )}
                                         </Formik>
@@ -186,21 +191,28 @@ const ProfilePage = () => {
                                                     current_password: '',
                                                     new_password: '',
                                                     confirm_password: '',
+                                                    
                                                 }}
                                                 onSubmit={ async (values, { setSubmitting }) => {
-                                                    console.log(values);
                                                     
-                                                    let res = await changePassword(values);
+                                                    let req = {
+                                                        ...values,
+                                                        id_sekolah: getIdSekolah()
+                                                    }
+
+                                                    let res = await changePassword(req);
                                                     
                                                     if(res.status == 200){
                                                         getData();
-                                                        swal("Good job!", res.message, "success");
+                                                        swal("Good job!", "Sukses mengganti password", "success");
                                                         setSubmitting(false)
                                                     }else{
+                                                        console.log(res)
                                                         swal("Error", res.message, "warning");
                                                     }
                                 
                                                 }}
+                                                validationSchema={validateFormPassword}
                                             >
                                                 {({
                                             values,
@@ -223,7 +235,6 @@ const ProfilePage = () => {
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
                                                         value={values.current_password}
-                                                        validate={validateUser}
                                                         required
                                                     />
                                                     {errors.current_password && touched.current_password && errors.current_password}
@@ -238,7 +249,7 @@ const ProfilePage = () => {
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
                                                         value={values.new_password}
-                                                        validate={validateUser}
+
                                                         required
                                                     />
                                                     {errors.new_password && touched.new_password && errors.new_password}
@@ -253,15 +264,19 @@ const ProfilePage = () => {
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
                                                         value={values.confirm_password}
-                                                        validate={validateUser}
+
                                                         required
                                                     />
                                                     {errors.confirm_password && touched.confirm_password && errors.confirm_password}
                                                 </div>
 
-                                                <button type="submit" className="btn btn-nu btn-lg btn-block" disabled={isSubmitting}>
-                                                    Reset Password
-                                                </button>
+                                                <Button type="submit" className="btn btn-warning btn-lg btn-block" disabled={isSubmitting}>
+                                                { isSubmitting ? 
+                                                <>
+                                                <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                                </>
+                                                    : 'Reset Password'}
+                                                </Button>
                                             </Form>
                                         )}
                                         </Formik>
@@ -271,11 +286,6 @@ const ProfilePage = () => {
                             </div>
                         </div>
                     </div>
-
-                   
-
-                    
-
                 </div>
         </div>
     </LayoutAdmin>

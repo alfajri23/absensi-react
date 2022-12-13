@@ -39,6 +39,14 @@ const setTahun = (data) => {
     sessionStorage.setItem("tahun", data);
 }
 
+const setRole = (data) => {
+    sessionStorage.setItem("role", data);
+}
+
+const setIdKelasSiswa = (data) => {
+    sessionStorage.setItem("id_kelas_siswa", data);
+}
+
 const setToken = (data) => {
     sessionStorage.setItem("access_token", data);
 }
@@ -64,10 +72,18 @@ const getTahun = () => {
     return sessionStorage.getItem("tahun");
 }
 
+const getRole = () => {
+    return sessionStorage.getItem("role");
+}
+
+const getIdKelasSiswa = () => {
+    return sessionStorage.getItem("id_kelas_siswa");
+}
+
 
 export{
     setCookie,
     getCookie,
-    setId,setIdSekolah,setToken,setTahunAjar,setTahun,
-    getId,getIdSekolah,getToken,getTahunAjar,getTahun,
+    setId,setIdSekolah,setToken,setTahunAjar,setTahun,setRole,setIdKelasSiswa,
+    getId,getIdSekolah,getToken,getTahunAjar,getTahun,getRole,getIdKelasSiswa,
 }

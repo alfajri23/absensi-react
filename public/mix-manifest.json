@@ -1,11 +1,11 @@
 {
-    "/js/app.js": "/js/app.js?id=0af185e01044bd013059fcdc22235dc6",
-    "/js/scripts.js": "/js/scripts.js?id=fb5d4e0149e024019c45f556eed6a142",
-    "/js/stisla.js": "/js/stisla.js?id=2607831492fbc080158aa04126f0dbb2",
-    "/js/manifest.js": "/js/manifest.js?id=03936c1bb6323e01fa8457a9f3fa201e",
-    "/css/style.css": "/css/style.css?id=d6e99ff331908b058a2e59c3ad0af3c3",
-    "/css/custom.css": "/css/custom.css?id=6250d3ce9867a6dc33f9f1cc43b46a25",
-    "/css/components.css": "/css/components.css?id=ef81c7cc1622a6cb9fe21aac27d49fd0",
-    "/css/app.css": "/css/app.css?id=68b329da9893e34099c7d8ad5cb9c940",
-    "/js/vendor.js": "/js/vendor.js?id=ef9f8e87206fee87673df8e536174751"
+    "/js/app.js": "/js/app.js",
+    "/js/scripts.js": "/js/scripts.js",
+    "/js/stisla.js": "/js/stisla.js",
+    "/js/manifest.js": "/js/manifest.js",
+    "/css/style.css": "/css/style.css",
+    "/css/custom.css": "/css/custom.css",
+    "/css/components.css": "/css/components.css",
+    "/css/app.css": "/css/app.css",
+    "/js/vendor.js": "/js/vendor.js"
 }

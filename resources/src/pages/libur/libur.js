@@ -6,9 +6,10 @@ import Modal from 'react-bootstrap/Modal';
 import { Formik } from 'formik';
 import { getAll, create, destroy, detail, updates, sync, statusActive } from '../../api/api_libur'
 import swal from 'sweetalert';
+import * as Yup from 'yup';
 
 import LayoutAdmin from '../../layouts/admin';
-import Tables from '../../components/table/table';
+import Table from '../../components/table/react-table';
 import { getIdSekolah } from '../../auth/auth';
 
 
@@ -22,7 +23,7 @@ const LiburIndex = () => {
             kode: '',
             tgl_libur: '',
             keterangan: '',
-            id_sekolah: localStorage.getItem('id_sekolah')
+            id_sekolah: getIdSekolah()
         }
     );
     let [edit, setEdit] = useState(false);
@@ -33,7 +34,7 @@ const LiburIndex = () => {
         kode: '',
         tgl_libur: '',
         keterangan: '',
-        id_sekolah: localStorage.getItem('id_sekolah')
+        id_sekolah: getIdSekolah()
     }
 
     const [show, setShow] = useState(false);
@@ -45,7 +46,7 @@ const LiburIndex = () => {
             kode: '',
             tgl_libur: '',
             keterangan: '',
-            id_sekolah: localStorage.getItem('id_sekolah')
+            id_sekolah: getIdSekolah()
         }
 
         setEdit(false);
@@ -62,22 +63,37 @@ const LiburIndex = () => {
         let data = await getAll();
 
         if(data.data != null){
-            setData(data.data);
-            console.log(data.data);
+            setData(data.data)
         }else{
             swal("Error", data.message, "warning");
         }
     }
 
     const deleteData = async (id) => {
-        let res = await destroy(id);
 
-        if(res.status == 200){
-            getData();
-            swal("Good job!", "Sukses", "success");
-        }else{
-            swal("Error", res.message, "warning");
-        }
+        swal({
+            title: "Hapus ?",
+            text: "Yakin untuk menghapus ini ?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then(async (willDelete) => {
+            if (willDelete) {
+                let res = await destroy(id);
+
+                if(res.status == 200){
+                    getData();
+                    swal("Good job!", "Sukses", "success");
+                }else{
+                    swal("Error", res.message, "warning");
+                }
+            } else {
+              swal("Data aman");
+            }
+        });
+
+        
     }
 
     const detailData = async (id) => {
@@ -104,7 +120,6 @@ const LiburIndex = () => {
     }
 
     const syncLibur = () => {
-
         swal({
             title: "Singkronsasi ?",
             text: "Yakin akan mengsingkronkan data ?",
@@ -113,9 +128,7 @@ const LiburIndex = () => {
             dangerMode: true,
             })
             .then( async (willDelete) => {
-            if (willDelete) {
-                console.log("dapat")
-                
+            if (willDelete) {         
                 let res = await sync ({id_sekolah: getIdSekolah()})
                 console.log(res)
                 if(res.status == 200){
@@ -124,8 +137,6 @@ const LiburIndex = () => {
                 }else{
                     swal("Error", res.message, "warning");
                 }
-                
-
             } else {
                 swal("Data aman");
             }
@@ -141,8 +152,6 @@ const LiburIndex = () => {
             value : action
         };
 
-        console.log(konfirm);
-
         let res = await statusActive(konfirm);
         if(res.status == 200){
             getData();
@@ -154,36 +163,39 @@ const LiburIndex = () => {
     }
 
     const columnFormat = {
-        action: (cell, row) => {
+        date: ({value, row}) => {
+            let date = new Date(value);
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            return date.toLocaleDateString('id', options)
+        },
+        action: ({ value, row }) => {
             return(
-                <div key={cell} className="btn-group" role="group" aria-label="Basic outlined example">
-                    <button onClick={()=> detailData(cell)} type="button" className="btn btn-sm btn-outline-primary">
+                <div key={value} className="btn-group" role="group" aria-label="Basic outlined example">
+                    <button onClick={()=> detailData(value)} type="button" className="btn btn-sm btn-outline-primary">
                         <HiOutlinePencilAlt className="fs-6" />
                     </button>
-                    <button onClick={()=> deleteData(cell)} type="button" className="btn btn-sm btn-outline-danger">
+                    <button onClick={()=> deleteData(value)} type="button" className="btn btn-sm btn-outline-danger">
                         <HiOutlineTrash className="fs-6" />
                     </button>
                     
                 </div>
             )
         },
-        status: (cell, row) => {
-            switch(cell) {
+        status: ({ value, row }) => {
+            switch(value) {
                 case 1:
                   return(
-                    //<span key={row.id} className="badge text-bg-success">Aktif</span>
-                    <div key={cell} class="form-check form-switch" onChange={()=>setAktif(row.id, 0)}>
-                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked/>
-                        <label class="form-check-label" for="flexSwitchCheckChecked">Aktif</label>
+                    <div key={row.original.id} className="form-check form-switch" onChange={()=>setAktif(row.original.id, 0)}>
+                        <input className="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" defaultChecked={true}/>
+                        <label className="form-check-label" htmlFor="flexSwitchCheckChecked">Aktif</label>
                     </div>
                   )
                   break;
                 default:
                     return (
-                    //<span key={cell} className="badge text-bg-danger">Tidak aktif</span>
-                    <div key={cell} class="form-check form-switch" onChange={()=>setAktif(row.id, 1)}>
-                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked"/>
-                        <label class="form-check-label" for="flexSwitchCheckChecked">Tidak Aktif</label>
+                    <div key={row.original.id} className="form-check form-switch" onChange={()=>setAktif(row.original.id, 1)}>
+                        <input className="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked"/>
+                        <label className="form-check-label" htmlFor="flexSwitchCheckChecked">Tidak Aktif</label>
                     </div>
                 )
             }
@@ -192,38 +204,41 @@ const LiburIndex = () => {
 
     const column = [
         {
-            dataField: 'id',
-            text: 'Id',
-            sort: true
+            accessor: '',
+            Header: 'Id',
         },
         {
-            dataField: 'nama',
-            text: 'nama',
-            sort: true
+            accessor: 'nama',
+            Header: 'nama',
         },
         {
-            dataField: 'tgl_libur',
-            text: 'libur',
-            sort: true
+            accessor: 'tgl_libur',
+            Header: 'libur',
+            Cell: columnFormat.date
         },
         {
-            dataField: 'keterangan',
-            text: 'keterangan',
-            sort: true
+            accessor: 'keterangan',
+            Header: 'keterangan',
         },
         {
-            dataField: 'status',
-            text: 'status',
-            sort: true,
-            formatter: columnFormat.status
+            accessor: 'status',
+            Header: 'status',
+            Cell: columnFormat.status
         },
         {
-            dataField: 'id',
-            text: 'Action',
-            sort: true,
-            formatter: columnFormat.action
+            accessor: 'id',
+            Header: 'Action',
+            Cell: columnFormat.action
         },
     ]
+
+    const validateForm  = Yup.object().shape({
+        nama: Yup.string()
+          .required('Harus diisi'),
+        tgl_libur: Yup.string()
+          .required('Harus diisi'),
+    });
+
 
 
     return (
@@ -233,7 +248,7 @@ const LiburIndex = () => {
                 <h1>Setting Libur</h1>
                 <div className="section-header-breadcrumb">
                     <div className="breadcrumb-item active">
-                        <Link to="/">Dashboard</Link>
+                        <Link to="/admin">Dashboard</Link>
                     </div>
                     <div className="breadcrumb-item">Setting Libur</div>
                 </div>
@@ -252,7 +267,7 @@ const LiburIndex = () => {
                             </button>
 
                             <div className="mt-4">
-                                <Tables data={data} column={column} columnFormats={columnFormat}/>
+                                <Table datas={data} column={column} columnFormats={columnFormat}/>
                             </div>
 
                         </div>
@@ -270,7 +285,11 @@ const LiburIndex = () => {
                 <Formik
                 initialValues={form}
                 onSubmit={ async (values, { setSubmitting }) => {
-                    let res = edit ? await updates(values) : await create(values);
+                    let req = {
+                        ...values,
+                        id_sekolah: getIdSekolah()
+                    }
+                    let res = edit ? await updates(req) : await create(req);
 
                     if(res.status == 200){
                         getData();
@@ -278,10 +297,9 @@ const LiburIndex = () => {
                     }else{
                         swal("Error", res.message, "warning");
                     }
-
                     setShow(false)
-
                 }}
+                validationSchema={validateForm}
                 >
                 {({
                     values,
@@ -304,7 +322,7 @@ const LiburIndex = () => {
                             onBlur={handleBlur}
                             value={values.nama}
                         />
-                        {errors.nama && touched.nama && errors.nama}
+                        <small className="text-danger">{errors.nama && touched.nama && errors.nama}</small>
                     </div>
 
                     <div className="form-group">
@@ -317,7 +335,7 @@ const LiburIndex = () => {
                             onBlur={handleBlur}
                             value={values.tgl_libur}
                         />
-                        {errors.tgl_libur && touched.tgl_libur && errors.tgl_libur}
+                        <small className="text-danger">{errors.tgl_libur && touched.tgl_libur && errors.tgl_libur}</small>
                     </div>
 
                     <div className="form-group">
@@ -330,11 +348,16 @@ const LiburIndex = () => {
                             onBlur={handleBlur}
                             value={values.keterangan}
                         />
-                        {errors.keterangan && touched.keterangan && errors.keterangan}
+                        <small className="text-danger">{errors.keterangan && touched.keterangan && errors.keterangan}</small>
                     </div>
 
-                    <button type="submit" className="btn btn-nu btn-lg btn-block" disabled={isSubmitting}>
-                        Submit
+                    <button type="submit" className="btn btn-nu btn-block" disabled={isSubmitting}>
+                        { isSubmitting ? 
+                            <>
+                            <span className="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true"></span>
+                            <span className="sr-only">Loading...</span>
+                            </>
+                        : 'Kirim'}
                     </button>
                 </form>
                 )}

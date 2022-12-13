@@ -26,7 +26,7 @@ const getIzinGuru = (mount,year) => {
     let urls = `${url}/guru/bulan/${mount}/tahun/${year}`;
     return axios.get(urls,{ headers: headers_auth })
     .then(res => {
-        return res.data;
+        return res.data
     })
     .catch(function (error) {
         return error.response.data
@@ -54,8 +54,8 @@ const updates = (data) => {
     });
 }
 
-const detail = (id) => {
-    let urls = `${url}/${id}`;
+const detail = (id,role) => {
+    let urls = role == 'siswa' ? `${url}/${id}` : `${url}/guru/${id}`;
     return axios.get(urls,{ headers: headers_auth})
     .then(res => {
         return res;
@@ -87,9 +87,22 @@ const confirm = (data) => {
     });
 }
 
+const getIzin = (id_user,role,mount,year) => {
+    let urls = `${url}/user/${id_user}/role/${role}/bulan/${mount}/tahun/${year}`;
+    return axios.get(urls,{ headers: headers_auth })
+    .then(res => {
+        return res.data
+    })
+    .catch(function (error) {
+        return error.response.data
+    });
+}
+
+
 
 
 export{
+    getIzin,
     getIzinSiswa,
     getIzinGuru,
     create,

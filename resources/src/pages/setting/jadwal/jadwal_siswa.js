@@ -7,10 +7,10 @@ import { Formik, Field } from 'formik';
 import { getAll as getRombel } from '../../../api/api_rombel'
 import { getAll, groupByHari, create, destroy, detail, updates } from '../../../api/setting/jadwal/api_jadwal'
 import swal from 'sweetalert';
-import Select from 'react-select'
+import Select from 'react-select';
+import * as Yup from 'yup';
 
 import LayoutAdmin from '../../../layouts/admin';
-import Tables from '../../../components/table/table';
 import { getIdSekolah } from '../../../auth/auth';
 
 
@@ -31,6 +31,17 @@ const JadwalSiswa = () => {
             id_sekolah: getIdSekolah()
         }
     );
+
+    const validateForm  = Yup.object().shape({
+        hari: Yup.string()
+          .required('Harus diisi'),
+        jam_masuk: Yup.string()
+          .required('Harus diisi'),
+        jam_pulang: Yup.string()
+          .required('Harus diisi'),
+       
+    });
+
     let [edit, setEdit] = useState(false);
     
     let formValue = {
@@ -79,13 +90,14 @@ const JadwalSiswa = () => {
               label: item.nama
             };
         });
-
+        console.log(data)
         setRombel(rombel)
     }
 
     const getData = async () => {
         let data = await groupByHari('siswa');
         if(data.data != null){
+            console.log(data.data)
             setData(data.data);
         }else{
             swal("Error", data.message, "warning");
@@ -93,14 +105,30 @@ const JadwalSiswa = () => {
     }
 
     const deleteData = async (id) => {
-        let res = await destroy(id);
 
-        if(res.status == 200){
-            getData();
-            swal("Good job!", "Sukses", "success");
-        }else{
-            swal("Error", res.message, "warning");
-        }
+        swal({
+            title: "Hapus ?",
+            text: "Yakin untuk menghapus ini ?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then(async (willDelete) => {
+            if (willDelete) {
+                let res = await destroy(id);
+
+                if(res.status == 200){
+                    getData();
+                    swal("Good job!", "Sukses", "success");
+                }else{
+                    swal("Error", res.message, "warning");
+                }
+            } else {
+              swal("Data aman");
+            }
+        });
+
+        
     }
 
     const detailData = async (id) => {
@@ -138,9 +166,7 @@ const JadwalSiswa = () => {
 
     }
 
-    const handleChangeSelection = () => {
-
-    }
+    
 
     return (
         <LayoutAdmin>
@@ -165,10 +191,10 @@ const JadwalSiswa = () => {
                     <div className="card-body">
                         <div className="container-fluid">
                             <button onClick={handleShow} className="btn btn-success">
-                                <HiOutlinePlusCircle className="fs-6 mr-1" /> Tambah
+                                <HiOutlinePlusCircle className="fs-6 mr-1"/> Tambah
                             </button>
 
-                            <table className="table mt-4">
+                            <table className="table mt-4 table-striped">
                                 <thead>
                                     <tr>
                                     <th scope="col">No</th>
@@ -183,7 +209,7 @@ const JadwalSiswa = () => {
                                     {data.map((result,key) => {
                                         return(
                                             <tr key={key}>
-                                                <th>1</th>
+                                                <th>{key+1}</th>
                                                 <th scope="row">{result.hari}</th>
 
                                                 <td> 
@@ -204,7 +230,12 @@ const JadwalSiswa = () => {
 
                                                 <td>{result.jadwal.map((result,key) => {
                                                     return(
-                                                        <div key={key} className="mt-1">{result.rombels[0].nama}</div>
+                                                        //<div key={key} className="mt-1">{result.rombels[0]}</div>
+                                                        <div>
+                                                            {result.rombels.map((result,key) =>{
+                                                                return(<span>{result.nama}</span>)
+                                                            })}
+                                                        </div>
                                                     )
                                                 })}</td>
 
@@ -219,12 +250,9 @@ const JadwalSiswa = () => {
                                                                 <HiOutlineTrash className="fs-6" />
                                                             </button>
                                                         </div>
-                                                        
                                                         </div>
                                                     )
                                                 })}</td>
-
-
                                             </tr>
                                         )
                                     })}
@@ -246,19 +274,15 @@ const JadwalSiswa = () => {
                 <Formik
                 initialValues={form}
                 onSubmit={ (values, { setSubmitting }) => {
-
                     values.rombel.forEach(myFunction);
-
                     async function myFunction(value, index, array) {
                         let values_new = {
                             ...values,
                             rombel: value.value
                         }
 
-                        
                         let res = await edit ? updates(values_new.id,values_new) : create(values_new);
                         let done = await res;
-                        console.log(done);
                     }
 
                     setTimeout(function(){ 
@@ -267,8 +291,8 @@ const JadwalSiswa = () => {
                     }, 1500);
                     
                     setShow(false)
-
                 }}
+                validationSchema={validateForm}
                 >
                 {({
                     values,
@@ -378,9 +402,13 @@ const JadwalSiswa = () => {
                         {errors.keterangan && touched.keterangan && errors.keterangan}
                     </div>
 
-                    <button type="submit" className="btn btn-nu btn-lg btn-block" disabled={isSubmitting}>
-                        Submit
-                    </button>
+                    <Button type="submit" className="btn btn-success w-100" disabled={isSubmitting}>
+                        { isSubmitting ? 
+                        <>
+                        <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        </>
+                        : 'Kirim'}
+                    </Button>
                 </form>
                 )}
                 </Formik>

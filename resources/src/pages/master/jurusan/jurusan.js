@@ -2,13 +2,13 @@ import React, {useEffect, useState} from 'react'
 import { Link } from 'react-router-dom'
 import {HiOutlinePencilAlt , HiOutlineTrash, HiOutlinePlusCircle} from 'react-icons/hi';
 import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
 import { Formik } from 'formik';
 import { getAll, create, destroy, detail, updates } from '../../../api/api_jurusan'
 import swal from 'sweetalert';
+import * as Yup from 'yup';
 
 import LayoutAdmin from '../../../layouts/admin';
-import Tables from '../../../components/table/table';
+import Table from '../../../components/table/react-table';
 
 
 const JurusanIndex = () => {
@@ -59,14 +59,27 @@ const JurusanIndex = () => {
     }
 
     const deleteData = async (id) => {
-        let res = await destroy(id);
+        swal({
+            title: "Hapus ?",
+            text: "Yakin unutk menghapus ini ?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then(async (willDelete) => {
+            if (willDelete) {
+                let res = await destroy(id);
 
-        if(res.status == 200){
-            getData();
-            swal("Good job!", "Sukses", "success");
-        }else{
-            swal("Error", res.message, "warning");
-        }
+                if(res.status == 200){
+                    getData();
+                    swal("Good job!", "Sukses", "success");
+                }else{
+                    swal("Error", res.message, "warning");
+                }
+            } else {
+              swal("Data aman");
+            }
+        });    
     }
 
     const detailData = async (id) => {
@@ -92,28 +105,28 @@ const JurusanIndex = () => {
     }
 
     const columnFormat = {
-        action: (cell, row) => {
+        action: ({value, row}) => {
             return(
-                <div key={cell} className="btn-group" role="group" aria-label="Basic outlined example">
-                    <button onClick={()=> detailData(cell)} type="button" className="btn btn-sm btn-outline-primary">
+                <div key={value} className="btn-group" role="group" aria-label="Basic outlined example">
+                    <button onClick={()=> detailData(value)} type="button" className="btn btn-sm btn-outline-primary">
                         <HiOutlinePencilAlt className="fs-6" />
                     </button>
-                    <button onClick={()=> deleteData(cell)} type="button" className="btn btn-sm btn-outline-danger">
+                    <button onClick={()=> deleteData(value)} type="button" className="btn btn-sm btn-outline-danger">
                         <HiOutlineTrash className="fs-6" />
                     </button>
                 </div>
             )
         },
-        status: (cell, row) => {
-            switch(cell) {
+        status: ({value, row}) => {
+            switch(value) {
                 case 'Aktif':
                   return(
-                    <span key={row.id} className="badge text-bg-success">Aktif</span>
+                    <span key={row.original.id} className="badge text-bg-success">Aktif</span>
                   )
                   break;
                 default:
                     return (
-                    <span key={row.id} className="badge text-bg-danger">Tidak aktif</span>
+                    <span key={row.original.id} className="badge text-bg-danger">Tidak aktif</span>
                 )
             }
         }
@@ -121,28 +134,29 @@ const JurusanIndex = () => {
 
     const column = [
         {
-            dataField: 'id',
-            text: 'Id',
-            sort: true
+            accessor: '',
+            Header: 'Id',
         },
         {
-            dataField: 'nama',
-            text: 'Nama',
-            sort: true
+            accessor: 'nama',
+            Header: 'Nama',
         },
         {
-            dataField: 'status',
-            text: 'Status',
-            sort: true,
-            formatter: columnFormat.status
+            accessor: 'status',
+            Header: 'Status',
+            Cell: columnFormat.status
         },
         {
-            dataField: 'id',
-            text: 'Action',
-            sort: true,
-            formatter: columnFormat.action
+            accessor: 'id',
+            Header: 'Action',
+            Cell: columnFormat.action
         },
     ]
+
+    const validateForm  = Yup.object().shape({
+        nama: Yup.string()
+          .required('Harus diisi'),
+    });
 
 
     return (
@@ -154,7 +168,7 @@ const JurusanIndex = () => {
                     <div className="breadcrumb-item active">
                         <Link to="/">Dashboard</Link>
                     </div>
-                    <div className="breadcrumb-item">Transaksi</div>
+                    <div className="breadcrumb-item">Jurusan</div>
                 </div>
             </div>
 
@@ -166,46 +180,7 @@ const JurusanIndex = () => {
                                 <HiOutlinePlusCircle className="fs-6 mr-1" /> Tambah
                             </button>
 
-                            <Tables data={data} column={column} columnFormats={columnFormat}/>
-                           
-                            {/* <table id="example" className="table table-hover table-striped table-bordered">
-                                <thead>
-                                    <tr>
-                                    <th>ID</th>
-                                    <th>Nama</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                {data.map((result,key) => {
-                                    return (
-                                        <tr key={key}>
-                                        <td width={`5%`}>{result.id}</td>
-                                        <td width={`50%`}>{result.nama}</td>
-                                        <td  width={`10%`}>
-                                            {
-                                                setStatus(result.status)
-                                            }
-                                            
-                                        </td>
-                                        <td width={`10%`}>
-                                            <div className="btn-group" role="group" aria-label="Basic outlined example">
-                                                <button onClick={()=> detailData(result.id)} type="button" className="btn btn-sm btn-outline-primary">
-                                                    <HiOutlinePencilAlt className="fs-6" />
-                                                </button>
-                                                <button onClick={()=> deleteData(result.id)} type="button" className="btn btn-sm btn-outline-danger">
-                                                    <HiOutlineTrash className="fs-6" />
-                                                </button>
-                                                
-                                            </div>
-                                        </td>
-                                        </tr>
-                                    )
-                                })}  
-                                </tbody>
-                            </table> */}
-
+                            <Table datas={data} column={column} columnFormats={columnFormat}/>
                         </div>
                     </div>
                 </div>
@@ -221,9 +196,7 @@ const JurusanIndex = () => {
                 <Formik
                 initialValues={form}
                 onSubmit={ async (values, { setSubmitting }) => {
-
                     let res = edit ? await updates(values) : await create(values);
-                    
                     
                     if(res.status == 200){
                         getData();
@@ -231,10 +204,9 @@ const JurusanIndex = () => {
                     }else{
                         swal("Error", res.message, "warning");
                     }
-
                     setShow(false)
-
                 }}
+                validationSchema={validateForm}
                 >
                 {({
                     values,
@@ -273,9 +245,15 @@ const JurusanIndex = () => {
                         {errors.kode && touched.kode && errors.kode}
                     </div>
 
-                    <button type="submit" className="btn btn-nu btn-lg btn-block" disabled={isSubmitting}>
-                        Submit
+                    <button type="submit" className="btn btn-nu btn-block" disabled={isSubmitting}>
+                        { isSubmitting ? 
+                            <>
+                            <span className="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true"></span>
+                            <span className="sr-only">Loading...</span>
+                            </>
+                        : 'Kirim'}
                     </button>
+
                 </form>
                 )}
                 </Formik>

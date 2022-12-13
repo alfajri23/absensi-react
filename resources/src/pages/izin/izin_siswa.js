@@ -6,14 +6,13 @@ import Modal from 'react-bootstrap/Modal';
 import { Formik, Field } from 'formik';
 import { getIzinSiswa, confirm, destroy, detail, updates } from '../../api/izin/api_izin'
 import swal from 'sweetalert';
+import * as Yup from 'yup';
 
 import LayoutAdmin from '../../layouts/admin';
-import Tables from '../../components/table/table';
 import { getTahun } from '../../auth/auth';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import DropdownType from 'react-bootstrap/Dropdown';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
+import Table from '../../components/table/react-table';
 
 
 const IzinSiswa = () => {
@@ -129,12 +128,17 @@ const IzinSiswa = () => {
     } 
 
     const columnFormat = {
-        action: (cell, row) => {
-            switch(row.konfirmasi) {
+        date: ({value, row}) => {
+            let date = new Date(value);
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            return date.toLocaleDateString('id', options)
+        },
+        action: ({ value, row }) => {
+            switch(value) {
                 case 0:
                     return(
                         <DropdownButton
-                            key={cell}
+                            key={row.original.id}
                             id="dropdown-button-dark-example2"
                             variant="warning"
                             // menuVariant="dark"
@@ -142,10 +146,10 @@ const IzinSiswa = () => {
                             className=""
                             size="sm"
                         >
-                            <Dropdown.Item as="button" onClick={()=>confirms(cell,1)} active>
+                            <Dropdown.Item as="button" onClick={()=>confirms(row.original.id,1)} active>
                             Terima
                             </Dropdown.Item>
-                            <Dropdown.Item as="button" onClick={()=>confirms(cell,2)}>
+                            <Dropdown.Item as="button" onClick={()=>confirms(row.original.id,2)}>
                                 Tolak
                             </Dropdown.Item>
                             
@@ -165,51 +169,39 @@ const IzinSiswa = () => {
 
     const column = [
         {
-            dataField: 'id',
-            text: 'Id',
-            sort: true
+            accessor: '',
+            Header: 'Id',
         },
         {
-            dataField: 'tgl_kehadiran',
-            text: 'Tanggal',
-            sort: true
+            accessor: 'tgl_kehadiran',
+            Header: 'Tanggal',
+            Cell: columnFormat.date
         },
         {
-            dataField: 'nama',
-            text: 'nama',
-            sort: true
+            accessor: 'nama',
+            Header: 'nama',
         },
         {
-            dataField: 'rombel',
-            text: 'rombel',
-            sort: true
+            accessor: 'rombel',
+            Header: 'rombel',
         },
         {
-            dataField: 'status_kehadiran',
-            text: 'Ketidakhadiran',
-            sort: true
+            accessor: 'status_kehadiran',
+            Header: 'Ketidakhadiran',
         },
         {
-            dataField: 'id',
-            text: 'Action',
-            sort: true,
-            formatter: columnFormat.action
+            accessor: 'id',
+            Header: 'Action',
+            Cell: columnFormat.action
         },
     ]
 
-    const validateNotNull = {
-
-    }
-
-    const validateEmail = (value) => {
-        let error;
-        if (!value) {
-          error = 'Required';
-        } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
-          error = 'Invalid email address';
-        }
-        return error;
-    }
+    const validateForm  = Yup.object().shape({
+        bulan: Yup.string()
+          .required('Harus diisi'),
+        tahun: Yup.string()
+          .required('Harus diisi'),
+    });
 
 
     return (
@@ -219,9 +211,9 @@ const IzinSiswa = () => {
                 <h1>Izin Siswa</h1>
                 <div className="section-header-breadcrumb">
                     <div className="breadcrumb-item active">
-                        <Link to="/">Dashboard</Link>
+                        <Link to="/admin">Dashboard</Link>
                     </div>
-                    <div className="breadcrumb-item">Setting Libur</div>
+                    <div className="breadcrumb-item">Izin Siswa</div>
                 </div>
             </div>
 
@@ -241,11 +233,10 @@ const IzinSiswa = () => {
                                 tahun: '',
                             }}
                             onSubmit={async (values, { setSubmitting })=>{
-                                console.log(values);
-                                getData(values.bulan, values.tahun);
+                                await getData(values.bulan, values.tahun);
                                 setSubmitting(true);
                             }}
-                            
+                            validationSchema={validateForm}
                             >
                             {({
                                 values,
@@ -261,7 +252,7 @@ const IzinSiswa = () => {
                                 <div className="d-flex">
                                     
                                     <div className="col-2 mx-1">
-                                        <label className="form-label">Bulan</label>
+                                        <label className="form-label">Tahun</label>
                                         <Field name="tahun" as="select" className="form-select" required>
                                             <option value="">-- pilih --</option>
                                             {tahun().map((result,key) => {
@@ -270,10 +261,11 @@ const IzinSiswa = () => {
                                                 )
                                             })}
                                         </Field>
+                                        <small className="text-danger">{errors.tahun}</small>
                                     </div> 
 
                                     <div className="col-2 mx-1">
-                                        <label className="form-label">Tahun</label>
+                                        <label className="form-label">Bulan</label>
                                         <Field name="bulan" as="select" className="form-select" required>
                                             <option value="">-- pilih --</option>
                                             <option value="1">Januari</option>
@@ -289,12 +281,18 @@ const IzinSiswa = () => {
                                             <option value="11">Oktober</option>
                                             <option value="12">Desember</option>
                                         </Field>
+                                        <small className="text-danger">{errors.bulan}</small>
                                     </div>
 
                                     <div className="col-auto mx-1">
                                         <label className="form-label">&nbsp;</label><br></br>
                                         <button type="submit" className="btn btn-nu btn-block" disabled={isSubmitting}>
-                                            Cari
+                                            { isSubmitting ? 
+                                                <>
+                                                <span className="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true"></span>
+                                                <span className="sr-only">Loading...</span>
+                                                </>
+                                            : 'Cari'}
                                         </button>
                                     </div>
                                 </div> 
@@ -305,7 +303,7 @@ const IzinSiswa = () => {
                             
 
                             <div className="mt-n1">
-                                <Tables data={data} column={column} columnFormats={columnFormat}/>
+                                <Table datas={data} column={column} columnFormats={columnFormat}/>
                             </div>
 
                         </div>

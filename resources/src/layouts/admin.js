@@ -5,18 +5,22 @@ import "../../js/scripts";
 import "../../js/stisla";
 
 const LayoutAdmin = ({children}) => {
+
   return (
     <div>
         <div id="app">
             <div className="main-wrapper">
                 <div className="navbar-bg bg-nu"></div>
-                <nav className="navbar navbar-expand-lg main-navbar">
+                <nav className="navbar navbar-expand-lg main-navbar justify-content-between">
                     <ul className="navbar-nav mr-3">
-                        <li><a href="#" data-toggle="sidebar" className="nav-link nav-link-lg">=
-                        </a></li>
+                        <li>
+                            <a href="#" data-toggle="sidebar" className="nav-link nav-link-lg"> =
+                            </a>
+                        </li>
                     </ul>
                     <ul className="navbar-nav navbar-right">
-                        <li className="dropdown"><a href="#" data-toggle="dropdown"
+                        <li className="dropdown">
+                            <a href="#" data-toggle="dropdown"
                                 className="nav-link dropdown-toggle nav-link-lg nav-link-user">
                                 <i className="fas fa-user-circle mr-1"></i>
                                 <div className="d-sm-none d-lg-inline-block"></div>
@@ -50,6 +54,7 @@ const LayoutAdmin = ({children}) => {
 
                 
                 <div className="main-content pt-6">
+                    {/* <div className="judul">Hallo</div> */}
                     <section className="section">
                         {children}
                     </section>

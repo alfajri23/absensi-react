@@ -1,165 +1,12 @@
 import React, { useState } from 'react'
 import { useTable , useFilters, usePagination, useSortBy, useGlobalFilter} from "react-table";
+import {useExportData} from 'react-table-plugins'
 import { GlobalFilter } from './GlobalFilter';
+import Radium, { StyleRoot } from 'radium';
+// import Papa from "papaparse";
 
 
 export default function Table({datas ,column, columnFormats}) {
-
-    const getData = () => [
-        {
-          name: "Jane Cooper",
-          email: "jane.cooper@example.com",
-          title: "Regional Paradigm Technician",
-          department: "Optimization",
-          status: "Active",
-          role: "Admin",
-          imgUrl:
-            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-        },
-        {
-          name: "Cody Fisher",
-          email: "cody.fisher@example.com",
-          title: "Product Directives Officer",
-          department: "Intranet",
-          status: "Active",
-          role: "Owner",
-          imgUrl:
-            "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-        },
-        {
-          name: "Esther Howard",
-          email: "esther.howard@example.com",
-          title: "Forward Response Developer",
-          department: "Directives",
-          status: "Active",
-          role: "Member",
-          imgUrl:
-            "https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-        },
-        {
-          name: "Jenny Wilson",
-          email: "jenny.wilson@example.com",
-          title: "Central Security Manager",
-          department: "Program",
-          status: "Active",
-          role: "Member",
-          imgUrl:
-            "https://images.unsplash.com/photo-1498551172505-8ee7ad69f235?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-        },
-        {
-          name: "Kristin Watson",
-          email: "kristin.watson@example.com",
-          title: "Lean Implementation Liaison",
-          department: "Mobility",
-          status: "Active",
-          role: "Admin",
-          imgUrl:
-            "https://images.unsplash.com/photo-1532417344469-368f9ae6d187?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-        },
-        {
-          name: "Cameron Williamson",
-          email: "cameron.williamson@example.com",
-          title: "Internal Applications Engineer",
-          department: "Security",
-          status: "Active",
-          role: "Member",
-          imgUrl:
-            "https://images.unsplash.com/photo-1566492031773-4f4e44671857?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-        },
-        {
-            name: "Jane Cooper",
-            email: "jane.cooper@example.com",
-            title: "Regional Paradigm Technician",
-            department: "Optimization",
-            status: "Active",
-            role: "Admin",
-            imgUrl:
-              "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-        },
-        {
-            name: "Cody Fisher",
-            email: "cody.fisher@example.com",
-            title: "Product Directives Officer",
-            department: "Intranet",
-            status: "Active",
-            role: "Owner",
-            imgUrl:
-              "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-        },
-        {
-            name: "Esther Howard",
-            email: "esther.howard@example.com",
-            title: "Forward Response Developer",
-            department: "Directives",
-            status: "Active",
-            role: "Member",
-            imgUrl:
-              "https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-        },
-        {
-            name: "Jenny Wilson",
-            email: "jenny.wilson@example.com",
-            title: "Central Security Manager",
-            department: "Program",
-            status: "Active",
-            role: "Member",
-            imgUrl:
-              "https://images.unsplash.com/photo-1498551172505-8ee7ad69f235?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-        },
-        {
-            name: "Kristin Watson",
-            email: "kristin.watson@example.com",
-            title: "Lean Implementation Liaison",
-            department: "Mobility",
-            status: "Active",
-            role: "Admin",
-            imgUrl:
-              "https://images.unsplash.com/photo-1532417344469-368f9ae6d187?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-        },
-        {
-            name: "Cameron Williamson",
-            email: "cameron.williamson@example.com",
-            title: "Internal Applications Engineer",
-            department: "Security",
-            status: "Active",
-            role: "Member",
-            imgUrl:
-              "https://images.unsplash.com/photo-1566492031773-4f4e44671857?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-        },
-    ];
-
-    let datat = [
-        {
-            name: "Jane Cooper",
-            email: "jane.cooper@example.com",
-            title: "Regional Paradigm Technician",
-            department: "Optimization",
-            status: "Active",
-            role: "Admin",
-            imgUrl:
-              "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-          },
-          {
-            name: "Cody Fisher",
-            email: "cody.fisher@example.com",
-            title: "Product Directives Officer",
-            department: "Intranet",
-            status: "Active",
-            role: "Owner",
-            imgUrl:
-              "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-          },
-          {
-            name: "Esther Howard",
-            email: "esther.howard@example.com",
-            title: "Forward Response Developer",
-            department: "Directives",
-            status: "Active",
-            role: "Member",
-            imgUrl:
-              "https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-          },
-    ];
 
     let columnFormat = columnFormats;
     
@@ -168,14 +15,32 @@ export default function Table({datas ,column, columnFormats}) {
         [column]
     );
 
-    //const data = datas;
-    //const data = React.useMemo(() => datas, []);
+    // function getExportFileBlob({ columns, data, fileType, fileName }) {
+    //     if (fileType === "csv") {
+    //       // CSV example
+    //       const headerNames = columns.map((col) => col.exportValue);
+    //       const csvString = Papa.unparse({ fields: headerNames, data });
+    //       return new Blob([csvString], { type: "text/csv" });
+    //     }
+    // }
+
+    const notPrint = {
+        '@media print' : {
+            display: 'none',
+        },
+    };
+
+    const style = {
+        marginTop: `20px`,
+        '@media (min-width: 500px)': {
+            marginTop: `-60px`,
+        },
+        '@media print' : {
+            marginTop: `40px`,
+        },
+    };
 
     let data = datas;
-
-    // console.log('data lempar',datas);
-    // console.log('data lokal',datat);
-    // console.log(column);
 
     const {
         getTableProps, // table props from react-table
@@ -193,25 +58,38 @@ export default function Table({datas ,column, columnFormats}) {
         nextPage,
         previousPage,
         setPageSize,
-        
+        exportData
     } = useTable(
         {
             columns,
             data,
             initialState: { pageIndex: 0 },
+            //getExportFileBlob
         },
         //useFilters,
         useGlobalFilter,
         useSortBy,
-        usePagination
+        usePagination,
+        useExportData,
     );
 
     
     return (
-        <div style={{ marginTop: `-40px`}}>
-
+        <StyleRoot>
+        <div style={style}>
              <div className="row d-flex flex-row-reverse">
-                <div className="form-group col-4">
+
+                {/* <div className="form-group col-2 col-sm-2">
+                    <label className="form-label">&nbsp;</label><br></br>
+                    <button
+                        className="btn btn-sm btn-danger"
+                        onClick={() => {
+                        exportData("csv", true);
+                        }}
+                    >download</button>
+                </div> */}
+
+                <div style={notPrint} className="form-group col-10 col-sm-4">
                     <label >Search</label>
                     <input
                     className="form-control"
@@ -221,44 +99,47 @@ export default function Table({datas ,column, columnFormats}) {
                     />
                 </div>
             </div>
-            
 
-
-            <table {...getTableProps()} className="table table-striped table-sm">
-            <thead className="text-white bg-primary p-3">
-                {headerGroups.map(headerGroup => (
-                <tr {...headerGroup.getHeaderGroupProps()}>
-                    {headerGroup.headers.map(column => (
-                    <th {...column.getHeaderProps(column.getSortByToggleProps())}>{
-                        column.render("Header")}
-                        {/* Add a sort direction indicator */}
-                        <span>
-                            {column.isSorted
-                            ? column.isSortedDesc
-                                ? ' 🔽'
-                                : ' 🔼'
-                            : ''}
-                        </span>
-                    </th>
-                    ))}
-                </tr>
-                ))}
-            </thead>
-            <tbody {...getTableBodyProps()}>
-                {page.map((row, i) => {
-                prepareRow(row);
-                return (
-                    <tr {...row.getRowProps()}>
-                    {row.cells.map(cell => {
-                        return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
-                    })}
+            <div className="table-responsive">
+                <table {...getTableProps()} className="table table-striped table-md">
+                <thead className="thead-dark p-3">
+                    {headerGroups.map(headerGroup => (
+                    <tr {...headerGroup.getHeaderGroupProps()}>
+                        {headerGroup.headers.map(column => (
+                        <th {...column.getHeaderProps(column.getSortByToggleProps())}>{
+                            column.render("Header")}
+                            {/* Add a sort direction indicator */}
+                            <span>
+                                {column.isSorted
+                                ? column.isSortedDesc
+                                    ? ' 🔽'
+                                    : ' 🔼'
+                                : ''}
+                            </span>
+                        </th>
+                        ))}
                     </tr>
-                );
-                })}
-            </tbody>
-            </table>
+                    ))}
+                </thead>
+                <tbody {...getTableBodyProps()}>
+                    {
+                    page.length > 0 && 
+                    page.map((row, i) => {
+                    prepareRow(row);
+                    return (
+                        <tr {...row.getRowProps()}>
+                        {row.cells.map(cell => {
+                            return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
+                        })}
+                        </tr>
+                    );
+                    }) || <tr><td className="text-center" colSpan={100}>Tidak ada data</td></tr>
+                    }
+                </tbody>
+                </table>
+            </div>
 
-            <div className="row justify-content-between">
+            <div style={notPrint} className="row justify-content-between">
                 <div className="col-4">
                 <nav aria-label="Page navigation example">
                     <ul className="pagination">
@@ -312,10 +193,11 @@ export default function Table({datas ,column, columnFormats}) {
                 </div>
             </div>
 
-            <div className="pagination">
+            <div style={notPrint} className="pagination">
                 
 
             </div>
         </div>
+        </StyleRoot>
     );
 }

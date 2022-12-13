@@ -10,6 +10,7 @@ const headers = {
     'X-CSRF-TOKEN': csrf_token
 }
 
+
 const getAll = () => {
     return axios.get(url,{ headers: headers_auth })
     .then(res => {
@@ -65,7 +66,6 @@ const destroy = (id) => {
 
 const setActive = (id) => {
     let urls = `${url}/set-aktif/${id}`;
-    console.log(headers_auth)
     return axios.put(urls,{ headers: headers_auth})
     .then(res => {
         return res;

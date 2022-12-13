@@ -11,8 +11,19 @@ const headers = {
 }
 
 const getAll = () => {
-    console.log(url)
     return axios.get(url,{ headers: headers })
+    .then(res => {
+        return res.data;
+    })
+    .catch(function (error) {
+        return error.response.data
+    });
+}
+
+const getByBulan = (id_sekolah,bulan,tahun) => {
+    let urls = `${url}/sekolah/${id_sekolah}/bulan/${bulan}/tahun/${tahun}`;
+    console.log(urls);
+    return axios.get(urls,{ headers: headers })
     .then(res => {
         return res.data;
     })
@@ -90,6 +101,7 @@ const statusActive = (data) => {
 
 export{
     getAll,
+    getByBulan,
     create,
     destroy,
     detail,

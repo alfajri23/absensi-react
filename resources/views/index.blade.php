@@ -13,9 +13,13 @@
         <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
         <link rel="stylesheet" href="{{ asset('css/components.css') }}"> --}}
 
-        <link rel="stylesheet" href="{{ mix('css/style.css') }}">
-        <link rel="stylesheet" href="{{ mix('css/custom.css') }}">
-        <link rel="stylesheet" href="{{ mix('css/components.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/components.css') }}">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+        integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+        crossorigin=""/>
+
         <style>
             body {
                 font-family: 'Nunito', sans-serif;
@@ -25,17 +29,13 @@
     <body class="antialiased">
 
         <div id="root"></div>
-
-       
-    
-
     <script> 
         var csrf_token = '{{ csrf_token() }}'; 
     </script>
 
-    <script src="{{ mix('js/manifest.js') }}" defer></script>
-    <script src="{{ mix('js/vendor.js') }}" defer></script>
-    <script src="{{ mix('js/app.js') }}" defer></script>
+    <script src="{{ asset('js/manifest.js') }}" defer></script>
+    <script src="{{ asset('js/vendor.js') }}" defer></script>
+    <script src="{{ asset('js/app-v.0.js') }}" defer></script>
 
 </body>
 </html>

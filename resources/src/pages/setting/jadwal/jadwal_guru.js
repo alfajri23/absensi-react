@@ -4,13 +4,11 @@ import {HiOutlinePencilAlt , HiOutlineTrash, HiOutlinePlusCircle} from 'react-ic
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { Formik, Field } from 'formik';
-import { getAll as getRombel } from '../../../api/api_rombel'
 import { getAll, groupByHari, create, destroy, detail, updates } from '../../../api/setting/jadwal/api_jadwal'
 import swal from 'sweetalert';
-import Select from 'react-select'
+import * as Yup from 'yup';
 
 import LayoutAdmin from '../../../layouts/admin';
-import Tables from '../../../components/table/table';
 import { getIdSekolah } from '../../../auth/auth';
 
 
@@ -29,6 +27,17 @@ const JadwalGuru = () => {
             id_sekolah: getIdSekolah()
         }
     );
+
+    const validateForm  = Yup.object().shape({
+        hari: Yup.string()
+          .required('Harus diisi'),
+        jam_masuk: Yup.string()
+          .required('Harus diisi'),
+        jam_pulang: Yup.string()
+          .required('Harus diisi'),
+    });
+
+
     let [edit, setEdit] = useState(false);
     
     let formValue = {
@@ -78,22 +87,36 @@ const JadwalGuru = () => {
     }
 
     const deleteData = async (id) => {
-        let res = await destroy(id);
 
-        if(res.status == 200){
-            getData();
-            swal("Good job!", "Sukses", "success");
-        }else{
-            swal("Error", res.message, "warning");
-        }
+        swal({
+            title: "Hapus ?",
+            text: "Yakin untuk menghapus ini ?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then(async (willDelete) => {
+            if (willDelete) {
+                let res = await destroy(id);
+
+                if(res.status == 200){
+                    getData();
+                    swal("Good job!", "Sukses", "success");
+                }else{
+                    swal("Error", res.message, "warning");
+                }
+            } else {
+              swal("Data aman");
+            }
+        });
+
+        
     }
 
     const detailData = async (id) => {
         let res = await detail(id);
 
         if(res.status == 200){
-            console.log('database',res.data.data);
-
             formValue ={
                 ...formValue,
                 id : res.data.data.id,
@@ -104,11 +127,8 @@ const JadwalGuru = () => {
                 keterangan: res.data.data.keterangan,
             }
 
-            
             setEdit(true);
             setForm(formValue);
-            console.log('form_value',formValue);
-            console.log('state',form);
             setShow(true);
         }else{
             swal("Error", res.message, "warning");
@@ -142,7 +162,7 @@ const JadwalGuru = () => {
                                 <HiOutlinePlusCircle className="fs-6 mr-1" /> Tambah
                             </button>
 
-                            <table className="table mt-4">
+                            <table className="table mt-4 table-striped">
                                 <thead>
                                     <tr>
                                     <th scope="col">No</th>
@@ -156,7 +176,7 @@ const JadwalGuru = () => {
                                     {data.map((result,key) => {
                                         return(
                                             <tr key={key}>
-                                                <th>1</th>
+                                                <th>{key+1}</th>
                                                 <th scope="row">{result.hari}</th>
 
                                                 <td> 
@@ -214,31 +234,8 @@ const JadwalGuru = () => {
                 initialValues={form}
                 onSubmit={ async (values, { setSubmitting }) => {
 
-                    console.log('data form',values);
-
-                    
                     let res = await edit ? updates(values.id, values) : create(values);
                     res = await res;
-
-                    //let res = values.rombel.forEach(myFunction);
-                    // values.rombel.forEach(myFunction);
-
-                    // async function myFunction(value, index, array) {
-                    //     let values_new = {
-                    //         ...values,
-
-                    //     }
-
-                    //     console.log('data kirim',values_new);
-                        
-                    //     let res = await edit ? updates(values_new.id,values_new) : create(values_new);
-                    //     let done = await res;
-                    //     console.log(done);
-                    // }
-
-
-                    
-                    console.log(res);
                     
                     if(res.status == 200){
                         getData();
@@ -246,10 +243,10 @@ const JadwalGuru = () => {
                     }else{
                         swal("Error", res.message, "warning");
                     }
-                    
                     setShow(false)
 
                 }}
+                validationSchema={validateForm}
                 >
                 {({
                     values,
@@ -337,9 +334,13 @@ const JadwalGuru = () => {
                         {errors.keterangan && touched.keterangan && errors.keterangan}
                     </div>
 
-                    <button type="submit" className="btn btn-nu btn-lg btn-block" disabled={isSubmitting}>
-                        Submit
-                    </button>
+                    <Button type="submit" className="btn btn-success w-100" disabled={isSubmitting}>
+                        { isSubmitting ? 
+                        <>
+                        <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        </>
+                        : 'Kirim'}
+                    </Button>
                 </form>
                 )}
                 </Formik>

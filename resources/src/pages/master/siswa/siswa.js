@@ -1,15 +1,17 @@
 import React, {useEffect, useState} from 'react'
 import { Link } from 'react-router-dom'
-import {HiOutlinePencilAlt , HiOutlineTrash, HiOutlinePlusCircle} from 'react-icons/hi';
+import {HiOutlinePencilAlt , HiOutlineTrash, HiOutlinePlusCircle, HiOutlineKey} from 'react-icons/hi';
 import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
-import { Formik } from 'formik';
-import { getAll, create, destroy, detail, updates } from '../../../api/master/api_siswa'
+import { Formik, Field, Form } from 'formik';
+import { getAll, create, destroy, detail, updates, getImportFile, importFile, resetPass as resetPassword, filterRombelTahun } from '../../../api/master/api_siswa'
 import { getAll as getAllJurusan } from '../../../api/api_jurusan'
+import { getAll as getRombel } from '../../../api/api_rombel';
 import swal from 'sweetalert';
+import * as Yup from 'yup';
 
 import LayoutAdmin from '../../../layouts/admin';
-import Tables from '../../../components/table/table';
+import Table from '../../../components/table/react-table';
+import { getIdSekolah, getTahun } from '../../../auth/auth';
 
 
 const SiswaIndex = () => {
@@ -19,16 +21,33 @@ const SiswaIndex = () => {
         {
             id: '',
             nama: '',
-            id_jurusan: '',
+            email: '',
+            nik: '',
+            nis: '',
+            nisn: '',
+            jenkel: '',
+            telepon: '',
+            agama: '',
+            tempat_lahir: '',
+            tgl_lahir: '',
         }
     );
-    let [jurusan, setJurusan] = useState([]);
+    let [download, setDownload] = useState('');
     let [edit, setEdit] = useState(false);
+    let [rombel, setRombel] = useState([]);
     
     let formValue = {
         id: '',
         nama: '',
-        id_jurusan: '',
+        email: '',
+        nik: '',
+        nis: '',
+        nisn: '',
+        jenkel: '',
+        telepon: '',
+        agama: '',
+        tempat_lahir: '',
+        tgl_lahir: '',
     }
 
     const [show, setShow] = useState(false);
@@ -37,7 +56,15 @@ const SiswaIndex = () => {
         formValue = {
             id: '',
             nama: '',
-            id_jurusan: '',
+            email: '',
+            nik: '',
+            nis: '',
+            nisn: '',
+            jenkel: '',
+            telepon: '',
+            agama: '',
+            tempat_lahir: '',
+            tgl_lahir: '',
         }
 
         getDataJurusan();
@@ -46,42 +73,86 @@ const SiswaIndex = () => {
         setShow(true);
     }
 
+    const [showImport, setShowImport] = useState(false);
+    const handleCloseImport = () => setShowImport(false);
+    const handleShowImport = () => setShowImport(true);
     
 
     useEffect(() => {
         getData();
+        initRombel();
     },[]);
+
+    const initRombel = async () => {
+        let data = await getRombel();
+        if(data.data != null){
+            setRombel(data.data);
+        }else{
+            swal("Error", data.message, "warning");
+        }
+    }
+
+    const tahun = () => {
+        let tahun = getTahun() - 5;
+        let list_tahun = [];
+        for (let i = 0; i < 10; i++) {
+            list_tahun.push(tahun++)
+        }
+        return list_tahun;
+      }
 
     const getData = async () => {
         let data = await getAll();
+        let download = getImportFile(getIdSekolah());
         if(data.data != null){
             setData(data.data);
-            console.log(data.data);
+            setDownload(download);
         }else{
             swal("Error", data.message, "warning");
         }
     }
 
     const deleteData = async (id) => {
-        let res = await destroy(id);
+        swal({
+            title: "Hapus ?",
+            text: "Yakin unutk menghapus ini ?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then(async (willDelete) => {
+            if (willDelete) {
+                let res = await destroy(id);
 
-        if(res.status == 200){
-            getData();
-            swal("Good job!", "Sukses", "success");
-        }else{
-            swal("Error", res.message, "warning");
-        }
+                if(res.status == 200){
+                    getData();
+                    swal("Good job!", "Sukses", "success");
+                }else{
+                    swal("Error", res.message, "warning");
+                }
+            } else {
+              swal("Data aman");
+            }
+        });  
     }
 
     const detailData = async (id) => {
         let res = await detail(id);
-
+        console.log(res.data.data)
         if(res.status == 200){
             formValue ={
                 ...formValue,
                 id : res.data.data.id,
                 nama: res.data.data.nama,
-                id_jurusan: res.data.data.id_jurusan,
+                email: res.data.data.email,
+                nik: res.data.data.nik,
+                nis: res.data.data.nis,
+                nisn: res.data.data.nisn,
+                jenkel: res.data.data.jenkel_kode,
+                telepon: res.data.data.telepon,
+                agama: res.data.data.agama,
+                tempat_lahir: res.data.data.tempat_lahir,
+                tgl_lahir: res.data.data.tgl_lahir,
             }
 
             setEdit(true);
@@ -111,29 +182,74 @@ const SiswaIndex = () => {
         setJurusan(data.data);
     }
 
+    const resetPass = async (id) => {
+
+        swal("Apakah anda yakin untuk mereset password ?", {
+            buttons: {
+              cancel: "Batal",
+              catch: {
+                text: "Reset",
+                value: "catch",
+              },
+            },
+          })
+          .then( async(value) => {
+            switch (value) {          
+              case "catch":
+                let res = await resetPassword(id);
+        
+                if(res.status == 200){
+                    getData();
+                    swal("Good job!", "Password baru : 12345", "success");
+                }else{
+                    swal("Error", res.message, "warning");
+                }
+                break;
+           
+              default:
+                swal("Tidak ada perubahan");
+            }
+        });
+
+        
+    }
+
+    const getFilter = async (id_rombel, tahun) => {
+        let res = await filterRombelTahun(id_rombel, tahun);
+        if(res.data.data != null){
+            console.log(res.data)
+            setData(res.data.data);
+        }else{
+            setData([]);
+        }
+    }
+
     const columnFormat = {
-        action: (cell, row) => {
+        action: ({value, row}) => {
             return(
-                <div key={cell} className="btn-group" role="group" aria-label="Basic outlined example">
-                    <button onClick={()=> detailData(cell)} type="button" className="btn btn-sm btn-outline-primary">
+                <div key={value} className="btn-group" role="group" aria-label="Basic outlined example">
+                    <button onClick={()=> detailData(value)} type="button" className="btn btn-sm btn-outline-primary">
                         <HiOutlinePencilAlt className="fs-6" />
                     </button>
-                    <button onClick={()=> deleteData(cell)} type="button" className="btn btn-sm btn-outline-danger">
+                    <button onClick={()=> deleteData(value)} type="button" className="btn btn-sm btn-outline-danger">
                         <HiOutlineTrash className="fs-6" />
+                    </button>
+                    <button onClick={()=> resetPass(value)} type="button" className="btn btn-sm btn-outline-warning">
+                        <HiOutlineKey className="fs-6" />
                     </button>
                 </div>
             )
         },
-        status: (cell, row) => {
-            switch(cell) {
+        status: ({value, row}) => {
+            switch(value) {
                 case 'Aktif':
                   return(
-                    <span key={row.id} className="badge text-bg-success">Aktif</span>
+                    <span key={row.original.id} className="badge text-bg-success">Aktif</span>
                   )
                   break;
                 default:
                     return (
-                    <span key={row.id} className="badge text-bg-danger">Tidak aktif</span>
+                    <span key={row.original.id} className="badge text-bg-danger">Tidak aktif</span>
                 )
             }
         }
@@ -141,38 +257,51 @@ const SiswaIndex = () => {
 
     const column = [
         {
-            dataField: 'id',
-            text: 'Id',
-            sort: true
+            accessor: '',
+            Header: 'Id',
         },
         {
-            dataField: 'nama',
-            text: 'Nama',
-            sort: true
+            accessor: 'nama',
+            Header: 'Nama',
         },
         {
-            dataField: 'nis',
-            text: 'NIM',
-            sort: true
+            accessor: 'nis',
+            Header: 'NIM',
         },
         {
-            dataField: 'telepon',
-            text: 'Telepon',
-            sort: true
+            accessor: 'telepon',
+            Header: 'Telepon',
         },
         {
-            dataField: 'status',
-            text: 'Status',
-            sort: true,
-            formatter: columnFormat.status
+            accessor: 'status',
+            Header: 'Status',
+            Cell: columnFormat.status
         },
         {
-            dataField: 'id',
-            text: 'Action',
-            sort: true,
-            formatter: columnFormat.action
+            accessor: 'id',
+            Header: 'Action',
+            Cell: columnFormat.action
         },
     ]
+
+    const validateForm  = Yup.object().shape({
+        nama: Yup.string()
+          .required('Harus diisi'),
+        email: Yup.string().email('Email tidak valid')
+          .required('Harus diisi'),
+        nik: Yup.string()
+          .required('Harus diisi'),
+        nis: Yup.string()
+          .required('Harus diisi'),
+        nisn: Yup.string()
+          .required('Harus diisi'),
+        telepon: Yup.string()
+          .required('Harus diisi'),
+        jenkel: Yup.string()
+          .required('Harus diisi'),
+        agama: Yup.string()
+          .required('Harus diisi'),
+    });
 
 
     return (
@@ -184,7 +313,7 @@ const SiswaIndex = () => {
                     <div className="breadcrumb-item active">
                         <Link to="/">Dashboard</Link>
                     </div>
-                    <div className="breadcrumb-item">Transaksi</div>
+                    <div className="breadcrumb-item">Siswa</div>
                 </div>
             </div>
 
@@ -192,53 +321,75 @@ const SiswaIndex = () => {
                 <div className="card">
                     <div className="card-body">
                         <div className="container-fluid">
-                            <button onClick={handleShow} className="btn btn-success">
-                                <HiOutlinePlusCircle className="fs-6 mr-1" /> Tambah
-                            </button>
+                            <Formik
+                                initialValues={{
+                                    tahun: '',
+                                    rombel: '',
+                                }}
+                                onSubmit={async (values)=>{
+                                    console.log(values)
+                                    await getFilter(values.rombel, values.tahun);
+                                }}
+                                >
+                                {({
+                                    isSubmitting,
+                                    errors,
+                                }) => (
+                                <Form>
+                                    <div className="d-flex">
+                                        
+                                        <div className="col-2">
+                                            <label className="form-label">Tahun</label>
+                                            <Field name="tahun" as="select" className="form-select">
+                                                <option value="">-- pilih --</option>
+                                                {tahun().map((result,key) => {
+                                                  return (
+                                                      <option key={key} value={result}>{result}</option>
+                                                  )
+                                                })}
+                                            </Field>
+                                            <small className="text-danger">{errors.tahun_ajar}</small>
+                                        </div> 
 
-                            <Tables data={data} column={column} columnFormats={columnFormat}/>
+                                        <div className="col-2 mx-1">
+                                            <label className="form-label">Rombel</label>
+                                            <Field name="rombel" as="select" className="form-select">
+                                                <option value="">-- pilih --</option>
+                                                {rombel.map((result,key) => {
+                                                    return (
+                                                        <option key={key} value={result.id}>{result.nama}</option>
+                                                    )
+                                                })}
+                                            </Field>
+                                            <small className="text-danger">{errors.rombel}</small>
+                                        </div> 
 
-                            {/* <table id="example" className="table table-hover table-bordered">
-                                <thead>
-                                    <tr>
-                                    <th>ID</th>
-                                    <th>Siswa</th>
-                                    <th>NIS</th>
-                                    <th>Telepon</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                {data.map((result,key) => {
-                                    return (
-                                        <tr key={key}>
-                                        <td width={`5%`}>{result.id}</td>
-                                        <td width={`25%`}>{result.nama}</td>
-                                        <td width={`5%`}>{result.nis}</td>
-                                        <td width={`10%`}>{result.telepon}</td>
-                                        <td  width={`10%`}>
-                                            {
-                                                setStatus(result.status)
-                                            }
-                                            
-                                        </td>
-                                        <td width={`8%`}>
-                                            <div className="btn-group" role="group" aria-label="Basic outlined example">
-                                                <button onClick={()=> detailData(result.id)} type="button" className="btn btn-sm btn-outline-primary">
-                                                    <HiOutlinePencilAlt className="fs-6" />
-                                                </button>
-                                                <button onClick={()=> deleteData(result.id)} type="button" className="btn btn-sm btn-outline-danger">
-                                                    <HiOutlineTrash className="fs-6" />
-                                                </button>
-                                                
-                                            </div>
-                                        </td>
-                                        </tr>
-                                    )
-                                })}  
-                                </tbody>
-                            </table> */}
+                                        <div className="col-auto mx-1">
+                                            <label className="form-label">&nbsp;</label><br></br>
+                                            <button type="submit" className="btn btn-nu btn-block" disabled={isSubmitting}>
+                                                { isSubmitting ? 
+                                                    <>
+                                                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                                    <span className="sr-only ms-1">Loading...</span>
+                                                    </>
+                                                : 'Cari'}
+                                            </button>
+                                        </div>
+
+                                        <div className="col-auto mx-1">
+                                            <label className="form-label">&nbsp;</label><br></br>
+                                            <button onClick={handleShowImport} className="btn btn-info">
+                                                Tambah
+                                            </button>
+                                        </div>
+
+                                    </div> 
+                                </Form>
+                                )}
+
+                            </Formik>
+
+                            <Table datas={data} column={column} columnFormats={columnFormat}/>
 
                         </div>
                     </div>
@@ -246,7 +397,7 @@ const SiswaIndex = () => {
             </div>
         </div>
 
-        <Modal show={show} onHide={handleClose}>
+        <Modal size="lg" show={show} onHide={handleClose}>
             <Modal.Header closeButton>
                 <Modal.Title>Tambah Siswa</Modal.Title>
             </Modal.Header>
@@ -255,8 +406,11 @@ const SiswaIndex = () => {
                 <Formik
                 initialValues={form}
                 onSubmit={ async (values, { setSubmitting }) => {
-                    
-                    let res = edit ? await create(values) : await create(values);
+                    let req = {
+                        ...values,
+                        id_sekolah: getIdSekolah()
+                    }
+                    let res = edit ? await updates(req) : await create(req);
                     
                     
                     if(res.status == 200){
@@ -269,6 +423,7 @@ const SiswaIndex = () => {
                     setShow(false)
 
                 }}
+                validationSchema={validateForm}
                 >
                 {({
                     values,
@@ -280,8 +435,8 @@ const SiswaIndex = () => {
                     isSubmitting,
                     /* and other goodies */
                 }) => (
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
+                <form className="form-row row" onSubmit={handleSubmit}>
+                    <div className="form-group col-6">
                         <label htmlFor="role">Nama</label>
                         <input
                             type="nama"
@@ -294,32 +449,131 @@ const SiswaIndex = () => {
                         {errors.nama && touched.nama && errors.nama}
                     </div>
 
-                    <div className="form-group">
-                        <label htmlFor="role">Jurusan</label>
-                        <select className="form-control" onChange={handleChange}
-                            onBlur={handleBlur} name="id_jurusan" value={values.id_jurusan}>
-                            <option value=''>Pilih</option>
-                            { jurusan.map((result,key) => {
-                                return (  
-                                    <option key={key} value={result.id}>{result.nama}</option>
-                                    )
-                            })}   
-                        </select>
-                        
-                        {/* <input
-                            type="id_jurusan"
-                            name="id_jurusan"
+                    <div className="form-group col-6">
+                        <label htmlFor="role">Email</label>
+                        <input
+                            type="email"
+                            name="email"
                             className="form-control" 
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            value={values.id_jurusan}
-                        /> */}
-                        {errors.id_jurusan && touched.id_jurusan && errors.id_jurusan}
+                            value={values.email}
+                        />
+                        {errors.email && touched.email && errors.email}
                     </div>
 
-                    <button type="submit" className="btn btn-nu btn-lg btn-block" disabled={isSubmitting}>
-                        Submit
-                    </button>
+                    <div className="form-group col-7">
+                        <label htmlFor="role">Tempat lahir</label>
+                        <input
+                            type="text"
+                            name="tempat_lahir"
+                            className="form-control" 
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            value={values.tempat_lahir}
+                        />
+                        {errors.tempat_lahir && touched.tempat_lahir && errors.tempat_lahir}
+                    </div>
+
+                    <div className="form-group col-5">
+                        <label htmlFor="role">Tanggal lahir</label>
+                        <input
+                            type="date"
+                            name="tgl_lahir"
+                            className="form-control" 
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            value={values.tgl_lahir}
+                        />
+                        {errors.tgl_lahir && touched.tgl_lahir && errors.tgl_lahir}
+                    </div>
+
+                    <div className="form-group col-4">
+                        <label htmlFor="role">NIK</label>
+                        <input
+                            type="number"
+                            name="nik"
+                            className="form-control" 
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            value={values.nik}
+                        />
+                        {errors.nik && touched.nik && errors.nik}
+                    </div>
+
+                    <div className="form-group col-4">
+                        <label htmlFor="role">nis</label>
+                        <input
+                            type="number"
+                            name="nis"
+                            className="form-control" 
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            value={values.nis}
+                        />
+                        {errors.nis && touched.nis && errors.nis}
+                    </div>
+
+                    <div className="form-group col-4">
+                        <label htmlFor="role">nisn</label>
+                        <input
+                            type="number"
+                            name="nisn"
+                            className="form-control" 
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            value={values.nisn}
+                        />
+                        {errors.nisn && touched.nisn && errors.nisn}
+                    </div>
+
+                    <div className="form-group col-4">
+                        <label htmlFor="role">Jenis Kelamin</label>
+                        <Field name="jenkel" as="select" className="form-select">
+                            <option value="">-- Pilih --</option>
+                            <option value="l">Laki-laki</option>
+                            <option value="p">Perempuan</option>
+                        </Field>
+                        {errors.jenkel && touched.jenkel && errors.jenkel}
+                    </div>
+
+                    <div className="form-group col-4">
+                        <label htmlFor="role">Agama</label>
+                        <Field name="agama" as="select" className="form-select">
+                            <option value="">-- Pilih --</option>
+                            <option value="islam">islam</option>
+                            <option value="kristen">kristen</option>
+                            <option value="katolik">katolik</option>
+                            <option value="hindu">hindu</option>
+                            <option value="budha">budha</option>
+                            <option value="konghucu">konghucu</option>
+                        </Field>
+                        {errors.agama && touched.agama && errors.agama}
+                    </div>
+
+                    <div className="form-group col-4">
+                        <label htmlFor="role">Telepon</label>
+                        <input
+                            type="number"
+                            name="telepon"
+                            className="form-control" 
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            value={values.telepon}
+                        />
+                        {errors.telepon && touched.telepon && errors.telepon}
+                    </div>
+
+                    <div className="form-group col-4">
+                        <button type="submit" className="btn btn-nu btn-lg btn-block" disabled={isSubmitting}>
+                            { isSubmitting ? 
+                            <>
+                            <span className="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true"></span>
+                            <span className="sr-only">Loading...</span>
+                            </>
+                                : 'Kirim'}
+                        </button>
+                    </div>
                 </form>
                 )}
                 </Formik>
@@ -327,6 +581,81 @@ const SiswaIndex = () => {
             </Modal.Body>
 
         </Modal>
+
+        <Modal size="lg" show={showImport} onHide={handleCloseImport}>
+            <Modal.Header closeButton>
+                <Modal.Title>Import Siswa</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <p>Silakan download file template terlebih dahulu, <a href={download}> Download</a></p>
+                <Formik
+                initialValues={{
+                    file: ''
+                }}
+                onSubmit={ async (values, { setSubmitting }) => {
+                    const formData = new FormData();
+                    formData.append('file', values.file);
+                    let res = await importFile(formData, getTahun());
+                    console.log(res);
+                    if(res.status == 200){
+                        getData();
+                        swal("Good job!", "Sukses", "success");
+                    }else{
+                        swal("Error", res.message[0].error, "warning");
+                    }
+
+                }}
+                validationSchema={
+                    Yup.object().shape({
+                        file: Yup.string()
+                          .required('Harus diisi')
+                    })
+                }
+                >
+                {({
+                    values,
+                    errors,
+                    touched,
+                    handleChange,
+                    handleBlur,
+                    handleSubmit,
+                    isSubmitting,
+                    setFieldValue
+                    /* and other goodies */
+                }) => (
+                    <form onSubmit={handleSubmit}>
+                        <div className="form-group">
+                            <label >File</label>
+                            <input
+                                type="file"
+                                name="file"
+                                className="form-control" 
+                                onBlur={handleBlur}
+                                onChange={(event) => {
+                                    setFieldValue("file", event.currentTarget.files[0]);
+                                }}
+                            />
+                            {errors.file && touched.file && errors.file}
+                        </div>
+                        <div className="form-group">
+                            <button type="submit" className="btn btn-nu btn-block" disabled={isSubmitting}>
+                                { isSubmitting ? 
+                                    <>
+                                    <span className="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true"></span>
+                                    <span className="sr-only">Loading...</span>
+                                    </>
+                                : 'Kirim'}
+                            </button>
+                        </div>
+                    </form>
+
+                )}
+
+                </Formik>
+
+            </Modal.Body>
+        </Modal>
+
         </LayoutAdmin>
     )
 }

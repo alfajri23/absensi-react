@@ -2,14 +2,14 @@ import React, {useEffect, useState} from 'react'
 import { Link } from 'react-router-dom'
 import {HiOutlinePencilAlt , HiOutlineTrash, HiOutlinePlusCircle} from 'react-icons/hi';
 import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
 import { Formik } from 'formik';
 import { getAll, create, destroy, detail, updates } from '../../../api/api_kelas'
 import { getAll as getAllJurusan } from '../../../api/api_jurusan'
 import swal from 'sweetalert';
+import * as Yup from 'yup';
 
 import LayoutAdmin from '../../../layouts/admin';
-import Tables from '../../../components/table/table';
+import Table from '../../../components/table/react-table';
 
 
 
@@ -51,23 +51,6 @@ const KelasIndex = () => {
 
     useEffect(() => {
         getData();
-
-        // $(document).ready(function () {
-        //     setTimeout(function(){
-        //         let table = $('#example').DataTable({
-        //             pagingType: "full_numbers",
-        //             pageLength: 20,
-        //             processing: true,
-        //             dom: "<'row'<'col-sm-8'><'col-sm-3'f>>" + 
-        //             "<'row'<'col-sm-12'tr>>" +
-        //             "<'row'<'col-sm-4'l><'col-sm-4'i><'col-sm-4'p>>",
-        //             select: {
-        //                 style: "single",
-        //             },
-        //         });
-        //     },1500);
-        // });
-
     },[]);
 
     const getData = async () => {
@@ -82,14 +65,27 @@ const KelasIndex = () => {
     }
 
     const deleteData = async (id) => {
-        let res = await destroy(id);
+        swal({
+            title: "Hapus ?",
+            text: "Yakin unutk menghapus ini ?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then(async (willDelete) => {
+            if (willDelete) {
+                let res = await destroy(id);
 
-        if(res.status == 200){
-            getData();
-            swal("Good job!", "Sukses", "success");
-        }else{
-            swal("Error", res.message, "warning");
-        }
+                if(res.status == 200){
+                    getData();
+                    swal("Good job!", "Sukses", "success");
+                }else{
+                    swal("Error", res.message, "warning");
+                }
+            } else {
+              swal("Data aman");
+            }
+        });    
     }
 
     const detailData = async (id) => {
@@ -131,28 +127,28 @@ const KelasIndex = () => {
     }
 
     const columnFormat = {
-        action: (cell, row) => {
+        action: ({value, row}) => {
             return(
-                <div key={cell} className="btn-group" role="group" aria-label="Basic outlined example">
-                    <button onClick={()=> detailData(cell)} type="button" className="btn btn-sm btn-outline-primary">
+                <div key={value} className="btn-group" role="group" aria-label="Basic outlined example">
+                    <button onClick={()=> detailData(value)} type="button" className="btn btn-sm btn-outline-primary">
                         <HiOutlinePencilAlt className="fs-6" />
                     </button>
-                    <button onClick={()=> deleteData(cell)} type="button" className="btn btn-sm btn-outline-danger">
+                    <button onClick={()=> deleteData(value)} type="button" className="btn btn-sm btn-outline-danger">
                         <HiOutlineTrash className="fs-6" />
                     </button>
                 </div>
             )
         },
-        status: (cell, row) => {
-            switch(cell) {
+        status: ({value, row}) => {
+            switch(value) {
                 case 'Aktif':
                   return(
-                    <span key={row.id} className="badge text-bg-success">Aktif</span>
+                    <span key={row.original.id} className="badge text-bg-success">Aktif</span>
                   )
                   break;
                 default:
                     return (
-                    <span key={row.id} className="badge text-bg-danger">Tidak aktif</span>
+                    <span key={row.original.id} className="badge text-bg-danger">Tidak aktif</span>
                 )
             }
         }
@@ -160,33 +156,33 @@ const KelasIndex = () => {
 
     const column = [
         {
-            dataField: 'id',
-            text: 'Id',
-            sort: true
+            accessor: '',
+            Header: 'Id',
         },
         {
-            dataField: 'nama',
-            text: 'Nama',
-            sort: true
+            accessor: 'nama',
+            Header: 'Nama',
         },
         {
-            dataField: 'jurusan',
-            text: 'Jurusan',
-            sort: true
+            accessor: 'jurusan',
+            Header: 'Jurusan',
         },
         {
-            dataField: 'status',
-            text: 'Status',
-            sort: true,
-            formatter: columnFormat.status
+            accessor: 'status',
+            Header: 'Status',
+            Cell: columnFormat.status
         },
         {
-            dataField: 'id',
-            text: 'Action',
-            sort: true,
-            formatter: columnFormat.action
+            accessor: 'id',
+            Header: 'Action',
+            Cell: columnFormat.action
         },
     ]
+
+    const validateForm  = Yup.object().shape({
+        nama: Yup.string()
+          .required('Harus diisi'),
+    });
 
 
     return (
@@ -198,7 +194,7 @@ const KelasIndex = () => {
                     <div className="breadcrumb-item active">
                         <Link to="/">Dashboard</Link>
                     </div>
-                    <div className="breadcrumb-item">Transaksi</div>
+                    <div className="breadcrumb-item">Kelas</div>
                 </div>
             </div>
 
@@ -210,48 +206,7 @@ const KelasIndex = () => {
                                 <HiOutlinePlusCircle className="fs-6 mr-1" /> Tambah
                             </button>
 
-                            <Tables data={data} column={column} columnFormats={columnFormat}/>
-
-                           
-                            {/* <table id="example" className="table table-hover table-bordered">
-                                <thead>
-                                    <tr>
-                                    <th>ID</th>
-                                    <th>Kelas</th>
-                                    <th>Jurusan</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                {data.map((result,key) => {
-                                    return (
-                                        <tr key={key}>
-                                        <td width={`5%`}>{result.id}</td>
-                                        <td width={`5%`}>{result.nama}</td>
-                                        <td width={`40%`}>{result.jurusan}</td>
-                                        <td  width={`10%`}>
-                                            {
-                                                setStatus(result.status)
-                                            }
-                                            
-                                        </td>
-                                        <td width={`10%`}>
-                                            <div className="btn-group" role="group" aria-label="Basic outlined example">
-                                                <button onClick={()=> detailData(result.id)} type="button" className="btn btn-sm btn-outline-primary">
-                                                    <HiOutlinePencilAlt className="fs-6" />
-                                                </button>
-                                                <button onClick={()=> deleteData(result.id)} type="button" className="btn btn-sm btn-outline-danger">
-                                                    <HiOutlineTrash className="fs-6" />
-                                                </button>
-                                            </div>
-                                        </td>
-                                        </tr>
-                                    )
-                                })}  
-                                </tbody>
-                            </table> */}
-
+                            <Table datas={data} column={column} columnFormats={columnFormat}/>
                         </div>
                     </div>
                 </div>
@@ -296,7 +251,7 @@ const KelasIndex = () => {
                     <div className="form-group">
                         <label htmlFor="role">Nama</label>
                         <input
-                            type="nama"
+                            type="number"
                             name="nama"
                             className="form-control" 
                             onChange={handleChange}
@@ -317,20 +272,16 @@ const KelasIndex = () => {
                                     )
                             })}   
                         </select>
-                        
-                        {/* <input
-                            type="id_jurusan"
-                            name="id_jurusan"
-                            className="form-control" 
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            value={values.id_jurusan}
-                        /> */}
                         {errors.id_jurusan && touched.id_jurusan && errors.id_jurusan}
                     </div>
 
-                    <button type="submit" className="btn btn-nu btn-lg btn-block" disabled={isSubmitting}>
-                        Submit
+                    <button type="submit" className="btn btn-nu btn-block" disabled={isSubmitting}>
+                        { isSubmitting ? 
+                            <>
+                            <span className="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true"></span>
+                            <span className="sr-only">Loading...</span>
+                            </>
+                        : 'Kirim'}
                     </button>
                 </form>
                 )}

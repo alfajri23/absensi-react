@@ -20,7 +20,7 @@ const mix = require('laravel-mix');
     .postCss('resources/css/components.css', 'public/css', [])
     .postCss('resources/css/custom.css', 'public/css', [])
     .postCss('resources/css/style.css', 'public/css', [])
-    .version()
+    //.version()
     ;
 
 // mix.js('resources/js/app.js', 'public/js')
