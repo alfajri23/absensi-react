@@ -81,7 +81,6 @@ const DashboardSiswa = () => {
   const videoConstraints = {
     width: 1280,
     height: 720,
-    aspectRatio: 1,
     facingMode: "user"
   };
 
@@ -238,7 +237,7 @@ const DashboardSiswa = () => {
                               <MapContainer
                                 center={[110.26669995616746, -7.361558828513047]}
                                 zoom={13}
-                                scrollWheelZoom
+                                scrollWheelZoom={false}
                                 // style={{ height: "100vh" }}
                               >
                                 <TileLayer
@@ -256,6 +255,7 @@ const DashboardSiswa = () => {
                                   ref={webcamRef}
                                   screenshotFormat="image/jpeg"
                                   width={`100%`}
+                                  //height={`100%`}
                                   //width={1280}
                                   videoConstraints={videoConstraints}
                                   style={{borderRadius: `10px`}}
@@ -280,7 +280,7 @@ const DashboardSiswa = () => {
 
                             <Col xs={6} lg={6} sm={6} className="mt-2 ps-1">
                               <div className="w-100">
-                                <img src={ photo != null ? photo : `https://via.placeholder.com/1280x720/eee?text=16:9`} style={{borderRadius: `10px`, width: '100%'}}/>
+                                <img src={ photo != null ? photo : ``} style={{borderRadius: `10px`, width: '100%'}}/>
                               </div>
                             </Col>
 

@@ -35,7 +35,7 @@
 
     <script src="{{ asset('js/manifest.js') }}" defer></script>
     <script src="{{ asset('js/vendor.js') }}" defer></script>
-    <script src="{{ asset('js/app-v.0.js') }}" defer></script>
+    <script src="{{ asset('js/app_dev_1.0.js') }}" defer></script>
 
 </body>
 </html>
