@@ -29,6 +29,7 @@ import { create as storeIzin } from '../../api/izin/api_izin';
 import { getDataMasuk, storeAbsensi } from '../../api/hadir/api_hadir';
 import { getIdKelasSiswa, getId, getIdSekolah, getRole, getTahunAjar } from '../../auth/auth';
 import { statistikKehadiran } from '../../api/api_dashboard';
+import { set } from 'lodash';
 
 
 
@@ -69,6 +70,9 @@ const DashboardSiswa = () => {
   let [ jamMasuk, setjamMasuk ] = useState({});
   let [ position, setPosition ] = useState({});
   let [ statKehadiran, setStatKehadiran ] = useState({});
+  let [ device, setDevice] = useState({
+    width : 0, height: 0
+  });
 
   // Loading Button
   const [loading, setLoading] = useState(false);
@@ -77,6 +81,7 @@ const DashboardSiswa = () => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  
 
   const videoConstraints = {
     width: 1280,
@@ -178,6 +183,23 @@ const DashboardSiswa = () => {
     getData();    
     getStatHadir();
 
+    if(/Android|webOS|iPhone|iPad|iPod|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+      setDevice({
+        ...device,
+        width: 720, height: 1280
+      })
+      console.log('hp');
+    }else{
+      setDevice({
+        ...device,
+        width: 1280, height: 720
+      });
+      console.log('pc');
+    }
+
+    
+    
+
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((pos)=>{
         setPosition({
@@ -196,7 +218,9 @@ const DashboardSiswa = () => {
   const webcamRef = React.useRef(null);
   const capture = React.useCallback(
     () => {
-      let imageSrc = webcamRef.current.getScreenshot({width: 1280, height: 720});
+      //let imageSrc = webcamRef.current.getScreenshot({width: 1280, height: 720});
+      let imageSrc = webcamRef.current.getScreenshot({width: device.width, height: device.height  });
+      console.log('device',device);
       setPhoto(imageSrc);
     },
     [webcamRef]
@@ -219,7 +243,7 @@ const DashboardSiswa = () => {
                             <Col xs={12}>
                               <Card>
                                 <Card.Body>
-                                  <h5>Hari {new Date().toLocaleDateString('id', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}<br></br> </h5>
+                                  <h5>{new Date().toLocaleDateString('id', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}<br></br> </h5>
                                   { jamMasuk != null ? 
                                   <div>
                                     <h6>Jam masuk {jamMasuk.jam_masuk}
