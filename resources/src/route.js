@@ -1,5 +1,6 @@
 import React,{useEffect, useState} from 'react'
-import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from "react-router-dom";
+import { BrowserRouter as Router, Navigate, Outlet } from "react-router-dom";
+import { Routes, Route } from "react-router-loading";
 
 import Home from "./pages/home"
 import About from "./pages/about"
@@ -58,45 +59,45 @@ const RoutePage = () => {
     return (
     <StyleRoot>
         <Router>
-            <Routes>
+            <Routes maxLoadingTime={300}>
                 <Route path="/login" element={<Login />} />
 
                 {/* Admin */}
                 <Route element={<ProtectedRoute user={admin} />}>
-                    <Route path="/admin" element={<Home />} />
-                    <Route path="/about" element={<About />} />
+                    <Route path="/admin" element={<Home />} loading/>
+                    <Route path="/about" element={<About />} loading/>
 
-                    <Route path="/profile" element={<ProfilePage />} />
+                    <Route path="/profile" element={<ProfilePage />} loading/>
 
-                    <Route path="/setting/libur" element={<LiburIndex />} />
-                    <Route path="/setting/jadwal-siswa" element={<JadwalSiswa />} />
-                    <Route path="/setting/jadwal-guru" element={<JadwalGuru />} />
+                    <Route path="/setting/libur" element={<LiburIndex />} loading/>
+                    <Route path="/setting/jadwal-siswa" element={<JadwalSiswa />} loading/>
+                    <Route path="/setting/jadwal-guru" element={<JadwalGuru />} loading/>
 
-                    <Route path="/izin/siswa" element={<IzinSiswa />} />
-                    <Route path="/izin/guru" element={<IzinGuru />} />
+                    <Route path="/izin/siswa" element={<IzinSiswa />} loading/>
+                    <Route path="/izin/guru" element={<IzinGuru />} loading/>
 
-                    <Route path="/kehadiran/guru" element={<KehadiranGuru />} />
-                    <Route path="/kehadiran/siswa" element={<KehadiranSiswa />} />
+                    <Route path="/kehadiran/guru" element={<KehadiranGuru />} loading/>
+                    <Route path="/kehadiran/siswa" element={<KehadiranSiswa />} loading/>
 
-                    <Route path="/kehadiran/rekap-siswa" element={<RekapKehadiranSiswa />} />
-                    <Route path="/kehadiran/rekap-guru" element={<RekapKehadiranGuru />} />
+                    <Route path="/kehadiran/rekap-siswa" element={<RekapKehadiranSiswa />} loading/>
+                    <Route path="/kehadiran/rekap-guru" element={<RekapKehadiranGuru />} loading/>
 
-                    <Route path="/master/admin" element={<AdminIndex />} />
-                    <Route path="/master/siswa" element={<SiswaIndex />} />
-                    <Route path="/master/guru" element={<GuruIndex />} />
-                    <Route path="/master/jurusan" element={<JurusanIndex />} />
-                    <Route path="/master/kelas" element={<KelasIndex />} />
-                    <Route path="/master/rombel" element={<RombelIndex />} />
-                    <Route path="/master/tahun-ajar" element={<TahunAjarIndex />} />
+                    <Route path="/master/admin" element={<AdminIndex />} loading/>
+                    <Route path="/master/siswa" element={<SiswaIndex />} loading/>
+                    <Route path="/master/guru" element={<GuruIndex />} loading/>
+                    <Route path="/master/jurusan" element={<JurusanIndex />} loading/>
+                    <Route path="/master/kelas" element={<KelasIndex />} loading/>
+                    <Route path="/master/rombel" element={<RombelIndex />} loading/>
+                    <Route path="/master/tahun-ajar" element={<TahunAjarIndex />} loading/>
                 </Route>
 
                 {/* Siswa */}
                 <Route element={<ProtectedRoute user={users} />}>
-                    <Route path="/profil" element={<ProfileUser />} />
-                    <Route path="/" element={<DashboardSiswa />} />
+                    <Route path="/profil" element={<ProfileUser />} loading/>
+                    <Route path="/" element={<DashboardSiswa />} loading/>
 
-                    <Route path="/izin" element={<RekapIzinUser />} />
-                    <Route path="/kehadiran" element={<RekapKehadiranUser />} />
+                    <Route path="/izin" element={<RekapIzinUser loading/>} />
+                    <Route path="/kehadiran" element={<RekapKehadiranUser />} loading/>
                 </Route>
 
                 <Route path="*" element={<PageNotFound />} />

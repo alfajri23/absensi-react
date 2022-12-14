@@ -319,30 +319,32 @@ const Home = () => {
     // Chart keterlambatan
     const getChartKeterlambatan = async () => {
         let res = await statistikKeterlambatan(getTahunAjar());
+        console.log(res);
 
         if(res.data != null){ 
-            let labels = res.data.data.label;
+            let labels = res.data.label;
 
             setChartData({
                 labels,
                 datasets: [
                 {
                     label: 'Siswa',
-                    data: res.data.data.siswa_value,
+                    data: res.data.siswa_value,
                     borderColor: 'rgb(255, 99, 132)',
                     backgroundColor: 'rgba(255, 99, 132, 0.5)',
                 },
                 {
                     label: 'Guru',
-                    data: res.data.data.guru_value,
+                    data: res.data.guru_value,
                     borderColor: 'rgb(53, 162, 235)',
                     backgroundColor: 'rgba(53, 162, 235, 0.5)',
                 },
                 ],
             });
         }else{
+            console.log('disini');
             swal("Error", res.message, "warning");
-        }
+        }  
     }
 
     useEffect(() => {

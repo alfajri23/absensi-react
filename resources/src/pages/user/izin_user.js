@@ -156,12 +156,19 @@ const RekapIzinUser = () => {
       .required('Harus diisi'),
   });
 
+  const validateFilter  = Yup.object().shape({
+    bulan: Yup.string()
+      .required('Harus diisi'),
+    tahun: Yup.string()
+      .required('Harus diisi'),
+  });
+
   return (
     <LayoutUser>
-      <div className="p-2 p-sm-5">
+      <div className="p-0 p-sm-5">
         <section className="section">
           <div>
-              <div className="py-3">
+              <div className="pt-4">
                   <h1>Izin Siswa</h1>
               </div>
 
@@ -172,7 +179,7 @@ const RekapIzinUser = () => {
 
               <div className="">
                   <div className="card">
-                      <div className="card-body">
+                      <div className="card-body p-sm-3 p-1">
                           <div className="container-fluid">
                               
                               <Formik
@@ -183,7 +190,7 @@ const RekapIzinUser = () => {
                               onSubmit={async (values, { setSubmitting })=>{
                                   await getData(values.bulan, values.tahun);
                               }}
-                              validationSchema={validateForm}
+                              validationSchema={validateFilter}
                               >
                               {({
                                   values,

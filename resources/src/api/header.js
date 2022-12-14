@@ -4,7 +4,7 @@ const headers_auth = {
     'Accept': 'application/json',
     'Content-Type': 'application/json',
     'X-CSRF-TOKEN': csrf_token,
-    'Authorization': 'Bearer ' + getToken()
+    'Authorization': `Bearer ${getToken()}`
 }
 
 export {

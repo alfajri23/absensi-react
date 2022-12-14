@@ -86,10 +86,10 @@ const RekapKehadiranUser = () => {
 
   return (
     <LayoutUser>
-      <div className="p-2 p-sm-5">
+      <div className="p-0 p-sm-5">
         <section className="section">
           <div>
-              <div className="py-3">
+              <div className="pt-4">
                   <h1>Kehadiran Siswa</h1>
               </div>
 
@@ -100,7 +100,7 @@ const RekapKehadiranUser = () => {
 
               <div className="">
                   <div className="card">
-                      <div className="card-body">
+                      <div className="card-body p-sm-3 p-1">
                           <div className="container-fluid">
                               
                               <Formik

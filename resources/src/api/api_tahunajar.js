@@ -1,6 +1,7 @@
 import api_url from './url'
 import axios from 'axios';
 import {headers_auth} from './header';
+import { getToken } from '../auth/auth';
 
 const url = `${api_url}/api/data/master/tahun_ajaran`;
 
@@ -66,12 +67,30 @@ const destroy = (id) => {
 
 const setActive = (id) => {
     let urls = `${url}/set-aktif/${id}`;
-    return axios.put(urls,{ headers: headers_auth})
-    .then(res => {
-        return res;
+    // return axios.put(urls,{ headers: headers_auth})
+    // .then(res => {
+    //     return res;
+    // })
+    // .catch(function (error) {
+    //     return error.response.data
+    // });
+
+    return fetch(urls, {
+        method: 'PUT',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getToken()}`
+        },
     })
+    .then(function(res) {
+        return res.json();
+    })
+    // // .then(function(resJson) {
+    // //     return resJson;
+    // // })
     .catch(function (error) {
-        return error.response.data
+            return error
     });
 }
 

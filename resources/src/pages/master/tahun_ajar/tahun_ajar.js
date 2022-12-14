@@ -105,13 +105,13 @@ const TahunAjarIndex = () => {
 
     const setAktif = async (id) => {
         let res = await setActive(id);
-
-        if(res.status == 200){
-            getData();
-            swal("Good job!", "Sukses", "success");
-        }else{
-            swal("Error", res.message, "warning");
-        }
+        //console.log(res);
+        getData();
+        swal("Error", res.message, "warning");
+        // if(res.status == 200){
+        //     swal("Good job!", "Sukses", "success");
+        // }else{
+        // }
 
     }
 
@@ -150,10 +150,6 @@ const TahunAjarIndex = () => {
     }
 
     const column = [
-        {
-            accessor: '',
-            Header: 'Id',
-        },
         {
             accessor: 'tahun_ajaran',
             Header: 'Nama',
