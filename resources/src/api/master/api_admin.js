@@ -22,7 +22,7 @@ const getAll = () => {
 }
 
 const create = (data) => {
-    return axios.post(url,data,{ headers: headers_auth})
+    return axios.post(url,data,{ headers: headers_auth()})
     .then(res => {
         return res;
     })
@@ -33,7 +33,7 @@ const create = (data) => {
 
 const detail = (id) => {
     let urls = `${url}/${id}`;
-    return axios.get(urls,{ headers: headers_auth})
+    return axios.get(urls,{ headers: headers_auth()})
     .then(res => {
         return res;
     })
@@ -44,7 +44,7 @@ const detail = (id) => {
 
 const destroy = (id) => {
     let urls = `${url}/delete/${id}`;
-    return axios.delete(urls,{ headers: headers_auth})
+    return axios.delete(urls,{ headers: headers_auth()})
     .then(res => {
         return res;
     })
@@ -55,7 +55,7 @@ const destroy = (id) => {
 
 const setActive = (data) => {
     let urls = `${url}/update/status/aktif`;
-    return axios.post(urls,data,{ headers: headers_auth})
+    return axios.post(urls,data,{ headers: headers_auth()})
     .then(res => {
         return res;
     })
@@ -66,7 +66,7 @@ const setActive = (data) => {
 
 const resetPassword = (data) => {
     let urls = `${url}/update/profile/password`;
-    return axios.post(urls,data,{ headers: headers_auth})
+    return axios.post(urls,data,{ headers: headers_auth()})
     .then(res => {
         return res;
     })

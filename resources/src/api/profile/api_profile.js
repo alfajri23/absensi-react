@@ -6,7 +6,7 @@ const url = `${api_url}/api/auth`;
 
 const getProfile = () => {
     let urls = `${url}/profile`;
-    return axios.get(urls,{ headers: headers_auth })
+    return axios.get(urls,{ headers: headers_auth() })
     .then(res => {
         return res.data;
     })
@@ -17,7 +17,7 @@ const getProfile = () => {
 
 const updateProfile = (data) => {
     let urls = `${url}/update-profile`;
-    return axios.post(urls,data,{ headers: headers_auth })
+    return axios.post(urls,data,{ headers: headers_auth() })
     .then(res => {
         return res.data;
     })
@@ -28,7 +28,7 @@ const updateProfile = (data) => {
 
 const changePassword = (data) => {
     let urls = `${url}/change-password`;
-    return axios.post(urls,data,{ headers: headers_auth })
+    return axios.post(urls,data,{ headers: headers_auth() })
     .then(res => {
         return res.data;
     })

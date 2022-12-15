@@ -153,10 +153,6 @@ const IzinGuru = () => {
 
     const column = [
         {
-            accessor: 'id',
-            Header: 'Id',
-        },
-        {
             accessor: 'tgl_kehadiran',
             Header: 'Tanggal',
         },
@@ -170,7 +166,7 @@ const IzinGuru = () => {
         },
         {
             accessor: 'konfirmasi',
-            Header: 'Action',
+            Header: 'Aksi',
             Cell: columnFormat.action
         },
     ]

@@ -13,7 +13,7 @@ const headers = {
 
 const getIzinSiswa = (mount,year) => {
     let urls = `${url}/siswa/bulan/${mount}/tahun/${year}/ta_sm/${getTahunAjar()}`;
-    return axios.get(urls,{ headers: headers_auth })
+    return axios.get(urls,{ headers: headers_auth() })
     .then(res => {
         return res.data;
     })
@@ -24,7 +24,7 @@ const getIzinSiswa = (mount,year) => {
 
 const getIzinGuru = (mount,year) => {
     let urls = `${url}/guru/bulan/${mount}/tahun/${year}`;
-    return axios.get(urls,{ headers: headers_auth })
+    return axios.get(urls,{ headers: headers_auth() })
     .then(res => {
         return res.data
     })
@@ -34,7 +34,7 @@ const getIzinGuru = (mount,year) => {
 }
 
 const create = (data) => {
-    return axios.post(url,data,{ headers: headers_auth})
+    return axios.post(url,data,{ headers: headers_auth()})
     .then(res => {
         return res;
     })
@@ -45,7 +45,7 @@ const create = (data) => {
 
 const updates = (data) => {
     let urls = `${url}/info`;
-    return axios.put(urls,data,{ headers: headers_auth})
+    return axios.put(urls,data,{ headers: headers_auth()})
     .then(res => {
         return res;
     })
@@ -56,7 +56,7 @@ const updates = (data) => {
 
 const detail = (id,role) => {
     let urls = role == 'siswa' ? `${url}/${id}` : `${url}/guru/${id}`;
-    return axios.get(urls,{ headers: headers_auth})
+    return axios.get(urls,{ headers: headers_auth()})
     .then(res => {
         return res;
     })
@@ -67,7 +67,7 @@ const detail = (id,role) => {
 
 const destroy = (id) => {
     let urls = `${url}/delete/${id}`;
-    return axios.delete(urls,{ headers: headers_auth})
+    return axios.delete(urls,{ headers: headers_auth()})
     .then(res => {
         return res;
     })
@@ -78,7 +78,7 @@ const destroy = (id) => {
 
 const confirm = (data) => {
     let urls = `${url}/konfirmasi`;
-    return axios.post(urls,data,{ headers: headers_auth})
+    return axios.post(urls,data,{ headers: headers_auth()})
     .then(res => {
         return res;
     })
@@ -89,7 +89,7 @@ const confirm = (data) => {
 
 const getIzin = (id_user,role,mount,year) => {
     let urls = `${url}/user/${id_user}/role/${role}/bulan/${mount}/tahun/${year}`;
-    return axios.get(urls,{ headers: headers_auth })
+    return axios.get(urls,{ headers: headers_auth() })
     .then(res => {
         return res.data
     })

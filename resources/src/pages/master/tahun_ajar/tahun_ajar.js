@@ -105,13 +105,8 @@ const TahunAjarIndex = () => {
 
     const setAktif = async (id) => {
         let res = await setActive(id);
-        //console.log(res);
         getData();
         swal("Error", res.message, "warning");
-        // if(res.status == 200){
-        //     swal("Good job!", "Sukses", "success");
-        // }else{
-        // }
 
     }
 
@@ -184,7 +179,7 @@ const TahunAjarIndex = () => {
                 <h1>Tahun Ajar</h1>
                 <div className="section-header-breadcrumb">
                     <div className="breadcrumb-item active">
-                        <Link to="/">Dashboard</Link>
+                        <Link to="/admin">Dashboard</Link>
                     </div>
                     <div className="breadcrumb-item">Tahun Ajar</div>
                 </div>

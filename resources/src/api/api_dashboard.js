@@ -7,7 +7,7 @@ const url = `${api_url}`;
 
 const cardDashboard = (ta_sm) => {
     let urls = `${url}/api/data/absensi/kehadiran/dashboard/ta_sm/${ta_sm}`;
-    return axios.get(urls,{ headers: headers_auth})
+    return axios.get(urls,{ headers: headers_auth()})
     .then(res => {
         return res;
     })
@@ -19,7 +19,7 @@ const cardDashboard = (ta_sm) => {
 const statistikKehadiran = (role,id,bulan,tahun) => {
     console.log(tahun);
     let urls = `${url}/api/data/absensi/kehadiran/statistik/role/${role}/id/${id}/bulan/${bulan}/tahun/${tahun}`;
-    return axios.get(urls,{ headers: headers_auth})
+    return axios.get(urls,{ headers: headers_auth()})
     .then(res => {
         return res;
     })
@@ -29,32 +29,14 @@ const statistikKehadiran = (role,id,bulan,tahun) => {
 }
 
 const statistikKeterlambatan = (id_ta_sm) => {
-    console.log(getToken());
     let urls = `${url}/api/v2/data/absensi/kehadiran/terlambat/ta_sm/${id_ta_sm}`;
-    // return axios.get(urls,{ headers: headers_auth})
-    // .then(res => {
-    //     return res;
-    // })
-    // .catch(function (error) {
-    //     return error.response.data
-    // });
-
-    return fetch(urls, {
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${getToken()}`
-        },
+    console.log(headers_auth())
+    return axios.get(urls,{ headers: headers_auth()})
+    .then(res => {
+        return res;
     })
-    .then(function(res) {
-        return res.json();
-    })
-    // // .then(function(resJson) {
-    // //     return resJson;
-    // // })
     .catch(function (error) {
-            return error
+        return error.response.data
     });
 }
 

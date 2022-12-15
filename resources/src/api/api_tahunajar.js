@@ -5,15 +5,8 @@ import { getToken } from '../auth/auth';
 
 const url = `${api_url}/api/data/master/tahun_ajaran`;
 
-const headers = {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-    'X-CSRF-TOKEN': csrf_token
-}
-
-
 const getAll = () => {
-    return axios.get(url,{ headers: headers_auth })
+    return axios.get(url,{ headers: headers_auth() })
     .then(res => {
         return res.data;
     })
@@ -23,7 +16,7 @@ const getAll = () => {
 }
 
 const create = (data) => {
-    return axios.post(url,data,{ headers: headers_auth})
+    return axios.post(url,data,{ headers: headers_auth()})
     .then(res => {
         return res;
     })
@@ -34,7 +27,7 @@ const create = (data) => {
 
 const updates = (data) => {
     let urls = `${url}/info`;
-    return axios.put(urls,data,{ headers: headers_auth})
+    return axios.put(urls,data,{ headers: headers_auth()})
     .then(res => {
         return res;
     })
@@ -45,7 +38,7 @@ const updates = (data) => {
 
 const detail = (id) => {
     let urls = `${url}/${id}`;
-    return axios.get(urls,{ headers: headers_auth})
+    return axios.get(urls,{ headers: headers_auth()})
     .then(res => {
         return res;
     })
@@ -56,7 +49,7 @@ const detail = (id) => {
 
 const destroy = (id) => {
     let urls = `${url}/delete/${id}`;
-    return axios.delete(urls,{ headers: headers_auth})
+    return axios.delete(urls,{ headers: headers_auth()})
     .then(res => {
         return res;
     })
@@ -67,7 +60,7 @@ const destroy = (id) => {
 
 const setActive = (id) => {
     let urls = `${url}/set-aktif/${id}`;
-    // return axios.put(urls,{ headers: headers_auth})
+    // return axios.put(urls,{ headers: headers_auth()})
     // .then(res => {
     //     return res;
     // })
@@ -86,9 +79,6 @@ const setActive = (id) => {
     .then(function(res) {
         return res.json();
     })
-    // // .then(function(resJson) {
-    // //     return resJson;
-    // // })
     .catch(function (error) {
             return error
     });

@@ -10,6 +10,7 @@ import * as Yup from 'yup';
 import LayoutAdmin from '../../../layouts/admin';
 import { detailRekapSiswa } from '../../../api/rekap/kehadiran/api_kehadiran';
 import ReactToPrint from 'react-to-print';
+import { HiBadgeCheck, HiExclamationCircle, HiMinusCircle, HiExclamation, HiMinusSm} from "react-icons/hi";
 
 const ref = React.createRef();
 
@@ -61,6 +62,8 @@ const RekapKehadiranSiswa = () => {
         }else{
             swal("Error", data.message, "warning");
         }
+
+        console.log(data);
     }
 
     const columnFormat = {
@@ -111,6 +114,35 @@ const RekapKehadiranSiswa = () => {
     for (var i = 1; i <= 31; i++) {
         tanggal.push(<th key={i+1} scope="col">{i}</th>);
     } 
+
+    const icon = (absensi) => {
+        switch (absensi) {
+            case 'hadir':
+                return(
+                    <HiBadgeCheck/>
+                )
+                break;
+            case 'izin':
+                return(
+                    <HiExclamationCircle/>
+                )
+                break;
+            case 'sakit':
+                return(
+                    <HiMinusCircle/>
+                )
+                break;
+            case 'alpha':
+                return(
+                    <HiExclamation/>
+                )
+                break
+            default:
+                return(
+                    <HiMinusSm className="hi-lg"/>
+                )
+        }
+    }
 
 
     return (
@@ -242,12 +274,15 @@ const RekapKehadiranSiswa = () => {
                                             {data.length != 0 ? data.map((val, key) => {
                                                 return (
                                                     <tr key={key}>
-                                                        <td>{val.id}</td>
+                                                        <td>{key+1}</td>
                                                         <td>{val.nama}</td>
                                                         {
                                                             val.kehadiran.map((val, key) => {
+                                                                // return(
+                                                                //     val.absensi
+                                                                // )
                                                                 return(
-                                                                    <td>{val.absensi}</td>
+                                                                    <td>{icon(val.absensi)}</td>
                                                                 )
                                                             })
                                                         }

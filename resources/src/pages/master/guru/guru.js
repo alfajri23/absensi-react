@@ -218,10 +218,6 @@ const GuruIndex = () => {
 
     const column = [
         {
-            accessor: '',
-            Header: 'Id',
-        },
-        {
             accessor: 'nama',
             Header: 'Nama',
         },
@@ -266,7 +262,7 @@ const GuruIndex = () => {
                 <h1>Guru</h1>
                 <div className="section-header-breadcrumb">
                     <div className="breadcrumb-item active">
-                        <Link to="/">Dashboard</Link>
+                        <Link to="/admin">Dashboard</Link>
                     </div>
                     <div className="breadcrumb-item">Guru</div>
                 </div>

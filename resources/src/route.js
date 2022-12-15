@@ -31,6 +31,8 @@ import RekapKehadiranUser from './pages/user/kehadiran_user';
 import ProfileUser from './pages/profile/profile_user';
 import PageNotFound from './pages/404';
 import GuruIndex from './pages/master/guru/guru';
+import Presensi from './pages/presensi/presensi';
+import Reset from './pages/reset/reset';
 
 const ProtectedRoute = ({user}) => {
     
@@ -68,6 +70,7 @@ const RoutePage = () => {
                     <Route path="/about" element={<About />} loading/>
 
                     <Route path="/profile" element={<ProfilePage />} loading/>
+                    <Route path="/presensi" element={<Presensi />} loading/>
 
                     <Route path="/setting/libur" element={<LiburIndex />} loading/>
                     <Route path="/setting/jadwal-siswa" element={<JadwalSiswa />} loading/>
@@ -89,6 +92,8 @@ const RoutePage = () => {
                     <Route path="/master/kelas" element={<KelasIndex />} loading/>
                     <Route path="/master/rombel" element={<RombelIndex />} loading/>
                     <Route path="/master/tahun-ajar" element={<TahunAjarIndex />} loading/>
+
+                    <Route path="/reset" element={<Reset />} loading/>
                 </Route>
 
                 {/* Siswa */}

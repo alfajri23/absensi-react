@@ -169,10 +169,6 @@ const IzinSiswa = () => {
 
     const column = [
         {
-            accessor: '',
-            Header: 'Id',
-        },
-        {
             accessor: 'tgl_kehadiran',
             Header: 'Tanggal',
             Cell: columnFormat.date

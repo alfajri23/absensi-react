@@ -140,10 +140,6 @@ const RombelIndex = () => {
 
     const column = [
         {
-            accessor: '',
-            Header: 'Id',
-        },
-        {
             accessor: 'nama',
             Header: 'Nama',
         },
@@ -176,7 +172,7 @@ const RombelIndex = () => {
                 <h1>Rombel</h1>
                 <div className="section-header-breadcrumb">
                     <div className="breadcrumb-item active">
-                        <Link to="/">Dashboard</Link>
+                        <Link to="/admin">Dashboard</Link>
                     </div>
                     <div className="breadcrumb-item">Rombel</div>
                 </div>

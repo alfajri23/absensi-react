@@ -257,10 +257,6 @@ const SiswaIndex = () => {
 
     const column = [
         {
-            accessor: '',
-            Header: 'Id',
-        },
-        {
             accessor: 'nama',
             Header: 'Nama',
         },
@@ -311,7 +307,7 @@ const SiswaIndex = () => {
                 <h1>Siswa</h1>
                 <div className="section-header-breadcrumb">
                     <div className="breadcrumb-item active">
-                        <Link to="/">Dashboard</Link>
+                        <Link to="/admin">Dashboard</Link>
                     </div>
                     <div className="breadcrumb-item">Siswa</div>
                 </div>

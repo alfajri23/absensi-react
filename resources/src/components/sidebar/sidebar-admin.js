@@ -1,7 +1,8 @@
 import React from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import {HiViewGridAdd, HiCalendar, HiOutlineLogout, HiFolder, HiSwitchVertical, HiOutlineClipboardList} from 'react-icons/hi';
+import {HiViewGridAdd, HiOutlineCalendar, HiOutlineUserCircle, HiOutlineLogout, HiOutlineFolderRemove, HiSortAscending, HiOutlineClipboardList} from 'react-icons/hi';
 import { useNavigate, Navigate } from 'react-router-dom';
+import {MdOutlineAutoDelete} from 'react-icons/md';
 
 const SidebarAdmin = () => {
 
@@ -24,26 +25,31 @@ const SidebarAdmin = () => {
         </div>
 
         <ul className="sidebar-menu">
-            <li className="menu-header">Dashboard</li>
-
             <li className="">
                 <NavLink className="nav-link" to='/admin'>
-                    <HiViewGridAdd className="mx-2 fs-6"/>
+                    <HiViewGridAdd className="mx-2 fs-5"/>
                 <span>Dashboard</span></NavLink>{" "}
-            </li>{" "}
+            </li>
+
+            <li className="">
+                <NavLink className="nav-link" to='/presensi'>
+                    <HiSortAscending className="mx-2 fs-5"/>
+                <span>Presensi</span></NavLink>
+            </li>
 
             <li className="nav-item dropdown">
                 <a className="nav-link has-dropdown" data-toggle="dropdown">{" "}
-                    <HiOutlineClipboardList className="mx-2 fs-6"/>
-                    <span>Rekap</span></a>
+                    <HiOutlineClipboardList className="mx-2 fs-5"/>
+                    <span>Absensi</span></a>
                 <ul className="dropdown-menu">
                     <li><NavLink className="nav-link" to='/kehadiran/siswa'>Kehadiran</NavLink></li>
+                    <li><NavLink className="nav-link" to='/izin/siswa'>Izin</NavLink></li>
                 </ul>
             </li>
 
             <li className="nav-item dropdown">
                 <a className="nav-link has-dropdown" data-toggle="dropdown">{" "}
-                    <HiCalendar className="mx-2 fs-6"/>
+                    <HiOutlineCalendar className="mx-2 fs-5"/>
                     <span>Jadwal</span></a>{" "}
                 <ul className="dropdown-menu">{" "}
                     <li><NavLink className="nav-link" to='/setting/libur'>Setting Libur</NavLink></li>{" "}
@@ -51,15 +57,9 @@ const SidebarAdmin = () => {
                 </ul>
             </li>
 
-            <li className="">
-                <NavLink className="nav-link" to='/izin/siswa'>
-                    <HiSwitchVertical className="mx-2 fs-6"/>
-                <span>Izin</span></NavLink>
-            </li>
-
             <li className="nav-item dropdown">
                 <a className="nav-link has-dropdown" data-toggle="dropdown">
-                    <HiFolder className="mx-2 fs-6"/>
+                    <HiOutlineFolderRemove className="mx-2 fs-5"/>
                     <span>Master</span></a>
                 <ul className="dropdown-menu">
                     <li><NavLink className="nav-link" to='/master/admin'>Admin</NavLink></li>
@@ -73,8 +73,20 @@ const SidebarAdmin = () => {
             </li>
 
             <li className="">
+                <NavLink className="nav-link" to='/reset'>
+                    <MdOutlineAutoDelete className="mx-2 fs-5"/>
+                <span>Reset</span></NavLink>
+            </li>
+
+            <li className="">
+                <NavLink className="nav-link" to='/profile'>
+                    <HiOutlineUserCircle className="mx-2 fs-5"/>
+                <span>Profile</span></NavLink>
+            </li>
+
+            <li className="">
                 <NavLink className="nav-link" onClick={logout}>
-                    <HiOutlineLogout className="mx-2 fs-6"/>
+                    <HiOutlineLogout className="mx-2 fs-5"/>
                 <span>Logout</span></NavLink>{" "}
             </li>{" "}
 

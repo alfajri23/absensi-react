@@ -112,8 +112,8 @@ const Login = () => {
                                             <button type="submit" className="btn btn-nu btn-lg btn-block" disabled={isSubmitting}>
                                                 { isSubmitting ? 
                                                 <>
-                                                <span class="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true"></span>
-                                                <span class="sr-only">Loading...</span>
+                                                <span className="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true"></span>
+                                                <span className="sr-only">Loading...</span>
                                                 </>
                                                  : 'Login'}
                                             </button>

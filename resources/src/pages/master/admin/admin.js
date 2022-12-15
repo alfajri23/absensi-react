@@ -241,7 +241,7 @@ const AdminIndex = () => {
                 <h1>Admin</h1>
                 <div className="section-header-breadcrumb">
                     <div className="breadcrumb-item active">
-                        <Link to="/">Dashboard</Link>
+                        <Link to="/admin">Dashboard</Link>
                     </div>
                     <div className="breadcrumb-item">Admin</div>
                 </div>

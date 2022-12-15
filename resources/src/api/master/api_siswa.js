@@ -21,7 +21,7 @@ const getAll = () => {
 }
 
 const create = (data) => {
-    return axios.post(url,data,{ headers: headers_auth})
+    return axios.post(url,data,{ headers: headers_auth()})
     .then(res => {
         return res;
     })
@@ -32,7 +32,7 @@ const create = (data) => {
 
 const updates = (data) => {
     let urls = `${url}/update_siswa`;
-    return axios.post(urls,data,{ headers: headers_auth})
+    return axios.post(urls,data,{ headers: headers_auth()})
     .then(res => {
         return res;
     })
@@ -43,7 +43,7 @@ const updates = (data) => {
 
 const detail = (id) => {
     let urls = `${url}/${id}`;
-    return axios.get(urls,{ headers: headers_auth})
+    return axios.get(urls,{ headers: headers_auth()})
     .then(res => {
         return res;
     })
@@ -54,7 +54,7 @@ const detail = (id) => {
 
 const destroy = (id) => {
     let urls = `${url}/delete/${id}`;
-    return axios.delete(urls,{ headers: headers_auth})
+    return axios.delete(urls,{ headers: headers_auth()})
     .then(res => {
         return res;
     })
@@ -65,7 +65,7 @@ const destroy = (id) => {
 
 const filterTahun = (tahun) => {
     let urls = `${api_url}/api/data/master/kelas_siswa/profile/tahun/${tahun}`;
-    return axios.get(urls,{ headers: headers_auth})
+    return axios.get(urls,{ headers: headers_auth()})
     .then(res => {
         return res;
     })
@@ -76,7 +76,29 @@ const filterTahun = (tahun) => {
 
 const filterRombelTahun = (id_rombel,tahun) => {
     let urls = `${api_url}/api/data/master/kelas_siswa/siswa/rombel/${id_rombel}/tahun/${tahun}`;
-    return axios.get(urls,{ headers: headers_auth})
+    return axios.get(urls,{ headers: headers_auth()})
+    .then(res => {
+        return res;
+    })
+    .catch(function (error) {
+        return error.response.data
+    });
+}
+
+const filterRombelTanggalAbsen = (id_rombel, id_ta_sm, tanggal) => {
+    let urls = `${api_url}/api/v2/data/absensi/kehadiran/siswa/rombel/${id_rombel}/ta_sm/${id_ta_sm}/tgl/${tanggal}`;
+    return axios.get(urls,{ headers: headers_auth()})
+    .then(res => {
+        return res;
+    })
+    .catch(function (error) {
+        return error.response.data
+    });
+}
+
+const absenAdmin = (data) => {
+    let urls = `${api_url}/api/v2/data/absensi/kehadiran/admin/siswa`;
+    return axios.post(urls,data,{ headers: headers_auth()})
     .then(res => {
         return res;
     })
@@ -92,7 +114,7 @@ const getImportFile = (id_sekolah) => {
 
 const importFile = (data,tahun) => {
     let urls = `${api_url}/api/data/master/kelas_siswa/file/excel-import/siswa/kelas/tahun/${tahun}`
-    return axios.post(urls,data,{ headers: headers_auth})
+    return axios.post(urls,data,{ headers: headers_auth()})
     .then(res => {
         return res;
     })
@@ -103,7 +125,7 @@ const importFile = (data,tahun) => {
 
 const resetPass = (id) => {
     let urls = `${api_url}/api/password/reset-password/siswa/${id}`;
-    return axios.put(urls,{ headers: headers_auth})
+    return axios.put(urls,{ headers: headers_auth()})
     .then(res => {
         return res;
     })
@@ -111,6 +133,8 @@ const resetPass = (id) => {
         return error.response.data
     });
 }
+
+
 
 
 
@@ -124,5 +148,7 @@ export{
     importFile,
     resetPass,
     filterTahun,
-    filterRombelTahun
+    filterRombelTahun,
+    filterRombelTanggalAbsen,
+    absenAdmin
 }

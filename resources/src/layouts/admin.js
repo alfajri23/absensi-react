@@ -18,7 +18,7 @@ const LayoutAdmin = ({children}) => {
                             </a>
                         </li>
                     </ul>
-                    <ul className="navbar-nav navbar-right">
+                    {/* <ul className="navbar-nav navbar-right">
                         <li className="dropdown">
                             <a href="#" data-toggle="dropdown"
                                 className="nav-link dropdown-toggle nav-link-lg nav-link-user">
@@ -26,7 +26,6 @@ const LayoutAdmin = ({children}) => {
                                 <div className="d-sm-none d-lg-inline-block"></div>
                             </a>
                             <div className="dropdown-menu dropdown-menu-right">
-                                <div className="dropdown-title">Logged in 5 min ago</div>
                                 <Link to="/profile" className="dropdown-item has-icon">
                                     <i className="far fa-user"></i> Profile
                                 </Link>
@@ -43,7 +42,7 @@ const LayoutAdmin = ({children}) => {
                                 </a>
                             </div>
                         </li>
-                    </ul>
+  </ul> */}
                 </nav>
                 
                 <div className="main-sidebar sidebar-style-2">

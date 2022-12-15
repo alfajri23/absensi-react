@@ -59,19 +59,11 @@ const KehadiranSiswa = () => {
         }
     }
 
-    const columnFormat = {
-       
+    const columnFormat = {  
+          
     }
 
-    let index = 0;
     const column = [
-        {
-            Header: 'No',
-            //accessor: '',
-            Cell: ({}) => {
-                return index++;
-            },
-        },
         {
             Header: 'Nama',
             accessor: 'nama',

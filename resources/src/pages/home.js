@@ -319,8 +319,6 @@ const Home = () => {
     // Chart keterlambatan
     const getChartKeterlambatan = async () => {
         let res = await statistikKeterlambatan(getTahunAjar());
-        console.log(res);
-
         if(res.data != null){ 
             let labels = res.data.label;
 

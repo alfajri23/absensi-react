@@ -4162,8 +4162,8 @@ body.layout-3 .main-footer {
 }
 
 .main-sidebar .sidebar-menu li a.has-dropdown:after {
-    content: "\f054";
-    font-family: "Font Awesome 5 Free";
+    content: "\02C5";
+    /* font-family: "Font Awesome 5 Free"; */
     font-weight: 900;
     position: absolute;
     top: 50%;

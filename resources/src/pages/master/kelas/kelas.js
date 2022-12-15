@@ -156,10 +156,6 @@ const KelasIndex = () => {
 
     const column = [
         {
-            accessor: '',
-            Header: 'Id',
-        },
-        {
             accessor: 'nama',
             Header: 'Nama',
         },
@@ -192,7 +188,7 @@ const KelasIndex = () => {
                 <h1>Kelas</h1>
                 <div className="section-header-breadcrumb">
                     <div className="breadcrumb-item active">
-                        <Link to="/">Dashboard</Link>
+                        <Link to="/admin">Dashboard</Link>
                     </div>
                     <div className="breadcrumb-item">Kelas</div>
                 </div>
@@ -223,7 +219,7 @@ const KelasIndex = () => {
                 initialValues={form}
                 onSubmit={ async (values, { setSubmitting }) => {
                     
-                    let res = edit ? await create(values) : await create(values);
+                    let res = edit ? await updates(values) : await create(values);
                     
                     
                     if(res.status == 200){

@@ -90,7 +90,6 @@ const JadwalSiswa = () => {
               label: item.nama
             };
         });
-        console.log(data)
         setRombel(rombel)
     }
 
