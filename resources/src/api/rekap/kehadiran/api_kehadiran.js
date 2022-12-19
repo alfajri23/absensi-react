@@ -15,6 +15,29 @@ const rekapSiswa = (id_rombel, id_ta_sm) => {
     });
 }
 
+const detailKehadiran = (id) => {
+    let urls = `${url}/${id}`;
+    return axios.get(urls,{ headers: headers_auth()})
+    .then(res => {
+        return res;
+    })
+    .catch(function (error) {
+        return error.response.data
+    });
+}
+
+const updateKehadiran = (data) => {
+    let urls = `${url}/${data.id}`;
+    return axios.put(urls,data,{ headers: headers_auth()})
+    .then(res => {
+        return res;
+    })
+    .catch(function (error) {
+        return error.response.data
+    });
+}
+
+
 const rekapGuru = (id_ta_sm) => {
     let urls = `${url}/guru/ta_sm/${id_ta_sm}`;
     return axios.get(urls,{ headers: headers_auth()})
@@ -73,8 +96,10 @@ const resetDataAbsensi = (id) => {
 export {
     rekapGuru,
     rekapSiswa,
+    detailKehadiran,
     detailRekapGuru,
     detailRekapSiswa,
     getKehadiran,
-    resetDataAbsensi
+    resetDataAbsensi,
+    updateKehadiran
 }

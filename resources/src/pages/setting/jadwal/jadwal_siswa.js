@@ -135,8 +135,6 @@ const JadwalSiswa = () => {
         let res = await detail(id);
 
         if(res.status == 200){
-            console.log('database',res.data.data);
-
             formValue ={
                 ...formValue,
                 id : res.data.data.id,
@@ -156,8 +154,6 @@ const JadwalSiswa = () => {
             
             setEdit(true);
             setForm(formValue);
-            console.log('form_value',formValue);
-            console.log('state',form);
             setShow(true);
         }else{
             swal("Error", res.message, "warning");
