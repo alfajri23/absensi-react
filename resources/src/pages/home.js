@@ -341,7 +341,7 @@ const Home = () => {
         getChartKeterlambatan();
 
         getDataIzinSiswa(new Date().getMonth() + 1,new Date().getFullYear());
-        getDataIzinSiswa(new Date().getMonth() + 1,new Date().getFullYear()); 
+        getDataIzinGuru(new Date().getMonth() + 1,new Date().getFullYear()); 
     },[]);
 
     return(
@@ -425,7 +425,7 @@ const Home = () => {
                 <div className="col-6">
                     <div className="card">
                         <div className="card-header">
-                            <h4>Pengajuan Izin Siswa Ini</h4>
+                            <h4>Pengajuan Izin Siswa Bulan Ini</h4>
                         </div>
 
                         <div className="card-body">
@@ -438,7 +438,7 @@ const Home = () => {
                 <div className="col-6">
                     <div className="card">
                         <div className="card-header">
-                            <h4>Pengajuan Izin Guru Ini</h4>
+                            <h4>Pengajuan Izin Guru Bulan Ini</h4>
                         </div>
 
                         <div className="card-body">
@@ -469,7 +469,7 @@ const Home = () => {
                 <div className="col-sm-6 col-12">
                     <div className="card">
                         <div className="card-header">
-                            <h4>Jadwal Libur Bulan Ini</h4>
+                            <h4>Statistik data keterlambatan</h4>
                         </div>
 
                         <div className="card-body">
