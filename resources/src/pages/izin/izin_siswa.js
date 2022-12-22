@@ -61,45 +61,46 @@ const IzinSiswa = () => {
     const getData = async (mount,year) => {
         let data = await getIzinSiswa(mount,year);
         if(data.data != null){
+            console.log(data.data);
             setData(data.data);
         }else{
             swal("Error", data.message, "warning");
         }
     }
 
-    const deleteData = async (id) => {
-        let res = await destroy(id);
+    // const deleteData = async (id) => {
+    //     let res = await destroy(id);
 
-        if(res.status == 200){
-            getData();
-            swal("Good job!", "Sukses", "success");
-        }else{
-            swal("Error", res.message, "warning");
-        }
-    }
+    //     if(res.status == 200){
+    //         getData();
+    //         swal("Good job!", "Sukses", "success");
+    //     }else{
+    //         swal("Error", res.message, "warning");
+    //     }
+    // }
 
-    const detailData = async (id) => {
-        let res = await detail(id);
+    // const detailData = async (id) => {
+    //     let res = await detail(id);
 
-        if(res.status == 200){
-            console.log(res.data.data);
+    //     if(res.status == 200){
+    //         console.log(res.data.data);
 
-            formValue ={
-                ...formValue,
-                id: res.data.data.id,
-                nama: res.data.data.nama,
-                kode: res.data.data.kode,
-                tgl_libur: res.data.data.tgl_libur,
-                keterangan: res.data.data.keterangan
-            }
+    //         formValue ={
+    //             ...formValue,
+    //             id: res.data.data.id,
+    //             nama: res.data.data.nama,
+    //             kode: res.data.data.kode,
+    //             tgl_libur: res.data.data.tgl_libur,
+    //             keterangan: res.data.data.keterangan
+    //         }
 
-            setEdit(true);
-            setForm(formValue);
-            setShow(true);
-        }else{
-            swal("Error", res.message, "warning");
-        }
-    }
+    //         setEdit(true);
+    //         setForm(formValue);
+    //         setShow(true);
+    //     }else{
+    //         swal("Error", res.message, "warning");
+    //     }
+    // }
 
     const tahun = () => {
         let tahun = getTahun() - 5;
@@ -116,7 +117,6 @@ const IzinSiswa = () => {
             konfirmasi: action
         };
 
-        console.log(konfirm);
         let res = await confirm(konfirm);
 
         if(res.status == 200){
@@ -164,7 +164,17 @@ const IzinSiswa = () => {
             }
 
            
-        }
+        },
+        bukti: ({value, row}) => {
+            if(value != null) {
+                return(
+                    <a href={value} target="_blank">Lihat bukti</a>
+                );
+            }else{
+                return("tidak ada bukti");
+            }
+           
+        },
     }
 
     const column = [
@@ -186,7 +196,12 @@ const IzinSiswa = () => {
             Header: 'Ketidakhadiran',
         },
         {
-            accessor: 'id',
+            accessor: 'bukti',
+            Header: 'Bukti',
+            Cell: columnFormat.bukti
+        },
+        {
+            accessor: 'konfirmasi',
             Header: 'Action',
             Cell: columnFormat.action
         },

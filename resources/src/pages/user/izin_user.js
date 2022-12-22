@@ -22,7 +22,7 @@ const RekapIzinUser = () => {
         alasan: "", 
         tanggal: "", 
         keterangan: "", 
-        file: "" 
+        file: ""
     });
 
   useEffect(() => {
@@ -36,7 +36,8 @@ const RekapIzinUser = () => {
             alasan: '',
             keterangan: '',
             id: '',
-            tanggal: ''
+            tanggal: '',
+            file: ''
         }
 
         setForm(formValue);
@@ -56,6 +57,7 @@ const RekapIzinUser = () => {
   const getData = async (mount,year) => {
     let data = await getIzin(getId(),getRole(),mount,year);
     if(data.data != null){
+        console.log(data.data)
         setData(data.data);
     }else{
         swal("Error", data.message, "warning");
@@ -66,7 +68,6 @@ const RekapIzinUser = () => {
     let res = await detail(id, getRole());
 
     if(res.status == 200){
-        console.log(res)
         let formValue = {
             id: res.data.data.id,
             keterangan: res.data.data.keterangan,
@@ -74,6 +75,7 @@ const RekapIzinUser = () => {
             tanggal: res.data.data.tgl_kehadiran,
             long: res.data.data.long,
             lat: res.data.data.lat,
+            file: ''
         }
 
         setForm(formValue);
@@ -84,11 +86,7 @@ const RekapIzinUser = () => {
 
 }
 
-  let no = -1;
   const columnFormat = {
-    no: ({value, row}) => {
-        return no++;
-    },
     date: ({value, row}) => {
         let date = new Date(value);
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -120,9 +118,8 @@ const RekapIzinUser = () => {
 
   const column = [
       {
-          accessor: '',
+          accessor: 'id',
           Header: 'Id',
-          Cell: columnFormat.no
       },
       {
           accessor: 'tgl_kehadiran',
@@ -286,7 +283,7 @@ const RekapIzinUser = () => {
                     formData.append('id', values.id);
 
                     let res = await storeIzin(formData);
-                
+
                     if(res.status == 200){
                         handleClose();
                         swal("Good job!", "Sukses", "success");

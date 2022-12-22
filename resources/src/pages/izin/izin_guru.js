@@ -148,7 +148,17 @@ const IzinGuru = () => {
             }
 
            
-        }
+        },
+        bukti: ({value, row}) => {
+            if(value != null) {
+                return(
+                    <a href={value} target="_blank">Lihat bukti</a>
+                );
+            }else{
+                return("tidak ada bukti");
+            }
+           
+        },
     }
 
     const column = [
@@ -163,6 +173,11 @@ const IzinGuru = () => {
         {
             accessor: 'status_kehadiran',
             Header: 'Ketidakhadiran',
+        },
+        {
+            accessor: 'bukti',
+            Header: 'Bukti',
+            Cell: columnFormat.bukti
         },
         {
             accessor: 'konfirmasi',

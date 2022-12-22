@@ -331,18 +331,6 @@ const DashboardSiswa = () => {
                       </Card> */}
                     </Col>
 
-                    {/* <Col sm={12} md={6} className="p-3">
-                      <Card>
-                        <Card.Body>
-                          <Pie 
-                            data={dataChart} 
-                            options={optionChart}
-                            height={250} width={500}
-                          />
-                        </Card.Body>
-                      </Card>
-                    </Col> */}
-
                 </Row>
             </Container>
 
@@ -365,7 +353,7 @@ const DashboardSiswa = () => {
                       formData.append('tgl_kehadiran', values.tanggal);
                       formData.append('file', values.file);
 
-                      console.log(formData);
+                      console.log(values.file);
 
                       let res = await storeIzin(formData);
                     

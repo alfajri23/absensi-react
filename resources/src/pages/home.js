@@ -48,7 +48,6 @@ const Home = () => {
     const labels = ['Loading..'];
 
     // State
-    let [dataCard, setDataCard] = useState({});
     let [dataLibur, setDataLibur] = useState([]);
     let [dataIzinSiswa, setDataIzinSiswa] = useState([]);
     let [dataIzinGuru, setDataIzinGuru] = useState([]);
@@ -101,17 +100,6 @@ const Home = () => {
         }else{
             swal("Error", data.message, "warning");
         }
-    }
-
-    const getCardData = async () => {
-        let data = await cardDashboard(getTahunAjar());
-        
-        if(data.data != null){
-            setDataCard(data.data.data);
-            
-        }else{
-            swal("Error", data.message, "warning");
-        } 
     }
 
     const confirms = async (id,action) => {
@@ -169,17 +157,18 @@ const Home = () => {
                 )
             }
         },
+        date: ({value, row}) => {
+            let date = new Date(value);
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            return date.toLocaleDateString('id', options)
+        },
     }
 
     const columnLibur = [
         {
-            accessor: '',
-            Header: 'Id',
-        },
-        {
             accessor: 'tgl_libur',
             Header: 'Tanggal',
-            
+            Cell: columnFormat.date
         },
         {
             accessor: 'nama',
@@ -200,7 +189,7 @@ const Home = () => {
                 case 0:
                     return(
                         <DropdownButton
-                            key={cell}
+                            key={row.original.id}
                             id="dropdown-button-dark-example2"
                             variant="warning"
                             // menuVariant="dark"
@@ -225,19 +214,18 @@ const Home = () => {
                     return(<span className="badge text-bg-danger">Ditolak</span>)
             }
         },
-        // date: ({value, row}) => {
-        //     return()
-        // }
+        date: ({value, row}) => {
+            let date = new Date(value);
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            return date.toLocaleDateString('id', options)
+        },
     }
 
     const columnIzinSiswa = [
         {
-            accessor: '',
-            Header: 'Id',
-        },
-        {
             accessor: 'tgl_kehadiran',
             Header: 'Tanggal',
+            Cell: columnFormatIzinSiswa.date
         },
         {
             accessor: 'nama',
@@ -252,7 +240,7 @@ const Home = () => {
             Header: 'Ketidakhadiran',
         },
         {
-            accessor: 'id',
+            accessor: 'konfirmasi',
             Header: 'Action',
             Cell: columnFormatIzinSiswa.status
         },
@@ -289,17 +277,19 @@ const Home = () => {
                 default:
                     return(<span className="badge text-bg-danger">Ditolak</span>)
             }
-        }
+        },
+        date: ({value, row}) => {
+            let date = new Date(value);
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            return date.toLocaleDateString('id', options)
+        },
     }
 
     const columnIzinGuru = [
         {
-            accessor: '',
-            Header: 'Id',
-        },
-        {
             accessor: 'tgl_kehadiran',
             Header: 'Tanggal',
+            Cell: columnFormatIzinGuru.date
         },
         {
             accessor: 'nama',
@@ -310,7 +300,7 @@ const Home = () => {
             Header: 'Ketidakhadiran',
         },
         {
-            accessor: 'id',
+            accessor: 'konfirmasi',
             Header: 'Action',
             Cell: columnFormatIzinGuru.status
         },
@@ -347,7 +337,7 @@ const Home = () => {
 
     useEffect(() => {
         getDataLibur();
-        getCardData();
+
         getChartKeterlambatan();
 
         getDataIzinSiswa(new Date().getMonth() + 1,new Date().getFullYear());
@@ -363,7 +353,7 @@ const Home = () => {
             </div>
 
             {/* Card atas */}
-            <div className="row">
+            {/* <div className="row">
 
                 <div className="col-lg-3 col-md-6 col-sm-6 col-12">
                     <div className="card card-statistic-1">
@@ -429,6 +419,36 @@ const Home = () => {
                     </div>
                 </div>
 
+            </div> */}
+
+            <div className="row">
+                <div className="col-6">
+                    <div className="card">
+                        <div className="card-header">
+                            <h4>Pengajuan Izin Siswa Ini</h4>
+                        </div>
+
+                        <div className="card-body">
+                            <div>
+                                <TableBasic datas={dataIzinSiswa} column={columnIzinSiswa} columnFormats={columnFormatIzinSiswa}/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-6">
+                    <div className="card">
+                        <div className="card-header">
+                            <h4>Pengajuan Izin Guru Ini</h4>
+                        </div>
+
+                        <div className="card-body">
+                            <div>
+                            <TableBasic datas={dataIzinGuru} column={columnIzinGuru} columnFormats={columnFormatIzinGuru}/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
             </div>
 
             <div className="row">
@@ -461,39 +481,7 @@ const Home = () => {
                 </div>
             </div>
 
-            <div className="row">
-                <div className="col-6">
-                    <div className="card">
-                        <div className="card-header">
-                            <h4>Pengajuan Izin Siswa Bulan Ini</h4>
-                        </div>
-
-                        <div className="card-body">
-                            <div>
-                                <TableBasic datas={dataIzinSiswa} column={columnIzinSiswa} columnFormats={columnFormatIzinSiswa}/>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-6">
-                    <div className="card">
-                        <div className="card-header">
-                            <h4>Pengajuan Izin Guru Bulan Ini</h4>
-                        </div>
-
-                        <div className="card-body">
-                            <div>
-                            <TableBasic datas={dataIzinGuru} column={columnIzinGuru} columnFormats={columnFormatIzinGuru}/>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-            </div>
-
-            <div className="row">
-                
-            </div>
+            
 
         </div>
 
