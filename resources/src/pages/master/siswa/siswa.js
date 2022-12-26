@@ -323,7 +323,6 @@ const SiswaIndex = () => {
                                     rombel: '',
                                 }}
                                 onSubmit={async (values)=>{
-                                    console.log(values)
                                     await getFilter(values.rombel, values.tahun);
                                 }}
                                 >
@@ -592,7 +591,7 @@ const SiswaIndex = () => {
                     const formData = new FormData();
                     formData.append('file', values.file);
                     let res = await importFile(formData, getTahun());
-                    console.log(res);
+
                     if(res.status == 200){
                         getData();
                         swal("Good job!", "Sukses", "success");

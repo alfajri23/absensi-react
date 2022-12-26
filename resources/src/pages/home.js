@@ -197,10 +197,10 @@ const Home = () => {
                             className=""
                             size="sm"
                         >
-                            <Dropdown.Item as="button" onClick={()=>confirms(cell,1)} active>
+                            <Dropdown.Item as="button" onClick={()=>confirms(row.original.id,1)} active>
                             Terima
                             </Dropdown.Item>
-                            <Dropdown.Item as="button" onClick={()=>confirms(cell,2)}>
+                            <Dropdown.Item as="button" onClick={()=>confirms(row.original.id,2)}>
                                 Tolak
                             </Dropdown.Item>
                             
@@ -253,7 +253,7 @@ const Home = () => {
                 case 0:
                     return(
                         <DropdownButton
-                            key={cell}
+                            key={row.original.id}
                             id="dropdown-button-dark-example2"
                             variant="warning"
                             // menuVariant="dark"
@@ -261,10 +261,10 @@ const Home = () => {
                             className=""
                             size="sm"
                         >
-                            <Dropdown.Item as="button" onClick={()=>confirms(cell,1)} active>
+                            <Dropdown.Item as="button" onClick={()=>confirms(row.original.id,1)} active>
                             Terima
                             </Dropdown.Item>
-                            <Dropdown.Item as="button" onClick={()=>confirms(cell,2)}>
+                            <Dropdown.Item as="button" onClick={()=>confirms(row.original.id,2)}>
                                 Tolak
                             </Dropdown.Item>
                             

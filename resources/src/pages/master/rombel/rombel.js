@@ -1,15 +1,17 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useRef} from 'react'
 import { Link } from 'react-router-dom'
 import {HiOutlinePencilAlt , HiOutlineTrash, HiOutlinePlusCircle} from 'react-icons/hi';
+import {CiImport} from 'react-icons/ci';
 import Modal from 'react-bootstrap/Modal';
 import { Formik } from 'formik';
-import { getAll, create, destroy, detail, updates } from '../../../api/api_rombel'
+import { getAll, create, destroy, detail, updates, getImportFile, importFile } from '../../../api/api_rombel'
 import { getAll as getAllKelas } from '../../../api/api_kelas'
 import swal from 'sweetalert';
 import * as Yup from 'yup';
 
 import LayoutAdmin from '../../../layouts/admin';
 import Table from '../../../components/table/react-table';
+import { getIdSekolah } from '../../../auth/auth';
 
 const RombelIndex = () => {
 
@@ -45,7 +47,11 @@ const RombelIndex = () => {
         setShow(true);
     }
 
-    
+    const [showImport, setShowImport] = useState(false);
+    const handleCloseImport = () => setShowImport(false);
+    const handleShowImport = () => setShowImport(true);
+
+    let fileImport = useRef('');
 
     useEffect(() => {
         getData();
@@ -53,6 +59,7 @@ const RombelIndex = () => {
 
     const getData = async () => {
         let data = await getAll();
+        fileImport.current = getImportFile(getIdSekolah());
         if(data.data != null){
             setData(data.data);
         }else{
@@ -186,6 +193,10 @@ const RombelIndex = () => {
                                 <HiOutlinePlusCircle className="fs-6 mr-1" /> Tambah
                             </button>
 
+                            <button onClick={handleShowImport} className="btn btn-warning ms-2">
+                                <CiImport className="fs-6 mr-1" /> Import
+                            </button>
+
                             <Table datas={data} column={column} columnFormats={columnFormat}/>
                         </div>
                     </div>
@@ -272,6 +283,81 @@ const RombelIndex = () => {
             </Modal.Body>
 
         </Modal>
+
+        <Modal size="lg" show={showImport} onHide={handleCloseImport}>
+            <Modal.Header closeButton>
+                <Modal.Title>Import Kelas</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <p>Silakan download file template terlebih dahulu, <a href={fileImport.current}> Download</a></p>
+                <Formik
+                initialValues={{
+                    file: ''
+                }}
+                onSubmit={ async (values, { setSubmitting }) => {
+                    const formData = new FormData();
+                    formData.append('file', values.file);
+                    let res = await importFile(formData);
+                    console.log(res)
+                    if(res.status == 200){
+                        getData();
+                        swal("Good job!", "Sukses", "success");
+                    }else{
+                        swal("Error", res.message[0].error, "warning");
+                    }
+
+                }}
+                validationSchema={
+                    Yup.object().shape({
+                        file: Yup.string()
+                          .required('Harus diisi')
+                    })
+                }
+                >
+                {({
+                    values,
+                    errors,
+                    touched,
+                    handleChange,
+                    handleBlur,
+                    handleSubmit,
+                    isSubmitting,
+                    setFieldValue
+                    /* and other goodies */
+                }) => (
+                    <form onSubmit={handleSubmit}>
+                        <div className="form-group">
+                            <label >File</label>
+                            <input
+                                type="file"
+                                name="file"
+                                className="form-control" 
+                                onBlur={handleBlur}
+                                onChange={(event) => {
+                                    setFieldValue("file", event.currentTarget.files[0]);
+                                }}
+                            />
+                            {errors.file && touched.file && errors.file}
+                        </div>
+                        <div className="form-group">
+                            <button type="submit" className="btn btn-nu btn-block" disabled={isSubmitting}>
+                                { isSubmitting ? 
+                                    <>
+                                    <span className="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true"></span>
+                                    <span className="sr-only">Loading...</span>
+                                    </>
+                                : 'Kirim'}
+                            </button>
+                        </div>
+                    </form>
+
+                )}
+
+                </Formik>
+
+            </Modal.Body>
+        </Modal>
+
         </LayoutAdmin>
     )
 }

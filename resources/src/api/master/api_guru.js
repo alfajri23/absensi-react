@@ -74,6 +74,22 @@ const resetPass = (id) => {
     });
 }
 
+const getImportFile = () => {
+    let urls = `${url}/file/excel-example`;
+    return urls;
+}
+
+const importFile = (data,tahun) => {
+    let urls = `${url}/file/excel-import`
+    return axios.post(urls,data,{ headers: headers_auth()})
+    .then(res => {
+        return res;
+    })
+    .catch(function (error) {
+        return error.response.data
+    });
+}
+
 
 
 export{
@@ -82,5 +98,7 @@ export{
     destroy,
     detail,
     updates,
-    resetPass
+    resetPass,
+    getImportFile,
+    importFile
 }

@@ -145,7 +145,6 @@ const DashboardSiswa = () => {
     let res = await statistikKehadiran(getRole(),getId(),new Date().getMonth() + 1,new Date().getFullYear());
     
     if(res.status == 200){
-        console.log('data',res.data.data);
         setStatKehadiran(res.data.data);
     }else{
       swal("Error", "error get kahadiran", "warning");
@@ -169,8 +168,6 @@ const DashboardSiswa = () => {
         setLoading(false);
       }else{
         let res = await storeAbsensi(req);
-        console.log(res);
-
         setLoading(false);
         swal("Info", res.message, "success");
 
@@ -194,7 +191,6 @@ const DashboardSiswa = () => {
         ...device,
         width: 1280, height: 720
       });
-      console.log('pc');
     }
 
     
@@ -210,8 +206,6 @@ const DashboardSiswa = () => {
     } else {
       swal("Error", 'Lokasi tidak ditemukan, mohon aktifkan lokasi', "warning");
     }
-
-
   },[]);
 
 
@@ -220,7 +214,6 @@ const DashboardSiswa = () => {
     () => {
       //let imageSrc = webcamRef.current.getScreenshot({width: 1280, height: 720});
       let imageSrc = webcamRef.current.getScreenshot({width: device.width, height: device.height  });
-      console.log('device',device);
       setPhoto(imageSrc);
     },
     [webcamRef]
@@ -353,8 +346,6 @@ const DashboardSiswa = () => {
                       formData.append('tgl_kehadiran', values.tanggal);
                       formData.append('file', values.file);
 
-                      console.log(values.file);
-
                       let res = await storeIzin(formData);
                     
                       if(res.status == 200){
@@ -439,17 +430,6 @@ const DashboardSiswa = () => {
                     
                 </Formik>
               </Modal.Body>
-
-              {/* <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
-                  Close
-                </Button>
-                <Button variant="primary" onClick={handleClose}>
-                  Save Changes
-                </Button>
-              </Modal.Footer> */}
-
-              
               
             </Modal>
 

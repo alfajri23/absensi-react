@@ -1,9 +1,10 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useRef} from 'react'
 import { Link } from 'react-router-dom'
 import {HiOutlinePencilAlt , HiOutlineTrash, HiOutlinePlusCircle} from 'react-icons/hi';
+import {CiImport} from 'react-icons/ci';
 import Modal from 'react-bootstrap/Modal';
 import { Formik } from 'formik';
-import { getAll, create, destroy, detail, updates } from '../../../api/api_jurusan'
+import { getAll, create, destroy, detail, updates, getImportFile, importFile } from '../../../api/api_jurusan'
 import swal from 'sweetalert';
 import * as Yup from 'yup';
 
@@ -29,6 +30,8 @@ const JurusanIndex = () => {
         kode: '',
     }
 
+    let fileImport = useRef('');
+
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => {
@@ -43,16 +46,21 @@ const JurusanIndex = () => {
         setShow(true);
     }
 
+    const [showImport, setShowImport] = useState(false);
+    const handleCloseImport = () => setShowImport(false);
+    const handleShowImport = () => setShowImport(true);
+
     useEffect(() => {
         getData();
     },[]);
 
     const getData = async () => {
         let data = await getAll();
+        fileImport.current = getImportFile();
         
         if(data.data != null){
             setData(data.data);
-            console.log(data.data);
+
         }else{
             swal("Error", data.message, "warning");
         }
@@ -159,7 +167,7 @@ const JurusanIndex = () => {
         <LayoutAdmin>
         <div>
             <div className="section-header">
-                <h1>Dashboard</h1>
+                <h1>Jurusan</h1>
                 <div className="section-header-breadcrumb">
                     <div className="breadcrumb-item active">
                         <Link to="/admin">Dashboard</Link>
@@ -174,6 +182,10 @@ const JurusanIndex = () => {
                         <div className="container-fluid">
                             <button onClick={handleShow} className="btn btn-success">
                                 <HiOutlinePlusCircle className="fs-6 mr-1" /> Tambah
+                            </button>
+
+                            <button onClick={handleShowImport} className="btn btn-warning ms-3">
+                                <CiImport className="fs-6 mr-1" /> Import
                             </button>
 
                             <Table datas={data} column={column} columnFormats={columnFormat}/>
@@ -256,6 +268,80 @@ const JurusanIndex = () => {
 
             </Modal.Body>
 
+        </Modal>
+
+        <Modal size="lg" show={showImport} onHide={handleCloseImport}>
+            <Modal.Header closeButton>
+                <Modal.Title>Import Jurusan</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <p>Silakan download file template terlebih dahulu, <a href={fileImport.current}> Download</a></p>
+                <Formik
+                initialValues={{
+                    file: ''
+                }}
+                onSubmit={ async (values, { setSubmitting }) => {
+                    const formData = new FormData();
+                    formData.append('file', values.file);
+                    let res = await importFile(formData);
+
+                    if(res.status == 200){
+                        getData();
+                        swal("Good job!", "Sukses", "success");
+                    }else{
+                        swal("Error", res.message[0].error, "warning");
+                    }
+
+                }}
+                validationSchema={
+                    Yup.object().shape({
+                        file: Yup.string()
+                          .required('Harus diisi')
+                    })
+                }
+                >
+                {({
+                    values,
+                    errors,
+                    touched,
+                    handleChange,
+                    handleBlur,
+                    handleSubmit,
+                    isSubmitting,
+                    setFieldValue
+                    /* and other goodies */
+                }) => (
+                    <form onSubmit={handleSubmit}>
+                        <div className="form-group">
+                            <label >File</label>
+                            <input
+                                type="file"
+                                name="file"
+                                className="form-control" 
+                                onBlur={handleBlur}
+                                onChange={(event) => {
+                                    setFieldValue("file", event.currentTarget.files[0]);
+                                }}
+                            />
+                            {errors.file && touched.file && errors.file}
+                        </div>
+                        <div className="form-group">
+                            <button type="submit" className="btn btn-nu btn-block" disabled={isSubmitting}>
+                                { isSubmitting ? 
+                                    <>
+                                    <span className="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true"></span>
+                                    <span className="sr-only">Loading...</span>
+                                    </>
+                                : 'Kirim'}
+                            </button>
+                        </div>
+                    </form>
+
+                )}
+
+                </Formik>
+
+            </Modal.Body>
         </Modal>
         
         </LayoutAdmin>
