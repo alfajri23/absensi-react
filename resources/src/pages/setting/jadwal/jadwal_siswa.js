@@ -210,7 +210,7 @@ const JadwalSiswa = () => {
                                                 <td> 
                                                 {result.jadwal.map((result,key) => {
                                                     return(
-                                                        <div key={key} className="mt-1">{result.jam_masuk}</div>
+                                                        <div key={key} className="my-1">{result.jam_masuk}</div>
                                                     )
                                                 })}
                                                 </td>
@@ -218,15 +218,15 @@ const JadwalSiswa = () => {
                                                 <td> 
                                                 {result.jadwal.map((result,key) => {
                                                     return(
-                                                        <div key={key} className="mt-1">{result.toleransi}</div>
+                                                        <div key={key} className="my-1">{result.toleransi}</div>
                                                     )
                                                 })}
                                                 </td>
 
                                                 <td>{result.jadwal.map((result,key) => {
                                                     return(
-                                                        //<div key={key} className="mt-1">{result.rombels[0]}</div>
-                                                        <div>
+                                                        //<div key={key} className="my-1">{result.rombels[0]}</div>
+                                                        <div className="my-1">
                                                             {result.rombels.map((result,key) =>{
                                                                 return(<span>{result.nama}</span>)
                                                             })}

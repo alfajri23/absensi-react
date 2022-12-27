@@ -59,6 +59,7 @@ const AdminIndex = () => {
         let data = await getAll();
 
         if(data.data != null){
+            console.log(data.data);
             setData(data.data);
         }else{
             swal("Error", data.message, "warning");
@@ -111,7 +112,6 @@ const AdminIndex = () => {
     }
 
     const setAktif = async (id,value) => {
-        console.log("data");
         let res = await setActive({
             id: id,
             status: value
@@ -180,7 +180,7 @@ const AdminIndex = () => {
         },
         status: ({value, row}) => {
             switch(value) {
-                case 1:
+                case '1':
                   return(
                     <div key={row.original.id} className="form-check form-switch" onChange={()=>setAktif(row.original.id, 0)}>
                         <input className="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" defaultChecked={true}/>
@@ -201,10 +201,6 @@ const AdminIndex = () => {
     }
 
     const column = [
-        {
-            accessor: '',
-            Header: 'Id',
-        },
         {
             accessor: 'nama',
             Header: 'Nama',

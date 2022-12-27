@@ -169,8 +169,7 @@ const DashboardSiswa = () => {
       }else{
         let res = await storeAbsensi(req);
         setLoading(false);
-        swal("Info", res.message, "success");
-
+        swal(res.message);
       }
       
 
