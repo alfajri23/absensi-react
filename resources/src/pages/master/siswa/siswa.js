@@ -239,19 +239,6 @@ const SiswaIndex = () => {
                     </button>
                 </div>
             )
-        },
-        status: ({value, row}) => {
-            switch(value) {
-                case 'Aktif':
-                  return(
-                    <span key={row.original.id} className="badge text-bg-success">Aktif</span>
-                  )
-                  break;
-                default:
-                    return (
-                    <span key={row.original.id} className="badge text-bg-danger">Tidak aktif</span>
-                )
-            }
         }
     }
 
@@ -267,11 +254,6 @@ const SiswaIndex = () => {
         {
             accessor: 'telepon',
             Header: 'Telepon',
-        },
-        {
-            accessor: 'status',
-            Header: 'Status',
-            Cell: columnFormat.status
         },
         {
             accessor: 'id',

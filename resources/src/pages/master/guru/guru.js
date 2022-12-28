@@ -206,19 +206,6 @@ const GuruIndex = () => {
                     </button>
                 </div>
             )
-        },
-        status: ({value, row}) => {
-            switch(value) {
-                case 'Aktif':
-                  return(
-                    <span key={row.original.id} className="badge text-bg-success">Aktif</span>
-                  )
-                  break;
-                default:
-                    return (
-                    <span key={row.original.id} className="badge text-bg-danger">Tidak aktif</span>
-                )
-            }
         }
     }
 
@@ -234,11 +221,6 @@ const GuruIndex = () => {
         {
             accessor: 'telepon',
             Header: 'Telepon',
-        },
-        {
-            accessor: 'status',
-            Header: 'Status',
-            Cell: columnFormat.status
         },
         {
             accessor: 'id',
@@ -305,7 +287,8 @@ const GuruIndex = () => {
                 onSubmit={ async (values, { setSubmitting }) => {
                     let req = {
                         ...values,
-                        id_sekolah: getIdSekolah()
+                        id_sekolah: getIdSekolah(),
+                        password: values.nip,
                     }
                     let res = edit ? await updates(req) : await create(req);
                     
