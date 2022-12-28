@@ -57,7 +57,6 @@ const RekapIzinUser = () => {
   const getData = async (mount,year) => {
     let data = await getIzin(getId(),getRole(),mount,year);
     if(data.data != null){
-        console.log(data.data)
         setData(data.data);
     }else{
         swal("Error", data.message, "warning");
@@ -77,7 +76,6 @@ const RekapIzinUser = () => {
             lat: res.data.data.lat,
             file: ''
         }
-
         setForm(formValue);
         setShow(true);
     }else{

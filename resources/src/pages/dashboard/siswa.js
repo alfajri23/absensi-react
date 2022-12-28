@@ -13,7 +13,7 @@ import { Field, Form, Formik} from 'formik';
 import * as Yup from 'yup';
 
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import { Pie } from 'react-chartjs-2';
+
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -26,11 +26,9 @@ import {
 } from 'react-leaflet';
 
 import { create as storeIzin } from '../../api/izin/api_izin';
-import { getDataMasuk, storeAbsensi } from '../../api/hadir/api_hadir';
+import { getDataMasukSiswa, getDataMasukGuru, storeAbsensiSiswa, storeAbsensiGuru } from '../../api/hadir/api_hadir';
 import { getIdKelasSiswa, getId, getIdSekolah, getRole, getTahunAjar } from '../../auth/auth';
 import { statistikKehadiran } from '../../api/api_dashboard';
-import { set } from 'lodash';
-
 
 
 const LocationMarker = () => {
@@ -90,7 +88,9 @@ const DashboardSiswa = () => {
   };
 
   const getData = async () => {
-    let data = await getDataMasuk(getIdKelasSiswa());
+    
+    let data = getRole() == 'siswa' ? await getDataMasukSiswa(getIdKelasSiswa()) : await getDataMasukGuru();
+    console.log(data.data);
     if(data.data != null){
       setjamMasuk(data.data);
     }else{
@@ -155,6 +155,7 @@ const DashboardSiswa = () => {
   const actionAbsensi = async () => {
       setLoading(true);
       let req = {
+          id_guru : getId(),
           id_kelas_siswa : getIdKelasSiswa(),
           long : position.long,
           lat : position.lat,
@@ -167,7 +168,8 @@ const DashboardSiswa = () => {
         swal("Error", 'Harap foto terlebih dahulu', "warning");
         setLoading(false);
       }else{
-        let res = await storeAbsensi(req);
+        let res = getRole() == 'siswa' ? await storeAbsensiSiswa(req) : await storeAbsensiGuru(req);
+        console.log(res);
         setLoading(false);
         swal(res.message);
       }
@@ -425,13 +427,10 @@ const DashboardSiswa = () => {
                               </Row>
                           </div>
                       </form>
-                    )}
-                    
+                    )}  
                 </Formik>
               </Modal.Body>
-              
             </Modal>
-
         </LayoutUser>
     </>
   )

@@ -288,8 +288,8 @@ const IzinSiswa = () => {
                                             <option value="7">Juli</option>
                                             <option value="8">Agustus</option>
                                             <option value="9">September</option>
-                                            <option value="10">November</option>
-                                            <option value="11">Oktober</option>
+                                            <option value="10">Oktober</option>
+                                            <option value="11">November</option>
                                             <option value="12">Desember</option>
                                         </Field>
                                         <small className="text-danger">{errors.bulan}</small>

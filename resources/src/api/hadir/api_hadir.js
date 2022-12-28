@@ -4,7 +4,7 @@ import {headers_auth} from '../header';
 
 const url = `${api_url}/api`;
 
-const getDataMasuk = (id_kelas) => {
+const getDataMasukSiswa = (id_kelas) => {
     let urls = `${url}/v2/data/absensi/jadwal/today/kelas_siswa/${id_kelas}`;
     return axios.get(urls,{ headers: headers_auth() })
     .then(res => {
@@ -15,7 +15,18 @@ const getDataMasuk = (id_kelas) => {
     });
 }
 
-const storeAbsensi = (body) => {
+const getDataMasukGuru = () => {
+    let urls = `${url}/v2/data/absensi/jadwal/today/guru`;
+    return axios.get(urls,{ headers: headers_auth() })
+    .then(res => {
+        return res.data;
+    })
+    .catch(function (error) {
+        return error.response.data
+    });
+}
+
+const storeAbsensiSiswa = (body) => {
     let urls = `${url}/v2/data/absensi/kehadiran/siswa`;
     return axios.post(urls,body,{ headers: headers_auth() })
     .then(res => {
@@ -26,7 +37,20 @@ const storeAbsensi = (body) => {
     });
 }
 
+const storeAbsensiGuru = (body) => {
+    let urls = `${url}/v2/data/absensi/kehadiran/guru`;
+    return axios.post(urls,body,{ headers: headers_auth() })
+    .then(res => {
+        return res.data;
+    })
+    .catch(function (error) {
+        return error.response.data
+    });
+}
+
 export {
-    getDataMasuk,
-    storeAbsensi
+    getDataMasukSiswa,
+    storeAbsensiSiswa,
+    getDataMasukGuru,
+    storeAbsensiGuru
 }
